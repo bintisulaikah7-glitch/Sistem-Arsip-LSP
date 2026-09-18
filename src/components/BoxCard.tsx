@@ -174,11 +174,12 @@ export const BoxCard: React.FC<BoxCardProps> = ({
 
           <button
             onClick={() => onShowQr(box)}
-            className="inline-flex items-center space-x-1 px-2 py-1 text-emerald-400 hover:text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-800/70 rounded text-[11px] font-medium transition"
+            className="inline-flex items-center space-x-1.5 px-2.5 py-1 text-emerald-300 hover:text-emerald-200 bg-emerald-950/70 hover:bg-emerald-900/90 border border-emerald-700/80 rounded-lg text-xs font-semibold transition shadow-sm"
             title="Cetak / Dapatkan QR Code"
           >
-            <QrCode className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Cetak QR</span>
+            <QrCode className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">Cetak / Dapatkan QR Code</span>
+            <span className="sm:hidden">Cetak QR</span>
           </button>
 
           <button
