@@ -1,0 +1,1427 @@
+[
+  {
+    "id_box": "L1-R1-BOX01-2022",
+    "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Assembly Solder",
+    "tahun_pelaksanaan": 2022,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R1-BOX02-2023",
+    "nama_pelatihan": "OJK 1",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R1-BOX03-2023",
+    "nama_pelatihan": "OJK 2",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 46,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R1-BOX04-2023",
+    "nama_pelatihan": "OJK 3",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R1-BOX05-2023",
+    "nama_pelatihan": "OJK 4",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R2-BOX01-2023",
+    "nama_pelatihan": "OJK 5",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R2-BOX02-2023",
+    "nama_pelatihan": "OJK 6",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R2-BOX03-2023",
+    "nama_pelatihan": "OJK 7",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R2-BOX04-2023",
+    "nama_pelatihan": "OJK 8",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R2-BOX05-2023",
+    "nama_pelatihan": "OJK 9",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R3-BOX01-2023",
+    "nama_pelatihan": "OJK 10",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R3-BOX02-2023",
+    "nama_pelatihan": "OJK 11",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R3-BOX03-2023",
+    "nama_pelatihan": "OJK 12",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R3-BOX04-2023",
+    "nama_pelatihan": "OJK 13",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R3-BOX05-2023",
+    "nama_pelatihan": "OJK 14",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 48,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R4-BOX01-2023",
+    "nama_pelatihan": "OJK 15",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R4-BOX02-2023",
+    "nama_pelatihan": "OJK 16",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R4-BOX03-2023",
+    "nama_pelatihan": "OJK 17",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R4-BOX04-2023",
+    "nama_pelatihan": "OJK 18",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L1-R4-BOX05-2023",
+    "nama_pelatihan": "OJK 19",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R1-BOX01-2023",
+    "nama_pelatihan": "OJK 20",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 46,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R1-BOX02-2023",
+    "nama_pelatihan": "OJK 21",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R1-BOX03-2023",
+    "nama_pelatihan": "OJK 22",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R1-BOX04-2023",
+    "nama_pelatihan": "OJK 23",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R1-BOX05-2023",
+    "nama_pelatihan": "OJK 24",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R2-BOX01-2023",
+    "nama_pelatihan": "OJK 25",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 48,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R2-BOX02-2023",
+    "nama_pelatihan": "OJK 26",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R2-BOX03-2023",
+    "nama_pelatihan": "OJK 27",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R2-BOX04-2023",
+    "nama_pelatihan": "OJK 28",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R2-BOX05-2023",
+    "nama_pelatihan": "OJK 29",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R3-BOX01-2023",
+    "nama_pelatihan": "OJK 30",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R3-BOX02-2023",
+    "nama_pelatihan": "OJK 31",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R3-BOX03-2023",
+    "nama_pelatihan": "OJK 32",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 47,
+    "jumlah_peserta_bk": 6,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R3-BOX04-2023",
+    "nama_pelatihan": "OJK 33",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R3-BOX05-2023",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 1 Yogyakarta",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R4-BOX01-2023",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R1-BOX01-2024",
+    "nama_pelatihan": "OJK 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R1-BOX02-2024",
+    "nama_pelatihan": "OJK 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R1-BOX03-2024",
+    "nama_pelatihan": "OJK 3",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R1-BOX04-2024",
+    "nama_pelatihan": "OJK 4",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R1-BOX05-2024",
+    "nama_pelatihan": "OJK 5",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R2-BOX01-2024",
+    "nama_pelatihan": "OJK 6",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R2-BOX02-2024",
+    "nama_pelatihan": "OJK 7",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 6,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R2-BOX03-2024",
+    "nama_pelatihan": "OJK 8",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R2-BOX04-2024",
+    "nama_pelatihan": "OJK 9",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R2-BOX05-2024",
+    "nama_pelatihan": "OJK 10",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R3-BOX01-2024",
+    "nama_pelatihan": "OJK 11",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R3-BOX02-2024",
+    "nama_pelatihan": "OJK 12",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R3-BOX03-2024",
+    "nama_pelatihan": "OJK 13",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R3-BOX04-2024",
+    "nama_pelatihan": "OJK14",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R3-BOX05-2024",
+    "nama_pelatihan": "OJK 15",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R4-BOX01-2024",
+    "nama_pelatihan": "OJK 16",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tidak Tersedia",
+    "status_barang": "Tidak Ada",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R4-BOX02-2024",
+    "nama_pelatihan": "OJK 17",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 8,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R4-BOX03-2024",
+    "nama_pelatihan": "OJK 18",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R4-BOX04-2024",
+    "nama_pelatihan": "OJK 19",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L3-R4-BOX05-2024",
+    "nama_pelatihan": "OJK 20",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R4-BOX02-2024",
+    "nama_pelatihan": "GMAW 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R4-BOX03-2024",
+    "nama_pelatihan": "Jointer 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R4-BOX04-2024",
+    "nama_pelatihan": "Perbaikan Mesin Jahit Angkatan 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L2-R4-BOX05-2024",
+    "nama_pelatihan": "Jahit Busana Custom Made Angkatan 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R1-BOX01-2024",
+    "nama_pelatihan": "Jahit Busana Custom Made Angkatan 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R1-BOX02-2024",
+    "nama_pelatihan": "SMAW 5",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak A",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R1-BOX03-2024",
+    "nama_pelatihan": "SMAW 9",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak A",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R1-BOX04-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Teknisi AC Residential Angkatan 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak A",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R1-BOX05-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Teknisi AC Residential Angkatan 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak A",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R2-BOX01-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak A",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R2-BOX02-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak B",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R2-BOX03-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 3",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak B",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R2-BOX04-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 4",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak B",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R2-BOX05-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak B",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R3-BOX01-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak B",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R3-BOX02-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 3",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak C",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R3-BOX03-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 4",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak C",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R3-BOX04-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 5",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 46,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak C",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R3-BOX05-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 6",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 47,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak C",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX01-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 7",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak C",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX02-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 8",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Baris 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX03-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 9",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Baris 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX04-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 10",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Baris 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX05-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 11",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Baris 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "L4-R4-BOX01-2024",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 12",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Baris 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-082",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 13",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-083",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 14",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-084",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 15",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 48,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-085",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 16",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-086",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2024-087",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 18",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 14,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-088",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Fiber Optik Angkatan 1",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-089",
+    "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-090",
+    "nama_pelatihan": "Sistem 3-in-1 (ReSkilling) Fiber Optik Angkatan 1",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 16,
+    "jumlah_peserta_bk": 16,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-091",
+    "nama_pelatihan": "Jahit Busana Custom Made Angkatan 1",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 40,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-092",
+    "nama_pelatihan": "OJK 1",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 9,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2025-093",
+    "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential JIIPE",
+    "tahun_pelaksanaan": 2025,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2026-094",
+    "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential PNBP Batch 1",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 7,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-2026-095",
+    "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Jointer PNBP Batch 1",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 5,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "link_dokumentasi": "https://drive.google.com"
+  }
+]

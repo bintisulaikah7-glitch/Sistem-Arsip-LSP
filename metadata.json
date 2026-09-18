@@ -1,0 +1,6 @@
+{
+  "name": "Sistem Arsip LSP",
+  "description": "Backend API engine dan konsol manajemen berkas boks arsip Lembaga Sertifikasi Profesi (LSP).",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

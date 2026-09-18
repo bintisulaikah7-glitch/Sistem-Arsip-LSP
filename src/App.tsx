@@ -1,0 +1,739 @@
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { BoksArsip, StatusArsip, StatusBarang } from './types.ts';
+import { Header } from './components/Header.tsx';
+import { StatsBar } from './components/StatsBar.tsx';
+import { SearchAndFilters } from './components/SearchAndFilters.tsx';
+import { BoxCard } from './components/BoxCard.tsx';
+import { BoxTableView } from './components/BoxTableView.tsx';
+import { JsonViewerModal } from './components/JsonViewerModal.tsx';
+import { QrScannerModal } from './components/QrScannerModal.tsx';
+import { ApiPlaygroundModal } from './components/ApiPlaygroundModal.tsx';
+import { BoxFormModal } from './components/BoxFormModal.tsx';
+import { QrCardModal } from './components/QrCardModal.tsx';
+import { GoogleSheetsSyncBanner, SyncState } from './components/GoogleSheetsSyncBanner.tsx';
+import { CabinetGridView } from './components/CabinetGridView.tsx';
+import { INITIAL_BOXES } from './data/initialBoxes.ts';
+import {
+  GOOGLE_SHEETS_CSV_URL,
+  GOOGLE_SHEETS_SPREADSHEET_URL,
+  convertGoogleSheetsUrlToCsv,
+  parseCSV,
+  mapCsvRecordsToBoxes,
+  deduplicateBoxes,
+  matchBoxSearch
+} from './utils/csvParser.ts';
+import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X } from 'lucide-react';
+
+export default function App() {
+  // Overwrite state completely with deduplicated initial boxes
+  const [boxes, setBoxes] = useState<BoksArsip[]>(() => deduplicateBoxes(INITIAL_BOXES));
+  const [isLoading, setIsLoading] = useState(true);
+  const [isResetting, setIsResetting] = useState(false);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Google Sheets Auto-Fetch & Polling State
+  const [sheetUrl, setSheetUrl] = useState<string>(GOOGLE_SHEETS_SPREADSHEET_URL);
+  const [syncState, setSyncState] = useState<SyncState>({
+    status: 'syncing',
+    lastSyncedAt: null,
+    message: 'Menginisialisasi pengambilan data dari Google Sheets...',
+    sourceUrl: GOOGLE_SHEETS_SPREADSHEET_URL,
+    totalParsed: 0
+  });
+  const [pollCountdown, setPollCountdown] = useState<number>(15);
+
+  // Filters
+  const [selectedCabinet, setSelectedCabinet] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLemari, setSelectedLemari] = useState<number | null>(null);
+  const [selectedStatusArsip, setSelectedStatusArsip] = useState<StatusArsip | 'Semua'>('Semua');
+  const [selectedStatusBarang, setSelectedStatusBarang] = useState<StatusBarang | 'Semua'>('Semua');
+  const [selectedTahun, setSelectedTahun] = useState<string>('Semua');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+
+  // Modals
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingBox, setEditingBox] = useState<BoksArsip | null>(null);
+  const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
+  const [isApiPlaygroundOpen, setIsApiPlaygroundOpen] = useState(false);
+  const [jsonModalState, setJsonModalState] = useState<{
+    isOpen: boolean;
+    title: string;
+    data: any;
+    statusCode: number;
+  }>({
+    isOpen: false,
+    title: '',
+    data: null,
+    statusCode: 200
+  });
+  const [qrCardBox, setQrCardBox] = useState<BoksArsip | null>(null);
+
+  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
+    setToastMessage({ text, type });
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  /**
+   * Fetch and parse CSV from Google Sheets URL.
+   * Replaces default INITIAL_BOXES so statistics and filters automatically adapt.
+   */
+  const fetchGoogleSheetsData = useCallback(
+    async (targetUrl = sheetUrl, isSilent = false) => {
+      if (!isSilent) {
+        setSyncState((prev) => ({ ...prev, status: 'syncing' }));
+      }
+
+      const effectiveUrl = convertGoogleSheetsUrlToCsv(targetUrl);
+      let csvText = '';
+      let fetchErrorMsg = '';
+
+      // 1. First attempt: Direct client fetch
+      try {
+        const directRes = await fetch(effectiveUrl, {
+          headers: {
+            Accept: 'text/csv,text/plain,*/*'
+          }
+        });
+        if (directRes.ok) {
+          const text = await directRes.text();
+          const trimmed = text.trim();
+          if (
+            !trimmed.startsWith('<!DOCTYPE') &&
+            !trimmed.startsWith('<html') &&
+            !text.includes('<title>Google Drive') &&
+            !text.includes('docs.google.com/error')
+          ) {
+            csvText = text;
+          }
+        }
+      } catch (err) {
+        // Direct fetch failed (e.g. CORS restrictions on browser)
+      }
+
+      // 2. Second attempt: Fallback to local server proxy endpoint (bypasses CORS)
+      if (!csvText) {
+        try {
+          const proxyRes = await fetch(`/api/sheets-proxy?url=${encodeURIComponent(effectiveUrl)}`);
+          if (proxyRes.ok) {
+            const text = await proxyRes.text();
+            if (
+              !text.startsWith('<!DOCTYPE') &&
+              !text.startsWith('<html') &&
+              !text.includes('Page not found')
+            ) {
+              csvText = text;
+            }
+          } else {
+            const errData = await proxyRes.json().catch(() => null);
+            fetchErrorMsg =
+              errData?.message ||
+              'Spreadsheet Google Sheets belum disetel publik atau tidak ditemukan.';
+          }
+        } catch (err: any) {
+          fetchErrorMsg = err.message || 'Gagal menghubungi server proxy Google Sheets.';
+        }
+      }
+
+      // 3. Parse and update boxes state if CSV was retrieved
+      if (csvText) {
+        try {
+          const records = parseCSV(csvText);
+          const rawBoxes = mapCsvRecordsToBoxes(records);
+          const parsedBoxes = deduplicateBoxes(rawBoxes);
+
+          if (parsedBoxes.length > 0) {
+            // PERBAIKAN 1: Overwrite state secara utuh (tidak di-append) dengan data deduplikasi id_box
+            setBoxes(parsedBoxes);
+            setIsLoading(false);
+            setSyncState({
+              status: 'connected',
+              lastSyncedAt: new Date(),
+              message: `Berhasil sinkronisasi ${parsedBoxes.length} boks arsip unik dari Google Sheets CSV.`,
+              sourceUrl: targetUrl,
+              totalParsed: parsedBoxes.length
+            });
+
+            // Keep backend API endpoints in sync as well
+            fetch('/api/boxes/sync-sheets', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(parsedBoxes)
+            }).catch(() => {});
+
+            if (!isSilent) {
+              showToast(
+                `Berhasil memuat ${parsedBoxes.length} boks arsip dari Google Sheets!`
+              );
+            }
+            return;
+          } else {
+            setSyncState((prev) => ({
+              ...prev,
+              status: 'warning',
+              message:
+                'File CSV terbaca namun tidak ada baris data boks yang sesuai dengan format 9 field.'
+            }));
+          }
+        } catch (parseErr: any) {
+          setSyncState((prev) => ({
+            ...prev,
+            status: 'warning',
+            message: `Gagal memetakan data CSV: ${parseErr.message}`
+          }));
+        }
+      } else {
+        setSyncState((prev) => ({
+          ...prev,
+          status: 'warning',
+          message:
+            fetchErrorMsg ||
+            "Spreadsheet Google Sheets belum disetel ke 'Siapa saja yang memiliki link dapat melihat'. Auto-polling terus berjalan tiap 15s."
+        }));
+      }
+
+      setIsLoading(false);
+    },
+    [sheetUrl]
+  );
+
+  // Initial fetch on mount & recurring 15-second polling
+  useEffect(() => {
+    // 1. Initial fetch on application load
+    fetchGoogleSheetsData(sheetUrl, false);
+
+    // 2. Automated polling every 15 seconds
+    const pollInterval = setInterval(() => {
+      fetchGoogleSheetsData(sheetUrl, true);
+      setPollCountdown(15);
+    }, 15000);
+
+    // 3. Countdown ticker
+    const countdownInterval = setInterval(() => {
+      setPollCountdown((prev) => (prev > 1 ? prev - 1 : 15));
+    }, 1000);
+
+    return () => {
+      clearInterval(pollInterval);
+      clearInterval(countdownInterval);
+    };
+  }, [fetchGoogleSheetsData, sheetUrl]);
+
+  // Handle manual raw CSV text import override
+  const handleImportCsvText = (csvText: string) => {
+    try {
+      const records = parseCSV(csvText);
+      const parsedBoxes = deduplicateBoxes(mapCsvRecordsToBoxes(records));
+      if (parsedBoxes.length > 0) {
+        setBoxes(parsedBoxes);
+        setSyncState({
+          status: 'connected',
+          lastSyncedAt: new Date(),
+          message: `Manual Override: Berhasil memuat ${parsedBoxes.length} boks dari CSV.`,
+          sourceUrl: sheetUrl,
+          totalParsed: parsedBoxes.length
+        });
+        fetch('/api/boxes/sync-sheets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsedBoxes)
+        }).catch(() => {});
+        showToast(`Memuat ${parsedBoxes.length} boks arsip dari CSV.`);
+      } else {
+        showToast('Tidak ada data boks arsip valid yang terdeteksi dari CSV.', 'error');
+      }
+    } catch (err: any) {
+      showToast(`Error parse CSV: ${err.message}`, 'error');
+    }
+  };
+
+  // Available years dynamically derived from current boxes
+  const availableYears = useMemo(() => {
+    const years = Array.from(new Set(boxes.map((b) => b.tahun_pelaksanaan))).filter(Boolean);
+    return years.sort((a, b) => b - a);
+  }, [boxes]);
+
+  // Available lemari dynamically derived from current boxes
+  const availableLemari = useMemo(() => {
+    const lemariList = Array.from(new Set(boxes.map((b) => b.lokasi.lemari))).filter(Boolean);
+    return lemariList.sort((a, b) => a - b);
+  }, [boxes]);
+
+  // Filtered Boxes (Mendukung Hierarki Lemari & Global Search Exception)
+  const filteredBoxes = useMemo(() => {
+    return boxes.filter((b) => {
+      // 1. Search query filter (Global search exception across all cabinets)
+      if (searchQuery.trim()) {
+        if (!matchBoxSearch(b, searchQuery)) {
+          return false;
+        }
+      } else {
+        // 2. If no search query and a cabinet is selected, strictly filter to that cabinet
+        if (selectedCabinet !== null && b.lokasi.lemari !== selectedCabinet) {
+          return false;
+        }
+      }
+
+      // 3. Dropdown Lemari filter (if explicitly chosen from dropdown)
+      if (selectedLemari !== null && b.lokasi.lemari !== selectedLemari) {
+        return false;
+      }
+
+      // 4. Dropdown Status Arsip filter
+      if (selectedStatusArsip !== 'Semua' && b.status_arsip !== selectedStatusArsip) {
+        return false;
+      }
+
+      // 5. Dropdown Status Barang filter
+      if (selectedStatusBarang !== 'Semua' && b.status_barang !== selectedStatusBarang) {
+        return false;
+      }
+
+      // 6. Dropdown Tahun filter
+      if (selectedTahun !== 'Semua' && b.tahun_pelaksanaan.toString() !== selectedTahun) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [boxes, searchQuery, selectedCabinet, selectedLemari, selectedStatusArsip, selectedStatusBarang, selectedTahun]);
+
+  const isFiltered =
+    !!searchQuery.trim() ||
+    selectedCabinet !== null ||
+    selectedLemari !== null ||
+    selectedStatusArsip !== 'Semua' ||
+    selectedStatusBarang !== 'Semua' ||
+    selectedTahun !== 'Semua';
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setSelectedCabinet(null);
+    setSelectedLemari(null);
+    setSelectedStatusArsip('Semua');
+    setSelectedStatusBarang('Semua');
+    setSelectedTahun('Semua');
+  };
+
+  // Open JSON Viewer for a specific box (Rule: Kembalikan jawaban HANYA berupa format JSON valid)
+  const handleViewJson = (box: BoksArsip) => {
+    setJsonModalState({
+      isOpen: true,
+      title: `Response JSON: ${box.id_box}`,
+      data: box,
+      statusCode: 200
+    });
+  };
+
+  // Create Box
+  const handleAddBox = async (newBox: BoksArsip): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/boxes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBox)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setBoxes((prev) => [data, ...prev]);
+        showToast(`Boks ${data.id_box} berhasil ditambahkan ke lemari ${data.lokasi.lemari}.`);
+        return true;
+      } else {
+        showToast(data.message || 'Gagal menambahkan boks.', 'error');
+        return false;
+      }
+    } catch (err: any) {
+      // Fallback
+      setBoxes((prev) => [newBox, ...prev]);
+      showToast(`Boks ${newBox.id_box} berhasil ditambahkan.`);
+      return true;
+    }
+  };
+
+  // Update Box
+  const handleUpdateBox = async (updatedBox: BoksArsip): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/boxes/${encodeURIComponent(updatedBox.id_box)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedBox)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setBoxes((prev) => prev.map((b) => (b.id_box === data.id_box ? data : b)));
+        showToast(`Boks ${data.id_box} berhasil diperbarui.`);
+        return true;
+      } else {
+        showToast(data.message || 'Gagal memperbarui boks.', 'error');
+        return false;
+      }
+    } catch (err: any) {
+      setBoxes((prev) => prev.map((b) => (b.id_box === updatedBox.id_box ? updatedBox : b)));
+      showToast(`Boks ${updatedBox.id_box} diperbarui.`);
+      return true;
+    }
+  };
+
+  // Delete Box
+  const handleDeleteBox = async (id_box: string) => {
+    if (!window.confirm(`Yakin ingin menghapus berkas boks ${id_box} dari sistem arsip?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/boxes/${encodeURIComponent(id_box)}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setBoxes((prev) => prev.filter((b) => b.id_box !== id_box));
+        showToast(`Boks ${id_box} berhasil dihapus.`);
+      } else {
+        showToast(data.message || 'Gagal menghapus boks.', 'error');
+      }
+    } catch (err: any) {
+      setBoxes((prev) => prev.filter((b) => b.id_box !== id_box));
+      showToast(`Boks ${id_box} dihapus.`);
+    }
+  };
+
+  // Reset Dataset
+  const handleResetData = async () => {
+    if (!window.confirm('Ambil ulang data terbaru dari spreadsheet Google Sheets?')) {
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      await fetchGoogleSheetsData(sheetUrl, false);
+      showToast('Data boks arsip berhasil disinkronkan ulang dari Google Sheets.');
+    } catch (err) {
+      showToast('Gagal sinkronisasi ulang data.', 'error');
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  // Export JSON
+  const handleExportJson = () => {
+    const jsonStr = JSON.stringify(boxes, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lsp_arsip_boxes_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('File JSON arsip berhasil diunduh.');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div
+            className={`px-4 py-2.5 rounded-lg border shadow-lg text-xs font-medium flex items-center space-x-2 ${
+              toastMessage.type === 'success'
+                ? 'bg-emerald-950/90 text-emerald-300 border-emerald-800'
+                : 'bg-rose-950/90 text-rose-300 border-rose-800'
+            }`}
+          >
+            {toastMessage.type === 'success' ? (
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-rose-400" />
+            )}
+            <span>{toastMessage.text}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Main Header */}
+      <Header
+        onOpenAddModal={() => {
+          setEditingBox(null);
+          setIsAddModalOpen(true);
+        }}
+        onOpenQrModal={() => setIsQrScannerOpen(true)}
+        onOpenApiPlayground={() => setIsApiPlaygroundOpen(true)}
+        onExportJson={handleExportJson}
+        onResetData={handleResetData}
+        totalBoxes={boxes.length}
+        isResetting={isResetting}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+        {/* Google Sheets Real-time Polling & Sync Banner */}
+        <GoogleSheetsSyncBanner
+          syncState={syncState}
+          onManualSync={() => fetchGoogleSheetsData(sheetUrl, false)}
+          onUpdateSheetUrl={(newUrl) => {
+            setSheetUrl(newUrl);
+            fetchGoogleSheetsData(newUrl, false);
+          }}
+          onImportCsvText={handleImportCsvText}
+          nextPollCountdown={pollCountdown}
+        />
+
+        {/* Statistics Bar */}
+        <StatsBar
+          boxes={boxes}
+          activeLemariFilter={selectedCabinet !== null ? selectedCabinet : selectedLemari}
+          onSelectLemari={(lemari) => {
+            setSelectedCabinet(lemari);
+            setSelectedLemari(lemari);
+          }}
+        />
+
+        {/* Search & Filter Controls */}
+        <SearchAndFilters
+          searchQuery={searchQuery}
+          onSearchChange={(q) => setSearchQuery(q)}
+          selectedLemari={selectedCabinet !== null ? selectedCabinet : selectedLemari}
+          onSelectLemari={(lemari) => {
+            setSelectedCabinet(lemari);
+            setSelectedLemari(lemari);
+          }}
+          selectedStatusArsip={selectedStatusArsip}
+          onSelectStatusArsip={setSelectedStatusArsip}
+          selectedStatusBarang={selectedStatusBarang}
+          onSelectStatusBarang={setSelectedStatusBarang}
+          selectedTahun={selectedTahun}
+          onSelectTahun={setSelectedTahun}
+          availableYears={availableYears}
+          availableLemari={availableLemari}
+          viewMode={viewMode}
+          onToggleViewMode={setViewMode}
+          onResetFilters={handleResetFilters}
+          isFiltered={isFiltered}
+        />
+
+        {/* Content Listing or Cabinet Hierarchy View */}
+        {isLoading ? (
+          <div className="py-20 flex flex-col items-center justify-center text-slate-500">
+            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3" />
+            <p className="text-xs">Memuat data boks arsip dari engine...</p>
+          </div>
+        ) : selectedCabinet === null && !searchQuery.trim() ? (
+          /* 1. TAMPILAN AWAL (DEFAULT VIEW): HIERARKI KARTU LEMARI */
+          <CabinetGridView
+            boxes={boxes}
+            availableLemari={availableLemari}
+            onSelectCabinet={(lemari) => {
+              setSelectedCabinet(lemari);
+              setSelectedLemari(lemari);
+            }}
+          />
+        ) : (
+          /* 2 & 3. DRILL-DOWN VIEW (LEMARI TERTENTU) ATAU PENCARIAN GLOBAL */
+          <div className="space-y-4">
+            {/* 3. PENCARIAN GLOBAL EXCEPTION BANNER */}
+            {searchQuery.trim() && (
+              <div className="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-sm animate-in fade-in duration-200">
+                <div className="flex items-center space-x-2 text-slate-200">
+                  <Search className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>
+                    Hasil Pencarian Global: &quot;<strong className="text-emerald-300">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-white">{filteredBoxes.length}</strong> boks di semua lemari arsip.
+                  </span>
+                </div>
+                <button
+                  id="btn-clear-search-return"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedCabinet(null);
+                    setSelectedLemari(null);
+                  }}
+                  className="inline-flex items-center space-x-1 text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg transition w-fit text-xs"
+                >
+                  <X className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Hapus Pencarian &amp; Kembali ke Lemari</span>
+                </button>
+              </div>
+            )}
+
+            {/* 2. INTERAKSI KLIK LEMARI: HEADER DRILL-DOWN DENGAN TOMBOL KEMBALI */}
+            {!searchQuery.trim() && selectedCabinet !== null && (
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md animate-in fade-in duration-200">
+                <div className="flex items-center space-x-3">
+                  <button
+                    id="btn-back-to-cabinets"
+                    onClick={() => {
+                      setSelectedCabinet(null);
+                      setSelectedLemari(null);
+                    }}
+                    className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-700 hover:text-emerald-300 text-slate-200 text-xs font-semibold border border-slate-700 transition shadow-sm"
+                    title="Kembali ke Daftar Lemari Utama"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-emerald-400" />
+                    <span>&larr; Kembali ke Daftar Lemari</span>
+                  </button>
+                  <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <Folder className="w-4 h-4 text-emerald-400" />
+                      <h3 className="text-sm font-bold text-white tracking-wide">
+                        Lemari {selectedCabinet}
+                      </h3>
+                      <span className="text-xs font-semibold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800">
+                        {filteredBoxes.length} Boks Berkas
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Menampilkan arsip boks berkas yang tersimpan di Lemari {selectedCabinet}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() =>
+                    setJsonModalState({
+                      isOpen: true,
+                      title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks)`,
+                      data: filteredBoxes,
+                      statusCode: 200
+                    })
+                  }
+                  className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono transition self-start sm:self-auto"
+                >
+                  <Database className="w-3.5 h-3.5" />
+                  <span>JSON Lemari {selectedCabinet}</span>
+                </button>
+              </div>
+            )}
+
+            {/* Listing Hasil */}
+            {filteredBoxes.length > 0 ? (
+              <div>
+                <div className="flex items-center justify-between mb-3 text-xs text-slate-400">
+                  <span>
+                    Menampilkan <strong className="text-slate-200">{filteredBoxes.length}</strong> boks berkas
+                    {isFiltered && ` (difilter dari total ${boxes.length})`}
+                  </span>
+                  <button
+                    onClick={() =>
+                      setJsonModalState({
+                        isOpen: true,
+                        title: `Semua Data Terfilter (${filteredBoxes.length} Boks)`,
+                        data: filteredBoxes,
+                        statusCode: 200
+                      })
+                    }
+                    className="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] flex items-center space-x-1"
+                  >
+                    <Database className="w-3.5 h-3.5" />
+                    <span>Lihat Format JSON Hasil Filter</span>
+                  </button>
+                </div>
+
+                {viewMode === 'grid' ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredBoxes.map((box, index) => (
+                      <BoxCard
+                        key={`${box.id_box}-${index}`}
+                        box={box}
+                        onViewJson={handleViewJson}
+                        onEdit={(b) => {
+                          setEditingBox(b);
+                          setIsAddModalOpen(true);
+                        }}
+                        onDelete={handleDeleteBox}
+                        onShowQr={(b) => setQrCardBox(b)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <BoxTableView
+                    boxes={filteredBoxes}
+                    onViewJson={handleViewJson}
+                    onEdit={(b) => {
+                      setEditingBox(b);
+                      setIsAddModalOpen(true);
+                    }}
+                    onDelete={handleDeleteBox}
+                    onShowQr={(b) => setQrCardBox(b)}
+                  />
+                )}
+              </div>
+            ) : (
+              /* Empty State (Compliant with 404 Response Rule) */
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center flex flex-col items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-rose-950/60 border border-rose-900/80 flex items-center justify-center text-rose-400 mb-3">
+                  <FolderSearch className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-200 mb-1">
+                  Data Boks Arsip Tidak Ditemukan
+                </h3>
+                <p className="text-xs text-slate-400 max-w-md mb-4 leading-relaxed">
+                  Tidak ada boks file yang cocok dengan kriteria pencarian &quot;{searchQuery}&quot; atau filter yang dipilih.
+                </p>
+
+                {/* Standard 404 JSON response preview */}
+                <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-left font-mono text-[11px] text-rose-300 max-w-md w-full mb-4">
+                  <pre>
+                    {JSON.stringify(
+                      {
+                        status: 404,
+                        error: "Not Found",
+                        message: `Data berkas arsip dengan kata kunci '${searchQuery || "filter"}' tidak ditemukan.`
+                      },
+                      null,
+                      2
+                    )}
+                  </pre>
+                </div>
+
+                <button
+                  onClick={handleResetFilters}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition"
+                >
+                  Reset Semua Filter &amp; Kembali ke Lemari
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      {/* Modals */}
+      <JsonViewerModal
+        isOpen={jsonModalState.isOpen}
+        onClose={() => setJsonModalState((prev) => ({ ...prev, isOpen: false }))}
+        title={jsonModalState.title}
+        data={jsonModalState.data}
+        statusCode={jsonModalState.statusCode}
+      />
+
+      <QrScannerModal
+        isOpen={isQrScannerOpen}
+        onClose={() => setIsQrScannerOpen(false)}
+        sampleBoxes={boxes}
+      />
+
+      <ApiPlaygroundModal
+        isOpen={isApiPlaygroundOpen}
+        onClose={() => setIsApiPlaygroundOpen(false)}
+      />
+
+      <BoxFormModal
+        isOpen={isAddModalOpen}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingBox(null);
+        }}
+        onSubmit={editingBox ? handleUpdateBox : handleAddBox}
+        editingBox={editingBox}
+      />
+
+      <QrCardModal
+        isOpen={!!qrCardBox}
+        onClose={() => setQrCardBox(null)}
+        box={qrCardBox}
+      />
+    </div>
+  );
+}
