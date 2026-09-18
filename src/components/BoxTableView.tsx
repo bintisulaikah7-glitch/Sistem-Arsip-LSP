@@ -8,6 +8,7 @@ interface BoxTableViewProps {
   onEdit: (box: BoksArsip) => void;
   onDelete: (id_box: string) => void;
   onShowQr: (box: BoksArsip) => void;
+  onViewDetail?: (box: BoksArsip) => void;
 }
 
 export const BoxTableView: React.FC<BoxTableViewProps> = ({
@@ -15,7 +16,8 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
   onViewJson,
   onEdit,
   onDelete,
-  onShowQr
+  onShowQr,
+  onViewDetail
 }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
@@ -41,10 +43,22 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
               return (
                 <tr key={`${box.id_box}-${index}`} className="hover:bg-slate-800/40 transition">
                   <td className="py-3 px-4 font-mono font-bold text-emerald-400 whitespace-nowrap">
-                    {box.id_box}
+                    <button
+                      onClick={() => onViewDetail && onViewDetail(box)}
+                      className="hover:underline text-left"
+                      title={onViewDetail ? 'Buka Detail Boks' : box.id_box}
+                    >
+                      {box.id_box}
+                    </button>
                   </td>
                   <td className="py-3 px-4 font-medium text-slate-100 max-w-xs truncate">
-                    {box.nama_pelatihan}
+                    <button
+                      onClick={() => onViewDetail && onViewDetail(box)}
+                      className="hover:text-emerald-300 transition text-left truncate max-w-xs block"
+                      title={box.nama_pelatihan}
+                    >
+                      {box.nama_pelatihan}
+                    </button>
                   </td>
                   <td className="py-3 px-3 text-center text-slate-300 whitespace-nowrap font-mono">
                     {box.tahun_pelaksanaan}
@@ -101,12 +115,22 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
                   </td>
                   <td className="py-3 px-4 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end space-x-1.5">
+                      {onViewDetail && (
+                        <button
+                          onClick={() => onViewDetail(box)}
+                          className="px-2 py-0.5 text-[11px] text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded transition font-medium"
+                          title="Buka Detail Modal Boks"
+                        >
+                          Detail
+                        </button>
+                      )}
                       <button
                         onClick={() => onShowQr(box)}
-                        className="p-1 text-slate-400 hover:text-emerald-400 rounded hover:bg-slate-800 transition"
-                        title="Tampilkan QR Code"
+                        className="inline-flex items-center space-x-1 px-2 py-0.5 text-emerald-400 hover:text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-800/70 rounded text-[11px] font-medium transition"
+                        title="Cetak / Dapatkan QR Code"
                       >
                         <QrCode className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Cetak QR</span>
                       </button>
                       <button
                         onClick={() => onViewJson(box)}

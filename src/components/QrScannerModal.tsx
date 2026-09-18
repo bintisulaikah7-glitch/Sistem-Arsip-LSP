@@ -38,8 +38,24 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
   if (!isOpen) return null;
 
   const handleScan = async (idToScan: string) => {
-    const cleanId = idToScan.trim();
+    let cleanId = idToScan.trim();
     if (!cleanId) return;
+
+    // Support scanning raw URL like https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=KODE_BOKS
+    if (cleanId.includes('?') || cleanId.includes('http')) {
+      try {
+        const parsedUrl = new URL(cleanId, window.location.origin);
+        const queryBox = parsedUrl.searchParams.get('box') || parsedUrl.searchParams.get('id');
+        if (queryBox) {
+          cleanId = queryBox.trim();
+        }
+      } catch {
+        const match = cleanId.match(/[?&](?:box|id)=([^&#]+)/i);
+        if (match && match[1]) {
+          cleanId = decodeURIComponent(match[1]).trim();
+        }
+      }
+    }
 
     setIsLoading(true);
     setApiResponse(null);
@@ -47,20 +63,56 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
 
     try {
       const res = await fetch(`/api/boxes/scan/${encodeURIComponent(cleanId)}`);
-      const data = await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        setApiResponse({
+          status: res.status,
+          data
+        });
+        return;
+      }
+      
+      // Fallback for static GitHub Pages or unreached backend: search in sampleBoxes
+      const foundInClient = sampleBoxes.find(
+        (b) => b.id_box.trim().toLowerCase() === cleanId.toLowerCase()
+      );
+      if (foundInClient) {
+        setApiResponse({
+          status: 200,
+          data: foundInClient
+        });
+        return;
+      }
+
+      const errData = await res.json().catch(() => null);
       setApiResponse({
         status: res.status,
-        data
-      });
-    } catch (err: any) {
-      setApiResponse({
-        status: 500,
-        data: {
-          status: 500,
-          error: "Internal Server Error",
-          message: "Gagal menghubungkan ke backend API engine."
+        data: errData || {
+          status: 404,
+          error: "Not Found",
+          message: `Data boks arsip dengan ID '${cleanId}' tidak ditemukan.`
         }
       });
+    } catch (err: any) {
+      // Offline / Static fallback
+      const foundInClient = sampleBoxes.find(
+        (b) => b.id_box.trim().toLowerCase() === cleanId.toLowerCase()
+      );
+      if (foundInClient) {
+        setApiResponse({
+          status: 200,
+          data: foundInClient
+        });
+      } else {
+        setApiResponse({
+          status: 404,
+          data: {
+            status: 404,
+            error: "Not Found",
+            message: `Data boks arsip '${cleanId}' tidak ditemukan di sistem.`
+          }
+        });
+      }
     } finally {
       setIsLoading(false);
     }

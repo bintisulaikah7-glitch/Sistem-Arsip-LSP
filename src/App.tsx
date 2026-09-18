@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { BoksArsip, StatusArsip, StatusBarang } from './types.ts';
 import { Header } from './components/Header.tsx';
 import { StatsBar } from './components/StatsBar.tsx';
@@ -10,6 +10,7 @@ import { QrScannerModal } from './components/QrScannerModal.tsx';
 import { ApiPlaygroundModal } from './components/ApiPlaygroundModal.tsx';
 import { BoxFormModal } from './components/BoxFormModal.tsx';
 import { QrCardModal } from './components/QrCardModal.tsx';
+import { BoxDetailModal } from './components/BoxDetailModal.tsx';
 import { GoogleSheetsSyncBanner, SyncState } from './components/GoogleSheetsSyncBanner.tsx';
 import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
@@ -22,6 +23,7 @@ import {
   deduplicateBoxes,
   matchBoxSearch
 } from './utils/csvParser.ts';
+import { getUrlBoxParam } from './utils/url.ts';
 import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X } from 'lucide-react';
 
 export default function App() {
@@ -68,11 +70,60 @@ export default function App() {
     statusCode: 200
   });
   const [qrCardBox, setQrCardBox] = useState<BoksArsip | null>(null);
+  const [selectedDetailBox, setSelectedDetailBox] = useState<BoksArsip | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const hasHandledUrlQueryRef = useRef(false);
+
+  // Aliases for explicit state setters
+  const setSelectedBox = setSelectedDetailBox;
+  const setIsModalOpen = setIsDetailModalOpen;
 
   const showToast = (text: string, type: 'success' | 'error' = 'success') => {
     setToastMessage({ text, type });
     setTimeout(() => setToastMessage(null), 3500);
   };
+
+  /**
+   * Helper pencarian URL parameter fleksibel setelah data Google Sheets selesai di-fetch:
+   * 1. Mengambil query parameter 'box' atau 'id' dari window.location.search
+   * 2. Mencocokkan dengan beberapa alternatif nama properti (Kode Boks, kode_box, id, Kode, id_box)
+   * 3. Logging debug ke console browser
+   * 4. Membuka modal dan mengatur boks terpilih jika ditemukan
+   */
+  const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
+    if (typeof window === 'undefined') return;
+
+    const queryBox =
+      new URLSearchParams(window.location.search).get('box') ||
+      new URLSearchParams(window.location.search).get('id');
+
+    console.log("Mencari Box ID dari URL:", queryBox);
+
+    if (queryBox && queryBox.trim()) {
+      const found = data.find((item: any) => {
+        const boxId =
+          item['Kode Boks'] ||
+          item['kode_box'] ||
+          item['id'] ||
+          item['Kode'] ||
+          item.id_box ||
+          '';
+        return (
+          boxId.toString().trim().toLowerCase() ===
+          queryBox.toString().trim().toLowerCase()
+        );
+      });
+
+      console.log("Hasil pencarian:", found);
+
+      if (found) {
+        hasHandledUrlQueryRef.current = true;
+        setSelectedBox(found);
+        setIsModalOpen(true);
+        showToast(`Membuka rincian boks arsip: ${found.id_box || queryBox}`);
+      }
+    }
+  }, []);
 
   /**
    * Fetch and parse CSV from Google Sheets URL.
@@ -166,7 +217,8 @@ export default function App() {
                 `Berhasil memuat ${parsedBoxes.length} boks arsip dari Google Sheets!`
               );
             }
-            return;
+
+            return parsedBoxes;
           } else {
             setSyncState((prev) => ({
               ...prev,
@@ -193,14 +245,58 @@ export default function App() {
       }
 
       setIsLoading(false);
+      return null;
     },
     [sheetUrl]
   );
 
   // Initial fetch on mount & recurring 15-second polling
   useEffect(() => {
-    // 1. Initial fetch on application load
-    fetchGoogleSheetsData(sheetUrl, false);
+    let isMounted = true;
+
+    // 1. Initial fetch on application load (pencarian URL Parameter HANYA berjalan SETELAH proses fetch data Google Sheets selesai)
+    fetchGoogleSheetsData(sheetUrl, false).then((loadedBoxes) => {
+      if (!isMounted) return;
+
+      const data = (loadedBoxes && loadedBoxes.length > 0) ? loadedBoxes : INITIAL_BOXES;
+
+      // Ambil nilai query 'box' atau 'id' dari URL:
+      const queryBox =
+        new URLSearchParams(window.location.search).get('box') ||
+        new URLSearchParams(window.location.search).get('id');
+
+      // 3. LOG DEBUG:
+      console.log("Mencari Box ID dari URL:", queryBox);
+
+      // Jika queryBox ada, cari data boks dari list data yang cocok dengan mencocokkan beberapa kemungkinan nama properti:
+      if (queryBox && queryBox.trim()) {
+        const found = data.find((item: any) => {
+          const boxId =
+            item['Kode Boks'] ||
+            item['kode_box'] ||
+            item['id'] ||
+            item['Kode'] ||
+            item.id_box ||
+            '';
+          return (
+            boxId.toString().trim().toLowerCase() ===
+            queryBox.toString().trim().toLowerCase()
+          );
+        });
+
+        console.log("Hasil pencarian:", found);
+
+        // Jika `found` ditemukan:
+        // a. Set state boks terpilih: setSelectedBox(found)
+        // b. Set state modal terbuka: setIsModalOpen(true)
+        if (found) {
+          hasHandledUrlQueryRef.current = true;
+          setSelectedBox(found);
+          setIsModalOpen(true);
+          showToast(`Membuka rincian boks arsip: ${found.id_box || queryBox}`);
+        }
+      }
+    });
 
     // 2. Automated polling every 15 seconds
     const pollInterval = setInterval(() => {
@@ -214,10 +310,44 @@ export default function App() {
     }, 1000);
 
     return () => {
+      isMounted = false;
       clearInterval(pollInterval);
       clearInterval(countdownInterval);
     };
   }, [fetchGoogleSheetsData, sheetUrl]);
+
+  /**
+   * Listener untuk perubahan URL atau pembaruan data boks:
+   * Memastikan jika ada query parameter 'box' atau 'id', modal otomatis terbuka
+   * dan data boks valid (tidak undefined).
+   */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const onPopState = () => {
+      handleCheckUrlAndOpenBox(boxes);
+    };
+
+    window.addEventListener('popstate', onPopState);
+
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, [boxes, handleCheckUrlAndOpenBox]);
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedDetailBox(null);
+    hasHandledUrlQueryRef.current = false;
+    // Bersihkan URL query parameter secara halus tanpa reload browser
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.search.includes('box=') || window.location.search.includes('id='))
+    ) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  };
 
   // Handle manual raw CSV text import override
   const handleImportCsvText = (csvText: string) => {
@@ -643,6 +773,10 @@ export default function App() {
                         }}
                         onDelete={handleDeleteBox}
                         onShowQr={(b) => setQrCardBox(b)}
+                        onViewDetail={(b) => {
+                          setSelectedDetailBox(b);
+                          setIsDetailModalOpen(true);
+                        }}
                       />
                     ))}
                   </div>
@@ -656,6 +790,10 @@ export default function App() {
                     }}
                     onDelete={handleDeleteBox}
                     onShowQr={(b) => setQrCardBox(b)}
+                    onViewDetail={(b) => {
+                      setSelectedDetailBox(b);
+                      setIsDetailModalOpen(true);
+                    }}
                   />
                 )}
               </div>
@@ -733,6 +871,14 @@ export default function App() {
         isOpen={!!qrCardBox}
         onClose={() => setQrCardBox(null)}
         box={qrCardBox}
+      />
+
+      <BoxDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+        box={selectedDetailBox}
+        onViewJson={handleViewJson}
+        onShowQr={(b) => setQrCardBox(b)}
       />
     </div>
   );

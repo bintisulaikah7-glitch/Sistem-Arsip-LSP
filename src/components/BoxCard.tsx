@@ -19,6 +19,7 @@ interface BoxCardProps {
   onEdit: (box: BoksArsip) => void;
   onDelete: (id_box: string) => void;
   onShowQr: (box: BoksArsip) => void;
+  onViewDetail?: (box: BoksArsip) => void;
 }
 
 export const BoxCard: React.FC<BoxCardProps> = ({
@@ -26,7 +27,8 @@ export const BoxCard: React.FC<BoxCardProps> = ({
   onViewJson,
   onEdit,
   onDelete,
-  onShowQr
+  onShowQr,
+  onViewDetail
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -103,7 +105,13 @@ export const BoxCard: React.FC<BoxCardProps> = ({
         </div>
 
         {/* Nama Pelatihan */}
-        <h3 className="text-sm font-semibold text-slate-100 line-clamp-2 mb-3 leading-snug">
+        <h3 
+          onClick={() => onViewDetail && onViewDetail(box)}
+          className={`text-sm font-semibold text-slate-100 line-clamp-2 mb-3 leading-snug ${
+            onViewDetail ? 'cursor-pointer hover:text-emerald-300 transition-colors' : ''
+          }`}
+          title={onViewDetail ? 'Klik untuk melihat detail boks arsip' : box.nama_pelatihan}
+        >
           {box.nama_pelatihan}
         </h3>
 
@@ -153,13 +161,24 @@ export const BoxCard: React.FC<BoxCardProps> = ({
         </a>
 
         {/* Action icons */}
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1.5">
+          {onViewDetail && (
+            <button
+              onClick={() => onViewDetail(box)}
+              className="px-2 py-1 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded text-[11px] font-medium transition"
+              title="Buka Detail Modal Boks"
+            >
+              Detail
+            </button>
+          )}
+
           <button
             onClick={() => onShowQr(box)}
-            className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded transition"
-            title="Tampilkan QR Code Boks"
+            className="inline-flex items-center space-x-1 px-2 py-1 text-emerald-400 hover:text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-800/70 rounded text-[11px] font-medium transition"
+            title="Cetak / Dapatkan QR Code"
           >
-            <QrCode className="w-4 h-4" />
+            <QrCode className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Cetak QR</span>
           </button>
 
           <button
