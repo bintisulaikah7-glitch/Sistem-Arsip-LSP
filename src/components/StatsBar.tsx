@@ -13,19 +13,20 @@ export const StatsBar: React.FC<StatsBarProps> = ({
   activeLemariFilter,
   onSelectLemari
 }) => {
-  const totalBoks = boxes.length;
-  const tersediaCount = boxes.filter(
-    (b) => b.status_arsip === 'Tersedia' || b.status_arsip === 'Aktif'
+  const safeBoxes = Array.isArray(boxes) ? boxes : [];
+  const totalBoks = safeBoxes.length;
+  const tersediaCount = safeBoxes.filter(
+    (b) => b && (b.status_arsip === 'Tersedia' || b.status_arsip === 'Aktif')
   ).length;
-  const tidakLengkapCount = boxes.filter(
-    (b) => b.status_arsip === 'Tidak Lengkap' || b.status_arsip === 'Inaktif'
+  const tidakLengkapCount = safeBoxes.filter(
+    (b) => b && (b.status_arsip === 'Tidak Lengkap' || b.status_arsip === 'Inaktif')
   ).length;
-  const tidakTersediaCount = boxes.filter(
-    (b) => b.status_arsip === 'Tidak Tersedia' || b.status_arsip === 'Dimusnahkan'
+  const tidakTersediaCount = safeBoxes.filter(
+    (b) => b && (b.status_arsip === 'Tidak Tersedia' || b.status_arsip === 'Dimusnahkan')
   ).length;
 
-  const totalPeserta = boxes.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
-  const totalBK = boxes.reduce((acc, curr) => acc + (curr.jumlah_peserta_bk || 0), 0);
+  const totalPeserta = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta || 0), 0);
+  const totalBK = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta_bk || 0), 0);
   const totalK = totalPeserta - totalBK;
   const kompetenRate = totalPeserta > 0 ? Math.round((totalK / totalPeserta) * 100) : 0;
 

@@ -85,22 +85,32 @@ export default function App() {
 
   /**
    * Helper pembacaan URL parameter setelah data Google Sheets selesai di-fetch/di-load:
-   * 1. Mengambil nilai dari URL parameter 'box' atau 'id'
-   * 2. Melakukan pencarian toleran (case-insensitive & hapus spasi)
+   * 1. Mengambil nilai dari URL parameter 'box' atau 'id' (mendukung search params ?box= maupun hash routing #/?box=)
+   * 2. Melakukan pencarian toleran (case-insensitive & hapus spasi) dengan null-check data?.find
    * 3. Membuka modal detail boks secara otomatis
    */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
+    if (!data || !Array.isArray(data)) return;
 
-    // 1. PEMBACAAN URL PARAMETER:
+    // 1. PEMBACAAN URL PARAMETER (Mendukung ?box=... maupun #/?box=...):
     const urlParams = new URLSearchParams(window.location.search);
-    const targetBoxId = urlParams.get('box') || urlParams.get('id');
+    let targetBoxId = urlParams.get('box') || urlParams.get('id');
+
+    if (!targetBoxId && window.location.hash) {
+      const hashQueryIndex = window.location.hash.indexOf('?');
+      if (hashQueryIndex !== -1) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(hashQueryIndex));
+        targetBoxId = hashParams.get('box') || hashParams.get('id');
+      }
+    }
 
     console.log("Mencari Box ID dari URL:", targetBoxId);
 
-    // 2. PENCOCOKAN DATA BOKS:
+    // 2. PENCOCOKAN DATA BOKS (dengan null check data?.find):
     if (targetBoxId && targetBoxId.trim()) {
-      const foundBox = data.find((b: any) => {
+      const foundBox = data?.find?.((b: any) => {
+        if (!b) return false;
         const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
         return boxCode === targetBoxId.toString().trim().toLowerCase();
       });
@@ -247,35 +257,19 @@ export default function App() {
     let isMounted = true;
 
     // 1. Initial fetch on application load (pencarian URL Parameter HANYA berjalan SETELAH proses fetch data Google Sheets selesai)
-    fetchGoogleSheetsData(sheetUrl, false).then((loadedBoxes) => {
-      if (!isMounted) return;
+    fetchGoogleSheetsData(sheetUrl, false)
+      .then((loadedBoxes) => {
+        if (!isMounted) return;
 
-      const data = (loadedBoxes && loadedBoxes.length > 0) ? loadedBoxes : INITIAL_BOXES;
-
-      // 1. PEMBACAAN URL PARAMETER SAAT LOAD DATA:
-      const urlParams = new URLSearchParams(window.location.search);
-      const targetBoxId = urlParams.get('box') || urlParams.get('id');
-
-      console.log("Mencari Box ID dari URL:", targetBoxId);
-
-      // 2. PENCOCOKAN DATA BOKS (toleran: case-insensitive & hapus spasi):
-      if (targetBoxId && targetBoxId.trim()) {
-        const foundBox = data.find((b: any) => {
-          const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
-          return boxCode === targetBoxId.toString().trim().toLowerCase();
-        });
-
-        console.log("Hasil pencarian:", foundBox);
-
-        // 3. BUKA MODAL OTOMATIS:
-        if (foundBox) {
-          hasHandledUrlQueryRef.current = true;
-          setSelectedBox(foundBox);
-          setIsModalOpen(true);
-          showToast(`Membuka rincian boks arsip: ${foundBox.id_box || targetBoxId}`);
+        const data = (loadedBoxes && loadedBoxes.length > 0) ? loadedBoxes : (boxes && boxes.length > 0 ? boxes : INITIAL_BOXES);
+        handleCheckUrlAndOpenBox(data);
+      })
+      .catch((err) => {
+        console.warn("Gagal fetch data awal Google Sheets, menggunakan data cadangan:", err);
+        if (isMounted) {
+          handleCheckUrlAndOpenBox(boxes || INITIAL_BOXES);
         }
-      }
-    });
+      });
 
     // 2. Automated polling every 15 seconds
     const pollInterval = setInterval(() => {
@@ -358,19 +352,23 @@ export default function App() {
 
   // Available years dynamically derived from current boxes
   const availableYears = useMemo(() => {
-    const years = Array.from(new Set(boxes.map((b) => b.tahun_pelaksanaan))).filter(Boolean);
+    if (!boxes || !Array.isArray(boxes)) return [];
+    const years = Array.from(new Set(boxes.map((b) => b?.tahun_pelaksanaan))).filter(Boolean);
     return years.sort((a, b) => b - a);
   }, [boxes]);
 
   // Available lemari dynamically derived from current boxes
   const availableLemari = useMemo(() => {
-    const lemariList = Array.from(new Set(boxes.map((b) => b.lokasi.lemari))).filter(Boolean);
+    if (!boxes || !Array.isArray(boxes)) return [];
+    const lemariList = Array.from(new Set(boxes.map((b) => b?.lokasi?.lemari))).filter(Boolean);
     return lemariList.sort((a, b) => a - b);
   }, [boxes]);
 
   // Filtered Boxes (Mendukung Hierarki Lemari & Global Search Exception)
   const filteredBoxes = useMemo(() => {
+    if (!boxes || !Array.isArray(boxes)) return [];
     return boxes.filter((b) => {
+      if (!b) return false;
       // 1. Search query filter (Global search exception across all cabinets)
       if (searchQuery.trim()) {
         if (!matchBoxSearch(b, searchQuery)) {
@@ -378,13 +376,13 @@ export default function App() {
         }
       } else {
         // 2. If no search query and a cabinet is selected, strictly filter to that cabinet
-        if (selectedCabinet !== null && b.lokasi.lemari !== selectedCabinet) {
+        if (selectedCabinet !== null && b.lokasi?.lemari !== selectedCabinet) {
           return false;
         }
       }
 
       // 3. Dropdown Lemari filter (if explicitly chosen from dropdown)
-      if (selectedLemari !== null && b.lokasi.lemari !== selectedLemari) {
+      if (selectedLemari !== null && b.lokasi?.lemari !== selectedLemari) {
         return false;
       }
 
@@ -399,7 +397,7 @@ export default function App() {
       }
 
       // 6. Dropdown Tahun filter
-      if (selectedTahun !== 'Semua' && b.tahun_pelaksanaan.toString() !== selectedTahun) {
+      if (selectedTahun !== 'Semua' && b.tahun_pelaksanaan?.toString() !== selectedTahun) {
         return false;
       }
 
