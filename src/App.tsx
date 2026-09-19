@@ -85,34 +85,51 @@ export default function App() {
 
   /**
    * Helper pembacaan URL parameter setelah data Google Sheets selesai di-fetch/di-load:
-   * 1. Mengambil nilai dari URL parameter 'box' atau 'id' (mendukung search params ?box= maupun hash routing #/?box=)
+   * 1. Mendukung HashRouter (format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?box=KODE_BOKS)
+   *    maupun standard search params (?box=KODE_BOKS)
    * 2. Melakukan pencarian toleran (case-insensitive & hapus spasi) dengan null-check data?.find
-   * 3. Membuka modal detail boks secara otomatis
+   * 3. Membuka modal detail boks secara otomatis (setIsModalOpen(true) dan setSelectedBox(foundBox))
    */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
     if (!data || !Array.isArray(data)) return;
 
-    // 1. PEMBACAAN URL PARAMETER (Mendukung ?box=... maupun #/?box=...):
-    const urlParams = new URLSearchParams(window.location.search);
-    let targetBoxId = urlParams.get('box') || urlParams.get('id');
+    // 1. PEMBACAAN URL PARAMETER UNTUK HASHROUTER & SEARCH:
+    let targetBoxId: string | null = null;
 
-    if (!targetBoxId && window.location.hash) {
-      const hashQueryIndex = window.location.hash.indexOf('?');
-      if (hashQueryIndex !== -1) {
-        const hashParams = new URLSearchParams(window.location.hash.substring(hashQueryIndex));
+    // Prioritaskan pembacaan dari window.location.hash (format HashRouter #/?box=... atau #?box=... atau #box=...)
+    if (window.location.hash) {
+      const hashStr = window.location.hash;
+      const qIndex = hashStr.indexOf('?');
+      if (qIndex !== -1) {
+        const hashParams = new URLSearchParams(hashStr.substring(qIndex));
+        targetBoxId = hashParams.get('box') || hashParams.get('id');
+      } else if (hashStr.includes('=')) {
+        const hashParams = new URLSearchParams(hashStr.replace(/^#\/?/, ''));
         targetBoxId = hashParams.get('box') || hashParams.get('id');
       }
     }
 
-    console.log("Mencari Box ID dari URL:", targetBoxId);
+    // Jika belum ditemukan di hash, periksa window.location.search (?box=... atau ?id=...)
+    if (!targetBoxId) {
+      const searchParams = new URLSearchParams(window.location.search);
+      targetBoxId = searchParams.get('box') || searchParams.get('id');
+    }
 
-    // 2. PENCOCOKAN DATA BOKS (dengan null check data?.find):
+    // Fallback util helper jika ada
+    if (!targetBoxId) {
+      targetBoxId = getUrlBoxParam();
+    }
+
+    console.log("Mencari Box ID dari URL (HashRouter/Search):", targetBoxId);
+
+    // 2. PENCOCOKAN DATA BOKS (toleran: case-insensitive & trim spasi):
     if (targetBoxId && targetBoxId.trim()) {
+      const cleanTarget = targetBoxId.trim().toLowerCase();
       const foundBox = data?.find?.((b: any) => {
         if (!b) return false;
         const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
-        return boxCode === targetBoxId.toString().trim().toLowerCase();
+        return boxCode === cleanTarget;
       });
 
       console.log("Hasil pencarian:", foundBox);
@@ -291,20 +308,22 @@ export default function App() {
 
   /**
    * Listener untuk perubahan URL atau pembaruan data boks:
-   * Memastikan jika ada query parameter 'box' atau 'id', modal otomatis terbuka
-   * dan data boks valid (tidak undefined).
+   * Memastikan jika ada query parameter 'box' atau 'id' (baik via hashchange maupun popstate),
+   * modal otomatis terbuka dan data boks valid (tidak undefined).
    */
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const onPopState = () => {
+    const onUrlChange = () => {
       handleCheckUrlAndOpenBox(boxes);
     };
 
-    window.addEventListener('popstate', onPopState);
+    window.addEventListener('popstate', onUrlChange);
+    window.addEventListener('hashchange', onUrlChange);
 
     return () => {
-      window.removeEventListener('popstate', onPopState);
+      window.removeEventListener('popstate', onUrlChange);
+      window.removeEventListener('hashchange', onUrlChange);
     };
   }, [boxes, handleCheckUrlAndOpenBox]);
 
@@ -313,12 +332,13 @@ export default function App() {
     setSelectedDetailBox(null);
     hasHandledUrlQueryRef.current = false;
     // Bersihkan URL query parameter secara halus tanpa reload browser
-    if (
-      typeof window !== 'undefined' &&
-      (window.location.search.includes('box=') || window.location.search.includes('id='))
-    ) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
+    if (typeof window !== 'undefined') {
+      const hasBoxInSearch = window.location.search.includes('box=') || window.location.search.includes('id=');
+      const hasBoxInHash = window.location.hash.includes('box=') || window.location.hash.includes('id=');
+      if (hasBoxInSearch || hasBoxInHash) {
+        const cleanUrl = window.location.pathname + '#/';
+        window.history.replaceState({}, '', cleanUrl);
+      }
     }
   };
 

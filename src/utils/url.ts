@@ -33,13 +33,15 @@ export function getBasePortalUrl(): string {
 }
 
 /**
- * Menghasilkan link lengkap portal publik untuk boks arsip tertentu.
- * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=KODE_BOKS
- * Selalu mengarah ke domain resmi GitHub Pages sesuai spesifikasi sistem arsip LSP.
+ * Menghasilkan link lengkap portal publik untuk boks arsip tertentu dalam format HashRouter:
+ * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?box=KODE_BOKS
+ * Otomatis mengikuti domain publik GitHub Pages + format HashRouter SPA.
  */
 export function getBoxPublicUrl(idBox: string): string {
   const cleanId = (idBox || '').trim();
-  return `${PUBLIC_PORTAL_BASE_URL}?box=${encodeURIComponent(cleanId)}`;
+  const base = getBasePortalUrl();
+  const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+  return `${normalizedBase}#/?box=${encodeURIComponent(cleanId)}`;
 }
 
 /**
