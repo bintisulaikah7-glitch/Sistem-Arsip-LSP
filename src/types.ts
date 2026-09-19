@@ -17,6 +17,12 @@ export interface BoksArsip {
   status_arsip: StatusArsip;
   status_barang: StatusBarang;
   link_dokumentasi: string;
+  // Optional aliases for flexible URL parameter matching
+  'Kode Boks'?: string;
+  'kode_box'?: string;
+  'id'?: string;
+  code?: string;
+  [key: string]: any;
 }
 
 export interface ApiErrorResponse {

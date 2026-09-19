@@ -35,12 +35,11 @@ export function getBasePortalUrl(): string {
 /**
  * Menghasilkan link lengkap portal publik untuk boks arsip tertentu.
  * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=KODE_BOKS
+ * Selalu mengarah ke domain resmi GitHub Pages sesuai spesifikasi sistem arsip LSP.
  */
 export function getBoxPublicUrl(idBox: string): string {
   const cleanId = (idBox || '').trim();
-  const baseUrl = getBasePortalUrl();
-  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-  return `${normalizedBase}?box=${encodeURIComponent(cleanId)}`;
+  return `${PUBLIC_PORTAL_BASE_URL}?box=${encodeURIComponent(cleanId)}`;
 }
 
 /**

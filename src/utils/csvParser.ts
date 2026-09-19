@@ -265,6 +265,10 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
 
     result.push({
       id_box: computedId,
+      'Kode Boks': computedId,
+      kode_box: computedId,
+      id: computedId,
+      code: computedId,
       nama_pelatihan: nama_pelatihan || 'Pelatihan Sertifikasi LSP',
       tahun_pelaksanaan,
       jumlah_peserta,

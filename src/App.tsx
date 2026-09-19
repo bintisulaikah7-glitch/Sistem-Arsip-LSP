@@ -84,46 +84,38 @@ export default function App() {
   };
 
   /**
-   * Helper pencarian URL parameter fleksibel setelah data Google Sheets selesai di-fetch:
-   * 1. Mengambil query parameter 'box' atau 'id' dari window.location.search
-   * 2. Mencocokkan dengan beberapa alternatif nama properti (Kode Boks, kode_box, id, Kode, id_box)
-   * 3. Logging debug ke console browser
-   * 4. Membuka modal dan mengatur boks terpilih jika ditemukan
+   * Helper pembacaan URL parameter setelah data Google Sheets selesai di-fetch/di-load:
+   * 1. Mengambil nilai dari URL parameter 'box' atau 'id'
+   * 2. Melakukan pencarian toleran (case-insensitive & hapus spasi)
+   * 3. Membuka modal detail boks secara otomatis
    */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
 
-    const queryBox =
-      new URLSearchParams(window.location.search).get('box') ||
-      new URLSearchParams(window.location.search).get('id');
+    // 1. PEMBACAAN URL PARAMETER:
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetBoxId = urlParams.get('box') || urlParams.get('id');
 
-    console.log("Mencari Box ID dari URL:", queryBox);
+    console.log("Mencari Box ID dari URL:", targetBoxId);
 
-    if (queryBox && queryBox.trim()) {
-      const found = data.find((item: any) => {
-        const boxId =
-          item['Kode Boks'] ||
-          item['kode_box'] ||
-          item['id'] ||
-          item['Kode'] ||
-          item.id_box ||
-          '';
-        return (
-          boxId.toString().trim().toLowerCase() ===
-          queryBox.toString().trim().toLowerCase()
-        );
+    // 2. PENCOCOKAN DATA BOKS:
+    if (targetBoxId && targetBoxId.trim()) {
+      const foundBox = data.find((b: any) => {
+        const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
+        return boxCode === targetBoxId.toString().trim().toLowerCase();
       });
 
-      console.log("Hasil pencarian:", found);
+      console.log("Hasil pencarian:", foundBox);
 
-      if (found) {
+      // 3. BUKA MODAL OTOMATIS:
+      if (foundBox) {
         hasHandledUrlQueryRef.current = true;
-        setSelectedBox(found);
+        setSelectedBox(foundBox);
         setIsModalOpen(true);
-        showToast(`Membuka rincian boks arsip: ${found.id_box || queryBox}`);
+        showToast(`Membuka rincian boks arsip: ${foundBox.id_box || targetBoxId}`);
       }
     }
-  }, []);
+  }, [setSelectedBox, setIsModalOpen]);
 
   /**
    * Fetch and parse CSV from Google Sheets URL.
@@ -260,40 +252,27 @@ export default function App() {
 
       const data = (loadedBoxes && loadedBoxes.length > 0) ? loadedBoxes : INITIAL_BOXES;
 
-      // Ambil nilai query 'box' atau 'id' dari URL:
-      const queryBox =
-        new URLSearchParams(window.location.search).get('box') ||
-        new URLSearchParams(window.location.search).get('id');
+      // 1. PEMBACAAN URL PARAMETER SAAT LOAD DATA:
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetBoxId = urlParams.get('box') || urlParams.get('id');
 
-      // 3. LOG DEBUG:
-      console.log("Mencari Box ID dari URL:", queryBox);
+      console.log("Mencari Box ID dari URL:", targetBoxId);
 
-      // Jika queryBox ada, cari data boks dari list data yang cocok dengan mencocokkan beberapa kemungkinan nama properti:
-      if (queryBox && queryBox.trim()) {
-        const found = data.find((item: any) => {
-          const boxId =
-            item['Kode Boks'] ||
-            item['kode_box'] ||
-            item['id'] ||
-            item['Kode'] ||
-            item.id_box ||
-            '';
-          return (
-            boxId.toString().trim().toLowerCase() ===
-            queryBox.toString().trim().toLowerCase()
-          );
+      // 2. PENCOCOKAN DATA BOKS (toleran: case-insensitive & hapus spasi):
+      if (targetBoxId && targetBoxId.trim()) {
+        const foundBox = data.find((b: any) => {
+          const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
+          return boxCode === targetBoxId.toString().trim().toLowerCase();
         });
 
-        console.log("Hasil pencarian:", found);
+        console.log("Hasil pencarian:", foundBox);
 
-        // Jika `found` ditemukan:
-        // a. Set state boks terpilih: setSelectedBox(found)
-        // b. Set state modal terbuka: setIsModalOpen(true)
-        if (found) {
+        // 3. BUKA MODAL OTOMATIS:
+        if (foundBox) {
           hasHandledUrlQueryRef.current = true;
-          setSelectedBox(found);
+          setSelectedBox(foundBox);
           setIsModalOpen(true);
-          showToast(`Membuka rincian boks arsip: ${found.id_box || queryBox}`);
+          showToast(`Membuka rincian boks arsip: ${foundBox.id_box || targetBoxId}`);
         }
       }
     });
