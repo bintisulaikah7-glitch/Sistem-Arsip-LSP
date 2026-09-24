@@ -60,28 +60,28 @@ export const RakListView: React.FC<RakListViewProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header Info Lemari & Actions */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center space-x-3">
           <button
             onClick={onBackToLemari}
-            className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-700 hover:text-emerald-300 text-slate-200 text-xs font-semibold border border-slate-700 transition shadow-sm"
+            className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800 text-slate-700 text-xs font-semibold border border-slate-300 transition shadow-xs"
             title="Kembali ke Daftar Lemari"
           >
-            <ArrowLeft className="w-4 h-4 text-emerald-400" />
+            <ArrowLeft className="w-4 h-4 text-emerald-600" />
             <span>&larr; Kembali ke Daftar Lemari</span>
           </button>
-          <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
           <div>
             <div className="flex items-center space-x-2">
               <span className="text-lg">🗄️</span>
-              <h2 className="text-base font-bold text-white tracking-wide">
+              <h2 className="text-base font-bold text-slate-900 tracking-wide">
                 {lemariDisplay}
               </h2>
-              <span className="text-xs font-semibold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800">
+              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
                 {dataLemariIni.length} Boks Arsip
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5">
               Silakan pilih rak untuk membuka daftar pelatihan dan boks berkas di dalamnya
             </p>
           </div>
@@ -92,10 +92,10 @@ export const RakListView: React.FC<RakListViewProps> = ({
           {onViewAllSekat && (
             <button
               onClick={onViewAllSekat}
-              className="inline-flex items-center space-x-1.5 text-xs text-emerald-300 hover:text-emerald-200 px-2.5 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-800 transition"
+              className="inline-flex items-center space-x-1.5 text-xs text-emerald-800 hover:text-emerald-900 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-300 transition"
               title="Tampilkan semua sekat rak sekaligus"
             >
-              <Layers className="w-3.5 h-3.5" />
+              <Layers className="w-3.5 h-3.5 text-emerald-600" />
               <span>Lihat Semua Sekat</span>
             </button>
           )}
@@ -103,10 +103,10 @@ export const RakListView: React.FC<RakListViewProps> = ({
           {onOpenInputLokasi && (
             <button
               onClick={() => onOpenInputLokasi(`Lemari-${lemariNama}`)}
-              className="inline-flex items-center space-x-1.5 text-xs text-teal-300 hover:text-teal-200 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-teal-900/60 transition"
+              className="inline-flex items-center space-x-1.5 text-xs text-teal-800 hover:text-teal-900 px-2.5 py-1.5 rounded-lg bg-teal-50 border border-teal-300 transition"
               title={`Generate QR Lokasi untuk ${lemariDisplay}`}
             >
-              <QrCode className="w-3.5 h-3.5 text-teal-400" />
+              <QrCode className="w-3.5 h-3.5 text-teal-600" />
               <span>QR {lemariDisplay}</span>
             </button>
           )}
@@ -114,9 +114,9 @@ export const RakListView: React.FC<RakListViewProps> = ({
           {onViewJsonLemari && (
             <button
               onClick={onViewJsonLemari}
-              className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono transition"
+              className="inline-flex items-center space-x-1.5 text-xs text-indigo-800 hover:text-indigo-900 px-2.5 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200 font-mono transition"
             >
-              <Database className="w-3.5 h-3.5" />
+              <Database className="w-3.5 h-3.5 text-indigo-600" />
               <span>JSON Lemari</span>
             </button>
           )}
@@ -125,8 +125,8 @@ export const RakListView: React.FC<RakListViewProps> = ({
 
       {/* 3. Jika tidak ada rak terdeteksi dari data */}
       {daftarRakUnik.length === 0 ? (
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center">
-          <p style={{ color: '#94a3b8' }} className="text-sm font-medium">
+        <div className="bg-white border border-slate-200 rounded-xl p-8 text-center shadow-xs">
+          <p style={{ color: '#64748b' }} className="text-sm font-medium">
             Belum ada data rak di {lemariDisplay}
           </p>
         </div>
@@ -163,9 +163,9 @@ export const RakListView: React.FC<RakListViewProps> = ({
       <div className="pt-2">
         <button
           onClick={onBackToLemari}
-          className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition shadow-sm"
+          className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-300 text-xs font-semibold transition shadow-xs"
         >
-          <ArrowLeft className="w-4 h-4 text-emerald-400" />
+          <ArrowLeft className="w-4 h-4 text-emerald-600" />
           <span>← Kembali ke Daftar Lemari</span>
         </button>
       </div>

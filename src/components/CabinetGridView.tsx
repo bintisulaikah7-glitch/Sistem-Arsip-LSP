@@ -23,19 +23,19 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   return (
     <div className="space-y-4 mb-8">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
         <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-xs">
             <Archive className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-wide flex items-center gap-2">
               <span>TAMPILAN LEMARI ARSIP FISIK</span>
-              <span className="text-xs font-normal text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/60">
+              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
                 {lemariList.length} Lemari Tersedia
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Pilih lemari arsip untuk menjelajahi boks berkas dan dokumen pelatihan di dalamnya
             </p>
           </div>
@@ -44,10 +44,10 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         {onOpenInputLokasi && (
           <button
             onClick={onOpenInputLokasi}
-            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/60 transition shadow-sm"
+            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition shadow-xs"
             title="Input Lokasi Berkas LSP & Generate QR Code"
           >
-            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
             <span>+ Input Lokasi & QR</span>
           </button>
         )}
