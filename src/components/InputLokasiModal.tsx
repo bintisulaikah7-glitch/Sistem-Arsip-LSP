@@ -7,6 +7,8 @@ interface InputLokasiModalProps {
   isOpen: boolean;
   onClose: () => void;
   existingBoxes?: BoksArsip[];
+  initialLemari?: string;
+  initialRak?: string;
   onApplyFilter?: (pelatihan: string, lemari: string, rak: string) => void;
   onSaveNewBox?: (newBox: Partial<BoksArsip>) => void;
 }
@@ -15,16 +17,24 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
   isOpen,
   onClose,
   existingBoxes = [],
+  initialLemari,
+  initialRak,
   onApplyFilter,
   onSaveNewBox
 }) => {
   const [pelatihan, setPelatihan] = useState('');
-  const [lemari, setLemari] = useState('Lemari-A');
-  const [rak, setRak] = useState('Rak-1');
+  const [lemari, setLemari] = useState(initialLemari || 'Lemari-A');
+  const [rak, setRak] = useState(initialRak || 'Rak-1');
   const [isGenerated, setIsGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [saveToArchiveList, setSaveToArchiveList] = useState(false);
   const [tahun, setTahun] = useState(new Date().getFullYear().toString());
+
+  // Update lemari/rak if initial values change when opened
+  React.useEffect(() => {
+    if (initialLemari) setLemari(initialLemari);
+    if (initialRak) setRak(initialRak);
+  }, [initialLemari, initialRak, isOpen]);
 
   // Extract unique training names from dataset for smart autocomplete
   const trainingSuggestions = useMemo(() => {

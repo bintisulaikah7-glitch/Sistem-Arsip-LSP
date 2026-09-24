@@ -12,6 +12,7 @@ import { BoxFormModal } from './components/BoxFormModal.tsx';
 import { QrCardModal } from './components/QrCardModal.tsx';
 import { BoxDetailModal } from './components/BoxDetailModal.tsx';
 import { InputLokasiModal } from './components/InputLokasiModal.tsx';
+import { RakGroupView } from './components/RakGroupView.tsx';
 import { GoogleSheetsSyncBanner, SyncState } from './components/GoogleSheetsSyncBanner.tsx';
 import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
@@ -25,7 +26,7 @@ import {
   matchBoxSearch
 } from './utils/csvParser.ts';
 import { getUrlBoxParam, getUrlLocationParams } from './utils/url.ts';
-import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X } from 'lucide-react';
+import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X, Layers, QrCode } from 'lucide-react';
 
 export default function App() {
   // Overwrite state completely with deduplicated initial boxes
@@ -74,6 +75,8 @@ export default function App() {
   const [selectedDetailBox, setSelectedDetailBox] = useState<BoksArsip | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isInputLokasiOpen, setIsInputLokasiOpen] = useState(false);
+  const [inputLokasiPrefill, setInputLokasiPrefill] = useState<{ lemari?: string; rak?: string }>({});
+  const [groupByRak, setGroupByRak] = useState(true);
   const hasHandledUrlQueryRef = useRef(false);
 
   // Aliases for explicit state setters
@@ -792,20 +795,49 @@ export default function App() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() =>
-                    setJsonModalState({
-                      isOpen: true,
-                      title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks)`,
-                      data: filteredBoxes,
-                      statusCode: 200
-                    })
-                  }
-                  className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono transition self-start sm:self-auto"
-                >
-                  <Database className="w-3.5 h-3.5" />
-                  <span>JSON Lemari {selectedCabinet}</span>
-                </button>
+                <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                  {viewMode === 'grid' && (
+                    <button
+                      onClick={() => setGroupByRak(!groupByRak)}
+                      className={`inline-flex items-center space-x-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition ${
+                        groupByRak
+                          ? 'bg-emerald-950 text-emerald-300 border-emerald-700 font-medium'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+                      }`}
+                      title="Kelompokkan boks berdasarkan Sekat Rak"
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>{groupByRak ? 'Sekat per Rak: Aktif' : 'Sekat per Rak: Nonaktif'}</span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      setInputLokasiPrefill({ lemari: `Lemari-${selectedCabinet}` });
+                      setIsInputLokasiOpen(true);
+                    }}
+                    className="inline-flex items-center space-x-1.5 text-xs text-teal-300 hover:text-teal-200 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-teal-900/60 transition"
+                    title={`Input Lokasi & QR untuk Lemari ${selectedCabinet}`}
+                  >
+                    <QrCode className="w-3.5 h-3.5 text-teal-400" />
+                    <span>QR Lemari {selectedCabinet}</span>
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      setJsonModalState({
+                        isOpen: true,
+                        title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks)`,
+                        data: filteredBoxes,
+                        statusCode: 200
+                      })
+                    }
+                    className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono transition"
+                  >
+                    <Database className="w-3.5 h-3.5" />
+                    <span>JSON Lemari {selectedCabinet}</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -834,25 +866,48 @@ export default function App() {
                 </div>
 
                 {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredBoxes.map((box, index) => (
-                      <BoxCard
-                        key={`${box.id_box}-${index}`}
-                        box={box}
-                        onViewJson={handleViewJson}
-                        onEdit={(b) => {
-                          setEditingBox(b);
-                          setIsAddModalOpen(true);
-                        }}
-                        onDelete={handleDeleteBox}
-                        onShowQr={(b) => setQrCardBox(b)}
-                        onViewDetail={(b) => {
-                          setSelectedDetailBox(b);
-                          setIsDetailModalOpen(true);
-                        }}
-                      />
-                    ))}
-                  </div>
+                  /* FUNGSI 1: Tampilkan pengelompokan berdasarkan RAK jika lemari tertentu dipilih */
+                  (selectedCabinet !== null || (selectedLemari !== null && !searchQuery.trim())) && groupByRak ? (
+                    <RakGroupView
+                      boxes={filteredBoxes}
+                      lemariYangDipilih={selectedCabinet !== null ? selectedCabinet : (selectedLemari || 1)}
+                      onViewJson={handleViewJson}
+                      onEdit={(b) => {
+                        setEditingBox(b);
+                        setIsAddModalOpen(true);
+                      }}
+                      onDelete={handleDeleteBox}
+                      onShowQr={(b) => setQrCardBox(b)}
+                      onViewDetail={(b) => {
+                        setSelectedDetailBox(b);
+                        setIsDetailModalOpen(true);
+                      }}
+                      onOpenInputLokasiWithRak={(lemariStr, rakStr) => {
+                        setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
+                        setIsInputLokasiOpen(true);
+                      }}
+                    />
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredBoxes.map((box, index) => (
+                        <BoxCard
+                          key={`${box.id_box}-${index}`}
+                          box={box}
+                          onViewJson={handleViewJson}
+                          onEdit={(b) => {
+                            setEditingBox(b);
+                            setIsAddModalOpen(true);
+                          }}
+                          onDelete={handleDeleteBox}
+                          onShowQr={(b) => setQrCardBox(b)}
+                          onViewDetail={(b) => {
+                            setSelectedDetailBox(b);
+                            setIsDetailModalOpen(true);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )
                 ) : (
                   <BoxTableView
                     boxes={filteredBoxes}
@@ -956,8 +1011,13 @@ export default function App() {
 
       <InputLokasiModal
         isOpen={isInputLokasiOpen}
-        onClose={() => setIsInputLokasiOpen(false)}
+        onClose={() => {
+          setIsInputLokasiOpen(false);
+          setInputLokasiPrefill({});
+        }}
         existingBoxes={boxes}
+        initialLemari={inputLokasiPrefill.lemari}
+        initialRak={inputLokasiPrefill.rak}
         onApplyFilter={handleApplyFilterFromLokasi}
         onSaveNewBox={handleSaveFromInputLokasi}
       />
