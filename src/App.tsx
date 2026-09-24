@@ -713,6 +713,7 @@ export default function App() {
         <SearchAndFilters
           searchQuery={searchQuery}
           onSearchChange={(q) => setSearchQuery(q)}
+          onOpenQrScanner={() => setIsQrScannerOpen(true)}
           selectedLemari={selectedCabinet !== null ? selectedCabinet : selectedLemari}
           onSelectLemari={(lemari) => {
             setSelectedCabinet(lemari);
