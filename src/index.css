@@ -195,113 +195,99 @@ header, .top-bar, .navbar {
   color: #059669 !important;
 }
 
-/* KOTAK PENCARIAN TERPADU */
+/* Container Utama Bar Pencarian */
 .search-box-container {
   background: #0f172a;
-  border: 1px solid #10b981;
+  border: 1px solid #1e293b;
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .search-box-container:focus-within {
-  border-color: #34d399;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  border-color: #10b981; /* Highlight warna hijau saat diklik */
 }
 
+/* Wrapper Input & Icon */
 .search-input-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
-  min-width: 0;
 }
 
 .search-icon {
-  color: #94a3b8;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-}
-
-.search-input-wrapper input,
-#inputPencarian {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  outline: none;
-  font-size: 14px;
-}
-
-.search-input-wrapper input::placeholder,
-#inputPencarian::placeholder {
+  font-size: 16px;
   color: #64748b;
 }
 
+.search-input-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.search-input-wrapper input::placeholder {
+  color: #64748b;
+}
+
+/* Area Tombol Aksi */
 .search-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
 }
 
+/* Tombol Scan QR (Sekunder) */
 .btn-scan-qr {
   background: #1e293b;
   color: #10b981;
   border: 1px solid #334155;
   padding: 8px 14px;
   border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
   font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
 }
 
 .btn-scan-qr:hover {
-  background: #334155;
-  color: #34d399;
-  border-color: #10b981;
+  background: #064e3b;
+  color: #a7f3d0;
 }
 
+/* Tombol Cari Utama (Primary Search Button) */
 .btn-cari-utama {
   background: #10b981;
-  color: #ffffff;
-  border: 1px solid #059669;
-  padding: 8px 18px;
+  color: #022c22;
+  border: none;
+  padding: 8px 20px;
   border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
 }
 
 .btn-cari-utama:hover {
   background: #059669;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  color: #ffffff;
 }
 
+/* Responsif untuk Layar HP */
 @media (max-width: 640px) {
   .search-box-container {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
-    padding: 10px;
   }
   .search-actions {
     justify-content: flex-end;
