@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* Container Utama Grid */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 15px;
+}
+
+/* Style Kartu Folder Lemari & Rak */
+.card-folder {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efek Hover Saat Kursor Diatas Kartu */
+.card-folder:hover {
+  border-color: #10b981; /* Warna hijau menyala */
+  transform: translateY(-4px);
+  background-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.card-folder .icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.card-folder h3 {
+  margin: 8px 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.card-folder p {
+  margin: 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.card-folder span {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #10b981;
+  font-weight: bold;
+}

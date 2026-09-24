@@ -132,7 +132,7 @@ export const RakListView: React.FC<RakListViewProps> = ({
         </div>
       ) : (
         /* 4. Looping HANYA rak yang benar-benar ada di spreadsheet */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid-container">
           {daftarRakUnik.map((rak, idx) => {
             // Hitung jumlah boks aktual di rak tersebut
             const boksDiRakIni = dataLemariIni.filter(item => {
@@ -141,41 +141,18 @@ export const RakListView: React.FC<RakListViewProps> = ({
               return r === rak;
             });
             const jumlahBoks = boksDiRakIni.length;
-            const totalPesertaRak = boksDiRakIni.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
             const rakTitle = rak.includes('Rak') ? rak : 'Rak ' + rak;
 
             return (
               <div
                 key={`rak-card-${rak}-${idx}`}
                 onClick={() => onSelectRak(rak)}
-                className="card-folder group relative bg-slate-900/90 hover:bg-slate-850 border border-slate-800 hover:border-emerald-500/80 rounded-xl p-5 cursor-pointer transition-all duration-200 shadow-md hover:shadow-emerald-950/20 hover:-translate-y-1 flex flex-col justify-between"
+                className="card-folder"
               >
-                <div>
-                  {/* Header Icon & Badge */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="icon w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-800/80 group-hover:border-emerald-500 flex items-center justify-center text-2xl transition shadow-inner">
-                      📁
-                    </div>
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-950 text-slate-300 border border-slate-800 group-hover:border-emerald-700/60 group-hover:text-emerald-300 transition">
-                      {jumlahBoks} Boks
-                    </span>
-                  </div>
-
-                  {/* Rak Title */}
-                  <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition tracking-wide flex items-center gap-1.5">
-                    <span>{rakTitle}</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    {jumlahBoks} Pelatihan/Boks
-                    {totalPesertaRak > 0 && ` • ${totalPesertaRak} Peserta`}
-                  </p>
-                </div>
-
-                {/* Action Hint */}
-                <div className="pt-4 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500 group-hover:text-emerald-400 transition">
-                  <span>Klik untuk membuka &rarr;</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </div>
+                <div className="icon">📁</div>
+                <h3>{rakTitle}</h3>
+                <p>{jumlahBoks} Pelatihan/Boks</p>
+                <span>Klik untuk membuka &rarr;</span>
               </div>
             );
           })}
