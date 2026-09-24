@@ -14,6 +14,117 @@ header, .top-bar, .navbar {
   color: #0f172a !important;
 }
 
+/* TOP BAR HEADER BERSIH */
+.top-bar-clean {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.header-icon {
+  width: 42px !important;
+  height: 42px !important;
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  flex-shrink: 0 !important;
+}
+
+.header-title h1 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.25 !important;
+}
+
+.header-title p {
+  margin: 3px 0 0 0 !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.3 !important;
+}
+
+.header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.btn-icon-only {
+  width: 38px !important;
+  height: 38px !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  color: #334155 !important;
+}
+
+.btn-icon-only:hover {
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  transform: rotate(45deg);
+}
+
+.btn-tambah-boks {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border: 1px solid #059669 !important;
+  padding: 8px 18px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.btn-tambah-boks:hover {
+  background: #059669 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+@media (max-width: 640px) {
+  .top-bar-clean {
+    padding: 10px 14px !important;
+  }
+  .header-title h1 {
+    font-size: 16px !important;
+  }
+  .header-title p {
+    font-size: 11px !important;
+  }
+}
+
+
 /* Container Layout Grid (Laptop/Komputer: Pas 2 Kolom) */
 .grid-container {
   display: grid !important;
