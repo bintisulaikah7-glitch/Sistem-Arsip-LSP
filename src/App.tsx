@@ -13,6 +13,9 @@ import { QrCardModal } from './components/QrCardModal.tsx';
 import { BoxDetailModal } from './components/BoxDetailModal.tsx';
 import { InputLokasiModal } from './components/InputLokasiModal.tsx';
 import { RakGroupView } from './components/RakGroupView.tsx';
+import { RakListView } from './components/RakListView.tsx';
+import { PelatihanRakView } from './components/PelatihanRakView.tsx';
+import { BreadcrumbNav } from './components/BreadcrumbNav.tsx';
 import { GoogleSheetsSyncBanner, SyncState } from './components/GoogleSheetsSyncBanner.tsx';
 import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
@@ -77,6 +80,8 @@ export default function App() {
   const [isInputLokasiOpen, setIsInputLokasiOpen] = useState(false);
   const [inputLokasiPrefill, setInputLokasiPrefill] = useState<{ lemari?: string; rak?: string }>({});
   const [groupByRak, setGroupByRak] = useState(true);
+  const [selectedRak, setSelectedRak] = useState<string | null>(null);
+  const [showAllSekat, setShowAllSekat] = useState(false);
   const hasHandledUrlQueryRef = useRef(false);
 
   // Aliases for explicit state setters
@@ -171,6 +176,9 @@ export default function App() {
           setSelectedCabinet(3);
           setSelectedLemari(3);
         }
+      }
+      if (locParams.rak) {
+        setSelectedRak(locParams.rak);
       }
       const filterSummary = [
         locParams.pelatihan ? `Pelatihan: ${locParams.pelatihan}` : '',
@@ -466,6 +474,7 @@ export default function App() {
     !!searchQuery.trim() ||
     selectedCabinet !== null ||
     selectedLemari !== null ||
+    selectedRak !== null ||
     selectedStatusArsip !== 'Semua' ||
     selectedStatusBarang !== 'Semua' ||
     selectedTahun !== 'Semua';
@@ -474,6 +483,8 @@ export default function App() {
     setSearchQuery('');
     setSelectedCabinet(null);
     setSelectedLemari(null);
+    setSelectedRak(null);
+    setShowAllSekat(false);
     setSelectedStatusArsip('Semua');
     setSelectedStatusBarang('Semua');
     setSelectedTahun('Semua');
@@ -631,6 +642,9 @@ export default function App() {
         setSelectedLemari(3);
       }
     }
+    if (rak) {
+      setSelectedRak(rak);
+    }
     showToast(`Filter Lokasi Berkas diterapkan: ${pelatihan} (${lemari}, ${rak})`);
   };
 
@@ -718,199 +732,175 @@ export default function App() {
           isFiltered={isFiltered}
         />
 
-        {/* Content Listing or Cabinet Hierarchy View */}
-        {isLoading ? (
-          <div className="py-20 flex flex-col items-center justify-center text-slate-500">
-            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3" />
-            <p className="text-xs">Memuat data boks arsip dari engine...</p>
-          </div>
-        ) : selectedCabinet === null && !searchQuery.trim() ? (
-          /* 1. TAMPILAN AWAL (DEFAULT VIEW): HIERARKI KARTU LEMARI */
-          <CabinetGridView
-            boxes={boxes}
-            availableLemari={availableLemari}
-            onSelectCabinet={(lemari) => {
-              setSelectedCabinet(lemari);
-              setSelectedLemari(lemari);
+        {/* Wadah Utama Navigasi */}
+        <div id="app-container" className="space-y-4">
+          {/* Bar Navigasi (Breadcrumb) untuk kembali */}
+          <BreadcrumbNav
+            selectedCabinet={selectedCabinet}
+            selectedRak={selectedRak}
+            searchQuery={searchQuery}
+            onGoToLemari={() => {
+              setSelectedCabinet(null);
+              setSelectedLemari(null);
+              setSelectedRak(null);
+              setShowAllSekat(false);
             }}
-            onOpenInputLokasi={() => setIsInputLokasiOpen(true)}
+            onGoToRak={() => {
+              setSelectedRak(null);
+            }}
+            onClearSearch={() => {
+              setSearchQuery('');
+            }}
           />
-        ) : (
-          /* 2 & 3. DRILL-DOWN VIEW (LEMARI TERTENTU) ATAU PENCARIAN GLOBAL */
-          <div className="space-y-4">
-            {/* 3. PENCARIAN GLOBAL EXCEPTION BANNER */}
-            {searchQuery.trim() && (
-              <div className="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-sm animate-in fade-in duration-200">
-                <div className="flex items-center space-x-2 text-slate-200">
-                  <Search className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                  <span>
-                    Hasil Pencarian Global: &quot;<strong className="text-emerald-300">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-white">{filteredBoxes.length}</strong> boks di semua lemari arsip.
-                  </span>
-                </div>
-                <button
-                  id="btn-clear-search-return"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCabinet(null);
-                    setSelectedLemari(null);
-                  }}
-                  className="inline-flex items-center space-x-1 text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg transition w-fit text-xs"
-                >
-                  <X className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Hapus Pencarian &amp; Kembali ke Lemari</span>
-                </button>
-              </div>
-            )}
 
-            {/* 2. INTERAKSI KLIK LEMARI: HEADER DRILL-DOWN DENGAN TOMBOL KEMBALI */}
-            {!searchQuery.trim() && selectedCabinet !== null && (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md animate-in fade-in duration-200">
-                <div className="flex items-center space-x-3">
+          {/* Area Konten Utama */}
+          <div id="content-area" className="grid-container">
+            {isLoading ? (
+              <div className="py-20 flex flex-col items-center justify-center text-slate-500">
+                <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3" />
+                <p className="text-xs">Memuat data boks arsip dari engine...</p>
+              </div>
+            ) : searchQuery.trim() ? (
+              /* PENCARIAN GLOBAL EXCEPTION BANNER & LISTING */
+              <div className="space-y-4">
+                <div className="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-sm animate-in fade-in duration-200">
+                  <div className="flex items-center space-x-2 text-slate-200">
+                    <Search className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                    <span>
+                      Hasil Pencarian Global: &quot;<strong className="text-emerald-300">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-white">{filteredBoxes.length}</strong> boks di semua lemari arsip.
+                    </span>
+                  </div>
                   <button
-                    id="btn-back-to-cabinets"
+                    id="btn-clear-search-return"
                     onClick={() => {
+                      setSearchQuery('');
                       setSelectedCabinet(null);
                       setSelectedLemari(null);
+                      setSelectedRak(null);
                     }}
-                    className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-700 hover:text-emerald-300 text-slate-200 text-xs font-semibold border border-slate-700 transition shadow-sm"
-                    title="Kembali ke Daftar Lemari Utama"
+                    className="inline-flex items-center space-x-1 text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg transition w-fit text-xs"
                   >
-                    <ArrowLeft className="w-4 h-4 text-emerald-400" />
-                    <span>&larr; Kembali ke Daftar Lemari</span>
+                    <X className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Hapus Pencarian &amp; Kembali ke Lemari</span>
                   </button>
-                  <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+                </div>
+
+                {filteredBoxes.length > 0 ? (
                   <div>
-                    <div className="flex items-center space-x-2">
-                      <Folder className="w-4 h-4 text-emerald-400" />
-                      <h3 className="text-sm font-bold text-white tracking-wide">
-                        Lemari {selectedCabinet}
-                      </h3>
-                      <span className="text-xs font-semibold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800">
-                        {filteredBoxes.length} Boks Berkas
+                    <div className="flex items-center justify-between mb-3 text-xs text-slate-400">
+                      <span>
+                        Menampilkan <strong className="text-slate-200">{filteredBoxes.length}</strong> boks berkas
+                        {isFiltered && ` (difilter dari total ${boxes.length})`}
                       </span>
+                      <button
+                        onClick={() =>
+                          setJsonModalState({
+                            isOpen: true,
+                            title: `Semua Data Terfilter (${filteredBoxes.length} Boks)`,
+                            data: filteredBoxes,
+                            statusCode: 200
+                          })
+                        }
+                        className="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] flex items-center space-x-1"
+                      >
+                        <Database className="w-3.5 h-3.5" />
+                        <span>Lihat Format JSON Hasil Filter</span>
+                      </button>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      Menampilkan arsip boks berkas yang tersimpan di Lemari {selectedCabinet}
-                    </p>
+
+                    {viewMode === 'grid' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredBoxes.map((box, index) => (
+                          <BoxCard
+                            key={`${box.id_box}-${index}`}
+                            box={box}
+                            onViewJson={handleViewJson}
+                            onEdit={(b) => {
+                              setEditingBox(b);
+                              setIsAddModalOpen(true);
+                            }}
+                            onDelete={handleDeleteBox}
+                            onShowQr={(b) => setQrCardBox(b)}
+                            onViewDetail={(b) => {
+                              setSelectedDetailBox(b);
+                              setIsDetailModalOpen(true);
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <BoxTableView
+                        boxes={filteredBoxes}
+                        onViewJson={handleViewJson}
+                        onEdit={(b) => {
+                          setEditingBox(b);
+                          setIsAddModalOpen(true);
+                        }}
+                        onDelete={handleDeleteBox}
+                        onShowQr={(b) => setQrCardBox(b)}
+                        onViewDetail={(b) => {
+                          setSelectedDetailBox(b);
+                          setIsDetailModalOpen(true);
+                        }}
+                      />
+                    )}
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-                  {viewMode === 'grid' && (
-                    <button
-                      onClick={() => setGroupByRak(!groupByRak)}
-                      className={`inline-flex items-center space-x-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition ${
-                        groupByRak
-                          ? 'bg-emerald-950 text-emerald-300 border-emerald-700 font-medium'
-                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
-                      }`}
-                      title="Kelompokkan boks berdasarkan Sekat Rak"
-                    >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>{groupByRak ? 'Sekat per Rak: Aktif' : 'Sekat per Rak: Nonaktif'}</span>
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => {
-                      setInputLokasiPrefill({ lemari: `Lemari-${selectedCabinet}` });
-                      setIsInputLokasiOpen(true);
-                    }}
-                    className="inline-flex items-center space-x-1.5 text-xs text-teal-300 hover:text-teal-200 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-teal-900/60 transition"
-                    title={`Input Lokasi & QR untuk Lemari ${selectedCabinet}`}
-                  >
-                    <QrCode className="w-3.5 h-3.5 text-teal-400" />
-                    <span>QR Lemari {selectedCabinet}</span>
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      setJsonModalState({
-                        isOpen: true,
-                        title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks)`,
-                        data: filteredBoxes,
-                        statusCode: 200
-                      })
-                    }
-                    className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono transition"
-                  >
-                    <Database className="w-3.5 h-3.5" />
-                    <span>JSON Lemari {selectedCabinet}</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Listing Hasil */}
-            {filteredBoxes.length > 0 ? (
-              <div>
-                <div className="flex items-center justify-between mb-3 text-xs text-slate-400">
-                  <span>
-                    Menampilkan <strong className="text-slate-200">{filteredBoxes.length}</strong> boks berkas
-                    {isFiltered && ` (difilter dari total ${boxes.length})`}
-                  </span>
-                  <button
-                    onClick={() =>
-                      setJsonModalState({
-                        isOpen: true,
-                        title: `Semua Data Terfilter (${filteredBoxes.length} Boks)`,
-                        data: filteredBoxes,
-                        statusCode: 200
-                      })
-                    }
-                    className="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] flex items-center space-x-1"
-                  >
-                    <Database className="w-3.5 h-3.5" />
-                    <span>Lihat Format JSON Hasil Filter</span>
-                  </button>
-                </div>
-
-                {viewMode === 'grid' ? (
-                  /* FUNGSI 1: Tampilkan pengelompokan berdasarkan RAK jika lemari tertentu dipilih */
-                  (selectedCabinet !== null || (selectedLemari !== null && !searchQuery.trim())) && groupByRak ? (
-                    <RakGroupView
-                      boxes={filteredBoxes}
-                      lemariYangDipilih={selectedCabinet !== null ? selectedCabinet : (selectedLemari || 1)}
-                      onViewJson={handleViewJson}
-                      onEdit={(b) => {
-                        setEditingBox(b);
-                        setIsAddModalOpen(true);
-                      }}
-                      onDelete={handleDeleteBox}
-                      onShowQr={(b) => setQrCardBox(b)}
-                      onViewDetail={(b) => {
-                        setSelectedDetailBox(b);
-                        setIsDetailModalOpen(true);
-                      }}
-                      onOpenInputLokasiWithRak={(lemariStr, rakStr) => {
-                        setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
-                        setIsInputLokasiOpen(true);
-                      }}
-                    />
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {filteredBoxes.map((box, index) => (
-                        <BoxCard
-                          key={`${box.id_box}-${index}`}
-                          box={box}
-                          onViewJson={handleViewJson}
-                          onEdit={(b) => {
-                            setEditingBox(b);
-                            setIsAddModalOpen(true);
-                          }}
-                          onDelete={handleDeleteBox}
-                          onShowQr={(b) => setQrCardBox(b)}
-                          onViewDetail={(b) => {
-                            setSelectedDetailBox(b);
-                            setIsDetailModalOpen(true);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )
                 ) : (
-                  <BoxTableView
+                  /* Empty State 404 */
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-rose-950/60 border border-rose-900/80 flex items-center justify-center text-rose-400 mb-3">
+                      <FolderSearch className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-200 mb-1">
+                      Data Boks Arsip Tidak Ditemukan
+                    </h3>
+                    <p className="text-xs text-slate-400 max-w-md mb-4 leading-relaxed">
+                      Tidak ada boks file yang cocok dengan kriteria pencarian &quot;{searchQuery}&quot;.
+                    </p>
+                    <button
+                      onClick={handleResetFilters}
+                      className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition"
+                    >
+                      Reset Filter &amp; Kembali ke Daftar Lemari
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : selectedCabinet === null ? (
+              /* 1. TAMPILAN AWAL: DAFTAR LEMARI */
+              <CabinetGridView
+                boxes={boxes}
+                availableLemari={availableLemari}
+                onSelectCabinet={(lemari) => {
+                  setSelectedCabinet(lemari);
+                  setSelectedLemari(lemari);
+                  setSelectedRak(null);
+                  setShowAllSekat(false);
+                }}
+                onOpenInputLokasi={() => setIsInputLokasiOpen(true)}
+              />
+            ) : selectedRak === null ? (
+              /* 2. TAMPILAN KEDUA: DAFTAR RAK 1 - 4 DI DALAM LEMARI */
+              showAllSekat ? (
+                <div className="space-y-4">
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => setShowAllSekat(false)}
+                        className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-700 hover:text-emerald-300 text-slate-200 text-xs font-semibold border border-slate-700 transition"
+                      >
+                        <ArrowLeft className="w-4 h-4 text-emerald-400" />
+                        <span>Tampilan Kartu Rak</span>
+                      </button>
+                      <div>
+                        <h3 className="text-sm font-bold text-white">Lemari {selectedCabinet} - Semua Sekat Rak</h3>
+                        <p className="text-xs text-slate-400">Menampilkan seluruh rak arsip fisik sekaligus</p>
+                      </div>
+                    </div>
+                  </div>
+                  <RakGroupView
                     boxes={filteredBoxes}
+                    lemariYangDipilih={selectedCabinet}
                     onViewJson={handleViewJson}
                     onEdit={(b) => {
                       setEditingBox(b);
@@ -922,47 +912,72 @@ export default function App() {
                       setSelectedDetailBox(b);
                       setIsDetailModalOpen(true);
                     }}
+                    onOpenInputLokasiWithRak={(lemariStr, rakStr) => {
+                      setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
+                      setIsInputLokasiOpen(true);
+                    }}
                   />
-                )}
-              </div>
+                </div>
+              ) : (
+                <RakListView
+                  lemariNama={selectedCabinet}
+                  boxes={boxes}
+                  onSelectRak={(rak) => {
+                    setSelectedRak(rak);
+                  }}
+                  onBackToLemari={() => {
+                    setSelectedCabinet(null);
+                    setSelectedLemari(null);
+                    setSelectedRak(null);
+                  }}
+                  onViewAllSekat={() => setShowAllSekat(true)}
+                  onOpenInputLokasi={(lemariStr, rakStr) => {
+                    setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
+                    setIsInputLokasiOpen(true);
+                  }}
+                  onViewJsonLemari={() =>
+                    setJsonModalState({
+                      isOpen: true,
+                      title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks)`,
+                      data: filteredBoxes,
+                      statusCode: 200
+                    })
+                  }
+                />
+              )
             ) : (
-              /* Empty State (Compliant with 404 Response Rule) */
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center flex flex-col items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-rose-950/60 border border-rose-900/80 flex items-center justify-center text-rose-400 mb-3">
-                  <FolderSearch className="w-6 h-6" />
-                </div>
-                <h3 className="text-sm font-bold text-slate-200 mb-1">
-                  Data Boks Arsip Tidak Ditemukan
-                </h3>
-                <p className="text-xs text-slate-400 max-w-md mb-4 leading-relaxed">
-                  Tidak ada boks file yang cocok dengan kriteria pencarian &quot;{searchQuery}&quot; atau filter yang dipilih.
-                </p>
-
-                {/* Standard 404 JSON response preview */}
-                <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-left font-mono text-[11px] text-rose-300 max-w-md w-full mb-4">
-                  <pre>
-                    {JSON.stringify(
-                      {
-                        status: 404,
-                        error: "Not Found",
-                        message: `Data berkas arsip dengan kata kunci '${searchQuery || "filter"}' tidak ditemukan.`
-                      },
-                      null,
-                      2
-                    )}
-                  </pre>
-                </div>
-
-                <button
-                  onClick={handleResetFilters}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition"
-                >
-                  Reset Semua Filter &amp; Kembali ke Lemari
-                </button>
-              </div>
+              /* 3. TAMPILAN KETIGA: DAFTAR PELATIHAN DI DALAM RAK */
+              <PelatihanRakView
+                lemariNama={selectedCabinet}
+                namaRak={selectedRak}
+                boxes={boxes}
+                onBackToRakList={() => {
+                  setSelectedRak(null);
+                }}
+                onBackToLemari={() => {
+                  setSelectedCabinet(null);
+                  setSelectedLemari(null);
+                  setSelectedRak(null);
+                }}
+                onShowQr={(b) => setQrCardBox(b)}
+                onViewJson={handleViewJson}
+                onEdit={(b) => {
+                  setEditingBox(b);
+                  setIsAddModalOpen(true);
+                }}
+                onDelete={handleDeleteBox}
+                onViewDetail={(b) => {
+                  setSelectedDetailBox(b);
+                  setIsDetailModalOpen(true);
+                }}
+                onOpenInputLokasi={(lemariStr, rakStr) => {
+                  setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
+                  setIsInputLokasiOpen(true);
+                }}
+              />
             )}
           </div>
-        )}
+        </div>
       </main>
 
       {/* Modals */}

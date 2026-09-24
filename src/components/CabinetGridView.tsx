@@ -139,7 +139,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
               key={`lemari-${lemariNum}`}
               id={`cabinet-card-${lemariNum}`}
               onClick={() => onSelectCabinet(lemariNum)}
-              className={`group relative bg-slate-900/90 border ${theme.border} ${theme.hoverBorder} rounded-2xl p-5 shadow-lg hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden`}
+              className={`card-folder group relative bg-slate-900/90 border ${theme.border} ${theme.hoverBorder} rounded-2xl p-5 shadow-lg hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden`}
             >
               {/* Subtle top gradient glow */}
               <div className={`absolute inset-0 bg-gradient-to-b ${theme.accent} pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity`} />
@@ -148,8 +148,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
                 {/* Header Lemari */}
                 <div className="flex items-start justify-between mb-3 relative z-10">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-12 h-12 rounded-xl ${theme.bgIcon} border flex items-center justify-center ${theme.textIcon} shadow-sm group-hover:scale-105 transition-transform`}>
-                      <Folder className="w-6 h-6 fill-current opacity-80" />
+                    <div className={`w-12 h-12 rounded-xl ${theme.bgIcon} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform`}>
+                      <span className="icon">🗄️</span>
                     </div>
                     <div>
                       <h3 className="font-extrabold text-base text-white group-hover:text-emerald-300 transition-colors">
@@ -157,7 +157,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
                       </h3>
                       <span className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-slate-500" />
-                        Gudang Arsip LSP
+                        Klik untuk membuka rak
                       </span>
                     </div>
                   </div>
