@@ -11,6 +11,7 @@ import { ApiPlaygroundModal } from './components/ApiPlaygroundModal.tsx';
 import { BoxFormModal } from './components/BoxFormModal.tsx';
 import { QrCardModal } from './components/QrCardModal.tsx';
 import { BoxDetailModal } from './components/BoxDetailModal.tsx';
+import { InputLokasiModal } from './components/InputLokasiModal.tsx';
 import { GoogleSheetsSyncBanner, SyncState } from './components/GoogleSheetsSyncBanner.tsx';
 import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
@@ -23,7 +24,7 @@ import {
   deduplicateBoxes,
   matchBoxSearch
 } from './utils/csvParser.ts';
-import { getUrlBoxParam } from './utils/url.ts';
+import { getUrlBoxParam, getUrlLocationParams } from './utils/url.ts';
 import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X } from 'lucide-react';
 
 export default function App() {
@@ -72,6 +73,7 @@ export default function App() {
   const [qrCardBox, setQrCardBox] = useState<BoksArsip | null>(null);
   const [selectedDetailBox, setSelectedDetailBox] = useState<BoksArsip | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isInputLokasiOpen, setIsInputLokasiOpen] = useState(false);
   const hasHandledUrlQueryRef = useRef(false);
 
   // Aliases for explicit state setters
@@ -87,8 +89,9 @@ export default function App() {
    * Helper pembacaan URL parameter setelah data Google Sheets selesai di-fetch/di-load:
    * 1. Mendukung HashRouter (format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?box=KODE_BOKS)
    *    maupun standard search params (?box=KODE_BOKS)
-   * 2. Melakukan pencarian toleran (case-insensitive & hapus spasi) dengan null-check data?.find
-   * 3. Membuka modal detail boks secara otomatis (setIsModalOpen(true) dan setSelectedBox(foundBox))
+   * 2. Mendukung filter lokasi berkas (#/?pelatihan=...&lemari=...&rak=...)
+   * 3. Melakukan pencarian toleran (case-insensitive & hapus spasi) dengan null-check data?.find
+   * 4. Membuka modal detail boks secara otomatis (setIsModalOpen(true) dan setSelectedBox(foundBox))
    */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
@@ -141,6 +144,37 @@ export default function App() {
         setIsModalOpen(true);
         showToast(`Membuka rincian boks arsip: ${foundBox.id_box || targetBoxId}`);
       }
+    }
+
+    // 4. PEMBACAAN URL PARAMETER UNTUK FILTER LOKASI (pelatihan, lemari, rak):
+    const locParams = getUrlLocationParams();
+    if (locParams.pelatihan || locParams.lemari || locParams.rak) {
+      if (locParams.pelatihan) {
+        setSearchQuery(locParams.pelatihan);
+      }
+      if (locParams.lemari) {
+        const numMatch = locParams.lemari.match(/\d+/);
+        if (numMatch) {
+          const lNum = parseInt(numMatch[0], 10);
+          setSelectedCabinet(lNum);
+          setSelectedLemari(lNum);
+        } else if (locParams.lemari.toLowerCase().includes('a')) {
+          setSelectedCabinet(1);
+          setSelectedLemari(1);
+        } else if (locParams.lemari.toLowerCase().includes('b')) {
+          setSelectedCabinet(2);
+          setSelectedLemari(2);
+        } else if (locParams.lemari.toLowerCase().includes('c')) {
+          setSelectedCabinet(3);
+          setSelectedLemari(3);
+        }
+      }
+      const filterSummary = [
+        locParams.pelatihan ? `Pelatihan: ${locParams.pelatihan}` : '',
+        locParams.lemari ? `Lemari: ${locParams.lemari}` : '',
+        locParams.rak ? `Rak: ${locParams.rak}` : ''
+      ].filter(Boolean).join(' • ');
+      showToast(`Filter Lokasi QR aktif: ${filterSummary}`);
     }
   }, [setSelectedBox, setIsModalOpen]);
 
@@ -557,6 +591,46 @@ export default function App() {
     showToast('File JSON arsip berhasil diunduh.');
   };
 
+  // Handler simpan boks baru dari Input Lokasi Berkas
+  const handleSaveFromInputLokasi = (newBoxData: Partial<BoksArsip>) => {
+    const fullBox: BoksArsip = {
+      id_box: newBoxData.id_box || `BOX-${Date.now()}`,
+      nama_pelatihan: newBoxData.nama_pelatihan || 'Pelatihan Baru',
+      tahun_pelaksanaan: newBoxData.tahun_pelaksanaan || new Date().getFullYear(),
+      jumlah_peserta: newBoxData.jumlah_peserta || 0,
+      jumlah_peserta_bk: newBoxData.jumlah_peserta_bk || 0,
+      lokasi: newBoxData.lokasi || { lemari: 1, rak: 'Rak 1', baris: 'Baris 1' },
+      status_arsip: (newBoxData.status_arsip as StatusArsip) || 'Tersedia',
+      status_barang: (newBoxData.status_barang as StatusBarang) || 'Lengkap',
+      link_dokumentasi: newBoxData.link_dokumentasi || 'https://drive.google.com'
+    };
+    setBoxes((prev) => [fullBox, ...prev]);
+    showToast(`Boks arsip berhasil didaftarkan: ${fullBox.id_box}`);
+  };
+
+  // Handler terapkan filter dari Input Lokasi Berkas
+  const handleApplyFilterFromLokasi = (pelatihan: string, lemari: string, rak: string) => {
+    if (pelatihan) setSearchQuery(pelatihan);
+    if (lemari) {
+      const numMatch = lemari.match(/\d+/);
+      if (numMatch) {
+        const lNum = parseInt(numMatch[0], 10);
+        setSelectedCabinet(lNum);
+        setSelectedLemari(lNum);
+      } else if (lemari.toLowerCase().includes('a')) {
+        setSelectedCabinet(1);
+        setSelectedLemari(1);
+      } else if (lemari.toLowerCase().includes('b')) {
+        setSelectedCabinet(2);
+        setSelectedLemari(2);
+      } else if (lemari.toLowerCase().includes('c')) {
+        setSelectedCabinet(3);
+        setSelectedLemari(3);
+      }
+    }
+    showToast(`Filter Lokasi Berkas diterapkan: ${pelatihan} (${lemari}, ${rak})`);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
       {/* Toast Notification */}
@@ -586,6 +660,7 @@ export default function App() {
           setIsAddModalOpen(true);
         }}
         onOpenQrModal={() => setIsQrScannerOpen(true)}
+        onOpenInputLokasi={() => setIsInputLokasiOpen(true)}
         onOpenApiPlayground={() => setIsApiPlaygroundOpen(true)}
         onExportJson={handleExportJson}
         onResetData={handleResetData}
@@ -655,6 +730,7 @@ export default function App() {
               setSelectedCabinet(lemari);
               setSelectedLemari(lemari);
             }}
+            onOpenInputLokasi={() => setIsInputLokasiOpen(true)}
           />
         ) : (
           /* 2 & 3. DRILL-DOWN VIEW (LEMARI TERTENTU) ATAU PENCARIAN GLOBAL */
@@ -876,6 +952,14 @@ export default function App() {
         box={selectedDetailBox}
         onViewJson={handleViewJson}
         onShowQr={(b) => setQrCardBox(b)}
+      />
+
+      <InputLokasiModal
+        isOpen={isInputLokasiOpen}
+        onClose={() => setIsInputLokasiOpen(false)}
+        existingBoxes={boxes}
+        onApplyFilter={handleApplyFilterFromLokasi}
+        onSaveNewBox={handleSaveFromInputLokasi}
       />
     </div>
   );

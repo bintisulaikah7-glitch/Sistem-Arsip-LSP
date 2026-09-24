@@ -17,12 +17,14 @@ interface CabinetGridViewProps {
   boxes: BoksArsip[];
   availableLemari: number[];
   onSelectCabinet: (lemari: number) => void;
+  onOpenInputLokasi?: () => void;
 }
 
 export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   boxes,
   availableLemari,
-  onSelectCabinet
+  onSelectCabinet,
+  onOpenInputLokasi
 }) => {
   // Ensure we display cabinets 1, 2, 3, 4 even if some have 0 items, plus any other from data
   const lemariList = Array.from(
@@ -84,7 +86,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   return (
     <div className="space-y-4 mb-8">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-800/80">
         <div className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
             <Archive className="w-4 h-4" />
@@ -101,6 +103,17 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             </p>
           </div>
         </div>
+
+        {onOpenInputLokasi && (
+          <button
+            onClick={onOpenInputLokasi}
+            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/60 transition shadow-sm"
+            title="Input Lokasi Berkas LSP & Generate QR Code"
+          >
+            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+            <span>+ Input Lokasi & QR</span>
+          </button>
+        )}
       </div>
 
       {/* Grid of Cabinet Cards */}

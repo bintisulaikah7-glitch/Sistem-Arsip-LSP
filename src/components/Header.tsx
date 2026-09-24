@@ -1,9 +1,10 @@
 import React from 'react';
-import { Archive, Plus, QrCode, Terminal, Download, RefreshCw } from 'lucide-react';
+import { Archive, Plus, QrCode, Terminal, Download, RefreshCw, MapPin } from 'lucide-react';
 
 interface HeaderProps {
   onOpenAddModal: () => void;
   onOpenQrModal: () => void;
+  onOpenInputLokasi: () => void;
   onOpenApiPlayground: () => void;
   onExportJson: () => void;
   onResetData: () => void;
@@ -14,6 +15,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   onOpenAddModal,
   onOpenQrModal,
+  onOpenInputLokasi,
   onOpenApiPlayground,
   onExportJson,
   onResetData,
@@ -55,6 +57,16 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <QrCode className="w-3.5 h-3.5 text-emerald-400" />
               <span>Scan QR ID</span>
+            </button>
+
+            <button
+              id="btn-input-lokasi"
+              onClick={onOpenInputLokasi}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-800/60 transition shadow-sm"
+              title="Input Lokasi Berkas LSP & Generate QR Code"
+            >
+              <MapPin className="w-3.5 h-3.5 text-teal-400" />
+              <span>Input Lokasi & QR</span>
             </button>
 
             <button
