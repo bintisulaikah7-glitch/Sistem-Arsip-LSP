@@ -14,13 +14,25 @@ header, .top-bar, .navbar {
   color: #0f172a !important;
 }
 
-/* Container Grid - Menyejajarkan Kartu ke Samping secara Rapi */
+/* Container Grid Responsif */
 .grid-container {
   display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  /* Membuat tepat 2 kolom sejajar di layar laptop/komputer */
+  grid-template-columns: repeat(2, 1fr) !important; 
   gap: 20px !important;
-  margin-top: 20px !important;
-  padding: 10px 0 !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 20px auto !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+}
+
+/* Penyesuaian Otomatis Saat Dibuka Lewat HP (Layar Kecil) */
+@media (max-width: 640px) {
+  .grid-container {
+    /* Kembali ke 1 kolom memanjang di HP agar tidak sempit */
+    grid-template-columns: 1fr !important; 
+  }
 }
 
 /* Kartu Folder Lemari & Rak Tema Terang */
