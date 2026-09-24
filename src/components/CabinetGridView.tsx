@@ -58,18 +58,59 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         {lemariList.map((lemariNum) => {
           const cabinetBoxes = boxes.filter((b) => b.lokasi.lemari === lemariNum);
           const totalBoks = cabinetBoxes.length;
+          const totalPeserta = cabinetBoxes.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
+          const tersediaCount = cabinetBoxes.filter(
+            (b) => b.status_arsip === 'Tersedia' || b.status_arsip === 'Aktif'
+          ).length;
+          const barangLengkapCount = cabinetBoxes.filter((b) => b.status_barang === 'Lengkap').length;
+          const raks = Array.from(new Set(cabinetBoxes.map((b) => b.lokasi.rak).filter(Boolean))).sort();
 
           return (
             <div
               key={`lemari-${lemariNum}`}
               id={`cabinet-card-${lemariNum}`}
               onClick={() => onSelectCabinet(lemariNum)}
-              className="card-folder"
+              className={`card-lemari lemari-${lemariNum}`}
             >
-              <div className="icon">🗄️</div>
-              <h3>Lemari {lemariNum}</h3>
-              <p>Klik untuk membuka rak</p>
-              <span>{totalBoks} Boks Arsip &rarr;</span>
+              {/* Header Kartu */}
+              <div className="card-header">
+                <div className="card-title-box">
+                  <div className="card-icon">🗄️</div>
+                  <div>
+                    <h3 className="font-bold text-base text-white m-0">Lemari {lemariNum}</h3>
+                    <p className="text-xs text-slate-400 m-0">Klik untuk membuka rak</p>
+                  </div>
+                </div>
+                <span className="badge-boks">{totalBoks} Boks</span>
+              </div>
+
+              {/* List Detail Data */}
+              <div className="card-info-list">
+                <div className="info-item">
+                  <span>Jumlah Peserta:</span>
+                  <strong>{totalPeserta} Peserta</strong>
+                </div>
+                <div className="info-item">
+                  <span>Status Arsip:</span>
+                  <strong className="text-emerald-400">{tersediaCount}/{totalBoks} Tersedia</strong>
+                </div>
+                <div className="info-item">
+                  <span>Kelengkapan:</span>
+                  <strong>{barangLengkapCount} Lengkap</strong>
+                </div>
+                {raks.length > 0 && (
+                  <div className="info-item">
+                    <span>Rak Tersedia:</span>
+                    <strong className="text-slate-300 font-mono text-xs">{raks.join(', ')}</strong>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer Kartu */}
+              <div className="card-footer">
+                <span>Klik untuk membuka</span>
+                <span className="btn-buka">Buka Lemari {lemariNum} &rarr;</span>
+              </div>
             </div>
           );
         })}

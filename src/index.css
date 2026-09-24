@@ -14,28 +14,132 @@ header, .top-bar, .navbar {
   color: #0f172a !important;
 }
 
-/* Container Grid Responsif */
+/* Container Layout Grid (Laptop/Komputer: Pas 2 Kolom) */
 .grid-container {
   display: grid !important;
-  /* Membuat tepat 2 kolom sejajar di layar laptop/komputer */
-  grid-template-columns: repeat(2, 1fr) !important; 
+  grid-template-columns: repeat(2, 1fr) !important; /* 2 Kolom Sejajar */
   gap: 20px !important;
   width: 100% !important;
-  max-width: 1200px !important;
+  max-width: 1000px !important; /* Membatasi lebar agar kartu tidak terlalu lebar */
   margin: 20px auto !important;
   padding: 0 10px !important;
   box-sizing: border-box !important;
 }
 
-/* Penyesuaian Otomatis Saat Dibuka Lewat HP (Layar Kecil) */
+/* Penyesuaian Otomatis untuk Layar HP (1 Kolom) */
 @media (max-width: 640px) {
   .grid-container {
-    /* Kembali ke 1 kolom memanjang di HP agar tidak sempit */
-    grid-template-columns: 1fr !important; 
+    grid-template-columns: 1fr !important; /* Kembali ke 1 kolom di HP */
   }
 }
 
-/* Kartu Folder Lemari & Rak Tema Terang */
+/* Style Kartu Kompak & Modern */
+.card-lemari {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.card-lemari:hover {
+  transform: translateY(-4px);
+  border-color: #10b981;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
+}
+
+/* Header Kartu */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Variasi Warna Icon per Kartu */
+.lemari-1 .card-icon { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.lemari-2 .card-icon { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.lemari-3 .card-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+.lemari-4 .card-icon { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+.badge-boks {
+  background: #1e293b;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+}
+
+/* List Detail Data */
+.card-info-list {
+  font-size: 13px;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item strong {
+  color: #e2e8f0;
+}
+
+/* Footer Kartu */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #1e293b;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.btn-buka {
+  color: #10b981;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-buka:hover {
+  color: #34d399;
+}
+
+/* Kartu Folder Rak */
 .card-folder {
   background-color: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
@@ -47,22 +151,19 @@ header, .top-bar, .navbar {
   transition: all 0.25s ease-in-out !important;
 }
 
-/* Efek Hover Saat Kursor Menempel di Kartu */
 .card-folder:hover {
-  border-color: #059669 !important; /* Warna hijau emerald */
+  border-color: #059669 !important;
   transform: translateY(-4px) !important;
   box-shadow: 0 10px 20px rgba(5, 150, 105, 0.12) !important;
-  background-color: #f0fdf4 !important; /* Soft green highlight */
+  background-color: #f0fdf4 !important;
 }
 
-/* Icon Folder */
 .card-folder .icon {
   font-size: 42px !important;
   margin-bottom: 12px !important;
   display: block !important;
 }
 
-/* Judul Rak / Lemari */
 .card-folder h3 {
   margin: 6px 0 !important;
   font-size: 18px !important;
@@ -70,14 +171,12 @@ header, .top-bar, .navbar {
   color: #0f172a !important;
 }
 
-/* Teks Keterangan Jumlah Boks */
 .card-folder p {
   margin: 0 !important;
   font-size: 13px !important;
   color: #64748b !important;
 }
 
-/* Tombol / Aksi Klik */
 .card-folder span {
   display: inline-block !important;
   margin-top: 12px !important;
