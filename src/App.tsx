@@ -754,7 +754,7 @@ export default function App() {
           />
 
           {/* Area Konten Utama */}
-          <div id="content-area" className="grid-container">
+          <div id="content-area" className="w-full">
             {isLoading ? (
               <div className="py-20 flex flex-col items-center justify-center text-slate-500">
                 <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3" />

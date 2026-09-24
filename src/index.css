@@ -54,6 +54,16 @@ header, .top-bar, .navbar {
   box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
 }
 
+.lemari-3.card-lemari:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+}
+
+.lemari-4.card-lemari:hover {
+  border-color: #a855f7;
+  box-shadow: 0 10px 20px rgba(168, 85, 247, 0.15);
+}
+
 /* Header Kartu */
 .card-header {
   display: flex;
