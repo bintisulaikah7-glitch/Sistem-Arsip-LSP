@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LayoutGrid, Table, X } from 'lucide-react';
 import { StatusArsip, StatusBarang } from '../types.ts';
 
@@ -43,39 +43,68 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 }) => {
   const lemariList = availableLemari.length > 0 ? availableLemari : [1, 2, 3, 4];
 
+  const bukaScannerQR = () => {
+    if (onOpenQrScanner) {
+      onOpenQrScanner();
+    }
+  };
+
+  const eksekusiPencarian = () => {
+    const el = document.getElementById('content-area') || document.getElementById('search-results-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  useEffect(() => {
+    (window as any).bukaScannerQR = bukaScannerQR;
+    (window as any).eksekusiPencarian = eksekusiPencarian;
+    return () => {
+      delete (window as any).bukaScannerQR;
+      delete (window as any).eksekusiPencarian;
+    };
+  }, [onOpenQrScanner]);
+
   return (
     <div className="space-y-3 mb-6">
-      {/* SEARCH BAR TERPADU (SATU WADAH) */}
-      <div style={{ background: '#0f172a', border: '1px solid #10b981', borderRadius: '12px', padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span style={{ color: '#94a3b8', fontSize: '18px' }}>🔍</span>
-        <input
-          id="input-search-archive"
-          type="text"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Cari nama pelatihan, ID Box, Lemari, Rak, Tahun..."
-          style={{ width: '100%', background: 'transparent', border: 'none', color: '#fff', outline: 'none', fontSize: '14px' }}
-        />
-        
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => onSearchChange('')}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '0 4px', fontSize: '14px' }}
-            title="Hapus pencarian"
-          >
-            ✕
-          </button>
-        )}
+      {/* KOTAK PENCARIAN TERPADU */}
+      <div className="search-box-container">
+        {/* Input Teks Pencarian */}
+        <div className="search-input-wrapper">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            id="inputPencarian"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                eksekusiPencarian();
+              }
+            }}
+            placeholder="Cari nama pelatihan, ID Box, Lemari, Rak, Tahun..."
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => onSearchChange('')}
+              className="text-slate-400 hover:text-white px-1 text-sm cursor-pointer"
+              title="Hapus teks"
+            >
+              ✕
+            </button>
+          )}
+        </div>
 
-        {/* Tombol Akses QR Disatukan Di Sini */}
-        <button
-          type="button"
-          onClick={onOpenQrScanner}
-          style={{ background: '#1e293b', color: '#10b981', border: '1px solid #334155', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
-        >
-          📷 Scan QR
-        </button>
+        {/* Aksi Tombol (Scan QR & Tombol Cari Utama) */}
+        <div className="search-actions">
+          <button type="button" className="btn-scan-qr" onClick={bukaScannerQR}>
+            📷 Scan QR
+          </button>
+          <button type="button" className="btn-cari-utama" onClick={eksekusiPencarian}>
+            Cari
+          </button>
+        </div>
       </div>
 
       {/* Baris Filter Pendukung & Tampilan */}
