@@ -27,14 +27,14 @@ export const StatsBar: React.FC<StatsBarProps> = ({
 
   const totalPesertaCalc = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta || 0), 0);
   const totalBKCalc = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta_bk || 0), 0);
-  const totalKCalc = totalPesertaCalc - totalBKCalc;
-  const kompetenRateCalc = totalPesertaCalc > 0 ? Math.round((totalKCalc / totalPesertaCalc) * 100) : 96;
-  const bkRateCalc = totalPesertaCalc > 0 ? Math.round((totalBKCalc / totalPesertaCalc) * 100) : 4;
 
-  const displayPeserta = totalPesertaCalc > 0 ? totalPesertaCalc : 4156;
-  const displayKRate = totalPesertaCalc > 0 ? kompetenRateCalc : 96;
-  const displayBK = totalBKCalc > 0 ? totalBKCalc : 153;
-  const displayBKRate = totalPesertaCalc > 0 ? bkRateCalc : 4;
+  // Variabel dari data spreadsheet / state
+  const totalPeserta = totalPesertaCalc > 0 ? totalPesertaCalc : 4156;
+  const totalBK = totalBKCalc > 0 ? totalBKCalc : 153;
+
+  // Hitung persentase
+  const persenK = Math.round(((totalPeserta - totalBK) / totalPeserta) * 100);
+  const persenBK = Math.round((totalBK / totalPeserta) * 100);
 
   return (
     <div className="mb-6 space-y-3">
@@ -47,8 +47,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
             <span className="stat-icon icon-green">👥</span>
           </div>
           <div className="stat-body">
-            <span className="stat-number">{displayPeserta}</span>
-            <span className="stat-badge badge-green">{displayKRate}% K</span>
+            <span className="stat-number" id="stat-peserta-total">{totalPeserta}</span>
+            <span id="badge-peserta-k" className="stat-badge badge-green">{persenK}% K</span>
           </div>
         </div>
 
@@ -59,8 +59,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
             <span className="stat-icon icon-purple">🛡️</span>
           </div>
           <div className="stat-body">
-            <span className="stat-number color-purple">{displayBK}</span>
-            <span className="stat-badge badge-purple">{displayBKRate}% BK</span>
+            <span className="stat-number color-purple" id="stat-peserta-bk">{totalBK}</span>
+            <span id="badge-peserta-bk" className="stat-badge badge-purple">{persenBK}% BK</span>
           </div>
         </div>
       </div>
