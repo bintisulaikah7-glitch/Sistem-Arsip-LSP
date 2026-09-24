@@ -1,5 +1,5 @@
 import React from 'react';
-import { Folder, ArrowLeft, Layers, QrCode, Database, ArrowRight, Package } from 'lucide-react';
+import { ArrowLeft, Layers, QrCode, Database, ArrowRight } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
 
 interface RakListViewProps {
@@ -26,31 +26,36 @@ export const RakListView: React.FC<RakListViewProps> = ({
     ? `Lemari ${lemariNama}`
     : lemariNama.toString();
 
-  // Helper matching
+  // 1. Ambil data HANYA dari Lemari yang diklik
   const matchesLemari = (item: any) => {
     if (!item) return false;
     const l1 = item.lokasi?.lemari;
     const l2 = item.Kode_Lemari || item['Kode Lemari'] || item['Lemari'];
-    const targetStr = lemariNama.toString().replace(/lemari[-_\s]*/i, '').trim();
+    
+    // Check direct equality
+    if (l1 !== undefined && l1 !== null && l1.toString() === lemariNama.toString()) return true;
+    if (l2 && l2.toString() === lemariNama.toString()) return true;
 
-    if (l1 !== undefined && l1 !== null && l1.toString() === targetStr) return true;
+    // Check stripped normalized number/id
+    const targetStr = lemariNama.toString().replace(/lemari[-_\s]*/i, '').trim();
+    if (l1 !== undefined && l1 !== null && l1.toString().replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
     if (l2 && l2.toString().replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
+
     return false;
   };
 
-  // Filter data khusus lemari yang diklik
   const dataLemariIni = boxes.filter(matchesLemari);
 
-  // Ambil daftar Rak unik yang ada di lemari ini
-  const rawRakList = dataLemariIni.map(item => {
-    return (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Rak 1').toString().trim();
-  });
-
-  // Ensure default Rak 1 to Rak 4 are present if it's standard LSP cabinet, plus any custom ones from sheet
-  const defaultRaks = ['Rak 1', 'Rak 2', 'Rak 3', 'Rak 4'];
-  const allRaks = Array.from(new Set([...defaultRaks, ...rawRakList])).sort((a, b) => {
-    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-  });
+  // 2. Ambil daftar Rak UNIK yang benar-benar ADA di Spreadsheet (tanpa membuat angka 1-4 manual)
+  // Catatan: Sesuaikan 'Nomor_Rak' jika nama header di sheet kamu sedikit berbeda
+  const daftarRakUnik = Array.from(new Set(
+    dataLemariIni
+      .map(item => {
+        const anyItem = item as any;
+        return (item.lokasi?.rak || anyItem.Nomor_Rak || anyItem['Nomor_Rak'] || anyItem['Nomor Rak'] || anyItem.Rak || '').toString().trim();
+      })
+      .filter(rak => rak !== '') // Abaikan data rak yang kosong
+  )).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -118,53 +123,64 @@ export const RakListView: React.FC<RakListViewProps> = ({
         </div>
       </div>
 
-      {/* Grid Kartu Rak (TAMPILAN KEDUA: DAFTAR RAK 1 - 4) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {allRaks.map((rakName, idx) => {
-          // Hitung jumlah pelatihan di dalam rak ini
-          const boksDiRakIni = dataLemariIni.filter(item => {
-            const r = (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Rak 1').toString().trim();
-            return r === rakName;
-          });
-          const jumlahPelatihan = boksDiRakIni.length;
-          const totalPesertaRak = boksDiRakIni.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
+      {/* 3. Jika tidak ada rak terdeteksi dari data */}
+      {daftarRakUnik.length === 0 ? (
+        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center">
+          <p style={{ color: '#94a3b8' }} className="text-sm font-medium">
+            Belum ada data rak di {lemariDisplay}
+          </p>
+        </div>
+      ) : (
+        /* 4. Looping HANYA rak yang benar-benar ada di spreadsheet */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {daftarRakUnik.map((rak, idx) => {
+            // Hitung jumlah boks aktual di rak tersebut
+            const boksDiRakIni = dataLemariIni.filter(item => {
+              const anyItem = item as any;
+              const r = (item.lokasi?.rak || anyItem.Nomor_Rak || anyItem['Nomor_Rak'] || anyItem['Nomor Rak'] || anyItem.Rak || '').toString().trim();
+              return r === rak;
+            });
+            const jumlahBoks = boksDiRakIni.length;
+            const totalPesertaRak = boksDiRakIni.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
+            const rakTitle = rak.includes('Rak') ? rak : 'Rak ' + rak;
 
-          return (
-            <div
-              key={`rak-card-${rakName}-${idx}`}
-              onClick={() => onSelectRak(rakName)}
-              className="card-folder group relative bg-slate-900/90 hover:bg-slate-850 border border-slate-800 hover:border-emerald-500/80 rounded-xl p-5 cursor-pointer transition-all duration-200 shadow-md hover:shadow-emerald-950/20 hover:-translate-y-1 flex flex-col justify-between"
-            >
-              <div>
-                {/* Header Icon & Badge */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-800/80 group-hover:border-emerald-500 flex items-center justify-center text-2xl transition shadow-inner">
-                    📁
+            return (
+              <div
+                key={`rak-card-${rak}-${idx}`}
+                onClick={() => onSelectRak(rak)}
+                className="card-folder group relative bg-slate-900/90 hover:bg-slate-850 border border-slate-800 hover:border-emerald-500/80 rounded-xl p-5 cursor-pointer transition-all duration-200 shadow-md hover:shadow-emerald-950/20 hover:-translate-y-1 flex flex-col justify-between"
+              >
+                <div>
+                  {/* Header Icon & Badge */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="icon w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-800/80 group-hover:border-emerald-500 flex items-center justify-center text-2xl transition shadow-inner">
+                      📁
+                    </div>
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-950 text-slate-300 border border-slate-800 group-hover:border-emerald-700/60 group-hover:text-emerald-300 transition">
+                      {jumlahBoks} Boks
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-950 text-slate-300 border border-slate-800 group-hover:border-emerald-700/60 group-hover:text-emerald-300 transition">
-                    {jumlahPelatihan} Boks
-                  </span>
+
+                  {/* Rak Title */}
+                  <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition tracking-wide flex items-center gap-1.5">
+                    <span>{rakTitle}</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {jumlahBoks} Pelatihan/Boks
+                    {totalPesertaRak > 0 && ` • ${totalPesertaRak} Peserta`}
+                  </p>
                 </div>
 
-                {/* Rak Title */}
-                <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition tracking-wide flex items-center gap-1.5">
-                  <span>{rakName}</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  {jumlahPelatihan} Pelatihan/Boks
-                  {totalPesertaRak > 0 && ` • ${totalPesertaRak} Peserta`}
-                </p>
+                {/* Action Hint */}
+                <div className="pt-4 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500 group-hover:text-emerald-400 transition">
+                  <span>Klik untuk membuka &rarr;</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
-
-              {/* Action Hint */}
-              <div className="pt-4 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500 group-hover:text-emerald-400 transition">
-                <span>Klik untuk membuka</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Tombol Navigasi Bawah */}
       <div className="pt-2">

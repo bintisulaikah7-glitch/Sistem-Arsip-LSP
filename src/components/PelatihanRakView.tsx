@@ -46,7 +46,7 @@ export const PelatihanRakView: React.FC<PelatihanRakViewProps> = ({
 
     if (!lemariMatch) return false;
 
-    const r = (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Rak 1').toString().trim().toLowerCase();
+    const r = (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || item.Rak || '').toString().trim().toLowerCase();
     const targetRak = namaRak.trim().toLowerCase();
 
     return r === targetRak || r.replace(/[-_\s]/g, '') === targetRak.replace(/[-_\s]/g, '');
