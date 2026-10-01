@@ -21,7 +21,7 @@ import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { AppsScriptModal } from './components/AppsScriptModal.tsx';
 import { sendBoxToGoogleSheets } from './utils/appsScriptService.ts';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
-import { fetchBoxesData } from './data/boxesService.ts';
+import { fetchBoxesData, verifyAndSanitizeBoxes } from './data/boxesService.ts';
 import {
   GOOGLE_SHEETS_CSV_URL,
   GOOGLE_SHEETS_SPREADSHEET_URL,
@@ -35,9 +35,9 @@ import { getUrlBoxParam, getUrlLocationParams } from './utils/url.ts';
 import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X, Layers, QrCode } from 'lucide-react';
 
 export default function App() {
-  // Overwrite state completely with deduplicated initial boxes
+  // Overwrite state completely with deduplicated initial boxes (tampil seketika tanpa blank screen)
   const [boxes, setBoxes] = useState<BoksArsip[]>(() => deduplicateBoxes(INITIAL_BOXES));
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
@@ -87,6 +87,13 @@ export default function App() {
   const [selectedRak, setSelectedRak] = useState<string | null>(null);
   const [showAllSekat, setShowAllSekat] = useState(false);
   const hasHandledUrlQueryRef = useRef(false);
+
+  // Refs untuk mendeteksi modal form tambah/edit terbuka agar auto-refresh dijeda dan teks input tidak hilang
+  const isAddModalOpenRef = useRef(isAddModalOpen);
+  isAddModalOpenRef.current = isAddModalOpen;
+
+  const editingBoxRef = useRef(editingBox);
+  editingBoxRef.current = editingBox;
 
   // Aliases for explicit state setters
   const setSelectedBox = setSelectedDetailBox;
@@ -202,6 +209,13 @@ export default function App() {
    */
   const fetchGoogleSheetsData = useCallback(
     async (targetUrl = sheetUrl, isSilent = false) => {
+      // Hentikan proses auto-refresh data saat modal "Tambah Kotak Arsip Baru" atau edit sedang terbuka
+      // agar inputan teks pengguna tidak hilang saat mengetik
+      if (isAddModalOpenRef.current || editingBoxRef.current) {
+        console.log('[fetchGoogleSheetsData] Auto-refresh dijeda karena form boks arsip sedang aktif.');
+        return null;
+      }
+
       if (!isSilent) {
         setSyncState((prev) => ({ ...prev, status: 'syncing' }));
       }
@@ -212,45 +226,46 @@ export default function App() {
         const parsedBoxes = await fetchBoxesData(effectiveUrl);
 
         if (parsedBoxes && parsedBoxes.length > 0) {
-          // Overwrite state secara utuh (real-time) dari data Google Sheets
-          setBoxes(parsedBoxes);
+          // Verifikasi dan sanitasi data sebelum diproses ke state dan filter
+          const verified = verifyAndSanitizeBoxes(parsedBoxes);
+
+          setBoxes(verified);
           setIsLoading(false);
           setSyncState({
             status: 'connected',
             lastSyncedAt: new Date(),
-            message: `Berhasil sinkronisasi ${parsedBoxes.length} boks arsip unik dari Google Sheets CSV.`,
+            message: `Berhasil sinkronisasi ${verified.length} boks arsip dari Google Sheets.`,
             sourceUrl: targetUrl,
-            totalParsed: parsedBoxes.length
+            totalParsed: verified.length
           });
 
           // Sinkronisasi data ke backend endpoint
           fetch('/api/boxes/sync-sheets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(parsedBoxes)
+            body: JSON.stringify(verified)
           }).catch(() => {});
 
           if (!isSilent) {
             showToast(
-              `Berhasil memuat ${parsedBoxes.length} boks arsip dari Google Sheets!`
+              `Berhasil memuat ${verified.length} boks arsip dari Google Sheets!`
             );
           }
 
-          return parsedBoxes;
+          return verified;
         } else {
           setSyncState((prev) => ({
             ...prev,
-            status: 'warning',
-            message:
-              'File CSV terbaca namun tidak ada baris data boks yang sesuai dengan format header kolom.'
+            status: 'connected',
+            message: 'Menggunakan data cadangan boks arsip aktif.'
           }));
         }
       } catch (err: any) {
-        console.warn('Gagal memuat data dari Google Sheets:', err);
+        console.warn('Gagal memuat data dari Google Sheets, mempertahankan data saat ini:', err);
         setSyncState((prev) => ({
           ...prev,
           status: 'warning',
-          message: `Gagal sinkronisasi data dari Google Sheets: ${err?.message || 'Koneksi error'}`
+          message: `Koneksi Google Sheets: ${err?.message || 'Menggunakan data cadangan aktif'}`
         }));
       }
 
@@ -260,52 +275,52 @@ export default function App() {
     [sheetUrl]
   );
 
-  // Initial fetch on mount & recurring 15-second polling
+  // Background fetch on mount & recurring 15-second polling (tanpa memblokir tampilan awal)
   useEffect(() => {
     let isMounted = true;
-    setIsLoading(true);
 
-    // 1. Initial fetch saat aplikasi pertama kali dimuat menggunakan fetchBoxesData()
+    // 1. Initial background fetch saat aplikasi pertama kali dimuat
     const targetUrl = convertGoogleSheetsUrlToCsv(sheetUrl || GOOGLE_SHEETS_CSV_URL);
     fetchBoxesData(targetUrl)
       .then((loadedBoxes) => {
         if (!isMounted) return;
 
-        const data = (loadedBoxes && loadedBoxes.length > 0)
-          ? loadedBoxes
-          : (boxes && boxes.length > 0 ? boxes : deduplicateBoxes(INITIAL_BOXES));
+        if (loadedBoxes && loadedBoxes.length > 0) {
+          const verified = verifyAndSanitizeBoxes(loadedBoxes);
+          setBoxes(verified);
+          setSyncState({
+            status: 'connected',
+            lastSyncedAt: new Date(),
+            message: `Berhasil sinkronisasi ${verified.length} boks arsip langsung dari Google Sheets.`,
+            sourceUrl: sheetUrl || GOOGLE_SHEETS_CSV_URL,
+            totalParsed: verified.length
+          });
 
-        setBoxes(data);
-        setIsLoading(false);
-        setSyncState({
-          status: 'connected',
-          lastSyncedAt: new Date(),
-          message: `Berhasil sinkronisasi ${data.length} boks arsip unik langsung dari Google Sheets.`,
-          sourceUrl: sheetUrl || GOOGLE_SHEETS_CSV_URL,
-          totalParsed: data.length
-        });
+          // Sinkronkan ke API backend
+          fetch('/api/boxes/sync-sheets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(verified)
+          }).catch(() => {});
 
-        // Sinkronkan ke API backend
-        fetch('/api/boxes/sync-sheets', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        }).catch(() => {});
-
-        handleCheckUrlAndOpenBox(data);
+          handleCheckUrlAndOpenBox(verified);
+        } else {
+          handleCheckUrlAndOpenBox(boxes);
+        }
       })
       .catch((err) => {
         console.warn("Gagal fetch data awal Google Sheets, menggunakan data cadangan (INITIAL_BOXES):", err);
         if (isMounted) {
-          const fallbackData = deduplicateBoxes(INITIAL_BOXES);
-          setBoxes(fallbackData);
-          setIsLoading(false);
-          handleCheckUrlAndOpenBox(fallbackData);
+          handleCheckUrlAndOpenBox(boxes);
         }
       });
 
-    // 2. Automated polling every 15 seconds
+    // 2. Automated polling every 15 seconds (hanya jika modal tambah/edit TIDAK sedang dibuka)
     const pollInterval = setInterval(() => {
+      if (isAddModalOpenRef.current || editingBoxRef.current) {
+        // Lewati polling saat pengguna sedang mengetik di form
+        return;
+      }
       fetchGoogleSheetsData(sheetUrl, true);
       setPollCountdown(15);
     }, 15000);
@@ -599,9 +614,11 @@ export default function App() {
   // Create Box & Auto-Sync to Google Sheets
   const handleAddBox = async (newBox: BoksArsip): Promise<boolean> => {
     try {
+      const sanitized = verifyAndSanitizeBoxes([newBox])[0] || newBox;
+
       // 1. Simpan via POST langsung ke Google Apps Script Web App Google Sheets
       try {
-        const syncResult = await sendBoxToGoogleSheets(newBox, 'add');
+        const syncResult = await sendBoxToGoogleSheets(sanitized, 'add');
         console.log('[handleAddBox] Sync to Google Sheets result:', syncResult);
       } catch (syncErr) {
         console.warn('[handleAddBox] Google Sheets sync error:', syncErr);
@@ -612,20 +629,22 @@ export default function App() {
         await fetch('/api/boxes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newBox)
+          body: JSON.stringify(sanitized)
         });
       } catch {}
 
       // 3. Update state lokal segera
-      setBoxes((prev) => [newBox, ...prev.filter((b) => b.id_box !== newBox.id_box)]);
+      setBoxes((prev) => [sanitized, ...prev.filter((b) => b.id_box !== sanitized.id_box)]);
       showToast(
-        `Boks Arsip ${newBox.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`
+        `Boks Arsip ${sanitized.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`
       );
 
       // 4. Refresh tampilan web dan filter Lemari/Rak secara otomatis setelah data berhasil ditambahkan
       setTimeout(() => {
-        fetchGoogleSheetsData(sheetUrl, true);
-      }, 1200);
+        if (!isAddModalOpenRef.current && !editingBoxRef.current) {
+          fetchGoogleSheetsData(sheetUrl, true);
+        }
+      }, 1500);
 
       return true;
     } catch (err: any) {

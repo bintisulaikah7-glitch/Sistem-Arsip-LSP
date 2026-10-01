@@ -39,7 +39,7 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-800/80">
             {boxes.map((box, index) => {
-              const pesertaK = Math.max(0, box.jumlah_peserta - box.jumlah_peserta_bk);
+              const pesertaK = Math.max(0, (Number(box.jumlah_peserta) || 0) - (Number(box.jumlah_peserta_bk) || 0));
 
               return (
                 <tr key={`${box.id_box}-${index}`} className="hover:bg-slate-800/40 transition">

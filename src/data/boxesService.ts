@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
 import { INITIAL_BOXES } from './initialBoxes.ts';
+import { deduplicateBoxes } from '../utils/csvParser.ts';
 
 /**
  * URL CSV Export Google Sheets (Boks Berkas Arsip LSP)
@@ -123,7 +124,89 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
 }
 
 /**
+ * Verifikasi dan sanitasi ketat data boks arsip dari Google Sheets
+ * Memastikan semua properti aman dan valid sebelum disalurkan ke filter dan antarmuka pengguna
+ */
+export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
+  if (!rawBoxes || !Array.isArray(rawBoxes) || rawBoxes.length === 0) {
+    return deduplicateBoxes(INITIAL_BOXES);
+  }
+
+  const verified: BoksArsip[] = [];
+  const seenIds = new Set<string>();
+
+  for (let i = 0; i < rawBoxes.length; i++) {
+    const b = rawBoxes[i];
+    if (!b || typeof b !== 'object') continue;
+
+    const nama = String(b.nama_pelatihan || b['Nama Pelatihan'] || '').trim();
+    if (!nama || nama.toLowerCase() === 'kosong') continue;
+
+    // Pastikan lokasi terstruktur
+    const rawLokasi = b.lokasi || {};
+    let lemariVal = rawLokasi.lemari !== undefined && rawLokasi.lemari !== null ? rawLokasi.lemari : (b['Kode Lemari'] || b.kode_lemari || 1);
+    if (typeof lemariVal === 'string') {
+      const matchDigits = lemariVal.match(/\d+/);
+      if (matchDigits) {
+        lemariVal = parseInt(matchDigits[0], 10);
+      }
+    }
+    if (!lemariVal || lemariVal === 0 || String(lemariVal).toLowerCase() === 'kosong') {
+      lemariVal = 1;
+    }
+
+    const rakVal = String(rawLokasi.rak || b['Nomor Rak'] || b['Nomor Rak '] || b.nomor_rak || 'Rak A').trim();
+    const barisVal = String(rawLokasi.baris || b['Nomor Box'] || b.nomor_box || 'Box 1').trim();
+
+    // Pastikan ID unik & string
+    let idVal = String(b.id_box || b['ID_Box'] || b.id || '').trim();
+    if (!idVal || idVal === '1' || idVal.toLowerCase() === 'kosong') {
+      idVal = `BOX-L${lemariVal}-${rakVal.replace(/\s+/g, '')}-${i + 1}`;
+    }
+
+    let uniqueId = idVal;
+    let counter = 2;
+    while (seenIds.has(uniqueId.toUpperCase())) {
+      uniqueId = `${idVal}-${counter}`;
+      counter++;
+    }
+    seenIds.add(uniqueId.toUpperCase());
+
+    const tahunVal = Number(b.tahun_pelaksanaan || b['Tahun Pelaksanaan']) || new Date().getFullYear();
+    const pesertaVal = Number(b.jumlah_peserta || b['Jumlah Peserta'] || b['Jumlah Peserta ']) || 0;
+    const pesertaBkVal = Number(b.jumlah_peserta_bk || b['Jumlah Peserta BK']) || 0;
+
+    const sArsipRaw = String(b.status_arsip || b['Status Arsip'] || b['Status Arsip '] || 'Tersedia').trim();
+    const sBarangRaw = String(b.status_barang || b['Status Barang'] || b['Status Barang '] || 'Lengkap').trim();
+    const hasilUjiRaw = String(b.hasilUjiKompetensi || b.hasil_uji_kompetensi || b['Hasil Uji Kompetensi'] || '-').trim();
+    const linkDriveRaw = String(b.link_dokumentasi || b['Link Google Drive'] || b['Link Google Drive '] || 'https://drive.google.com').trim();
+
+    verified.push({
+      id_box: uniqueId,
+      nama_pelatihan: nama,
+      tahun_pelaksanaan: tahunVal,
+      jumlah_peserta: pesertaVal,
+      jumlah_peserta_bk: pesertaBkVal,
+      lokasi: {
+        lemari: lemariVal,
+        rak: rakVal || 'Rak A',
+        baris: barisVal || 'Box 1'
+      },
+      status_arsip: sArsipRaw as any,
+      status_barang: sBarangRaw as any,
+      hasilUjiKompetensi: hasilUjiRaw,
+      hasil_uji_kompetensi: hasilUjiRaw,
+      'Hasil Uji Kompetensi': hasilUjiRaw,
+      link_dokumentasi: linkDriveRaw
+    });
+  }
+
+  return verified.length > 0 ? verified : deduplicateBoxes(INITIAL_BOXES);
+}
+
+/**
  * Tarik seluruh data boks dari Web App URL Google Apps Script saat aplikasi pertama kali dimuat
+ * Dilengkapi pembungkus try...catch dan timeout agar aman dari crash
  */
 export async function fetchBoxesFromAppsScript(
   webAppUrl: string = GOOGLE_APPS_SCRIPT_WEB_APP_URL
@@ -131,13 +214,19 @@ export async function fetchBoxesFromAppsScript(
   try {
     let rawData: any = null;
 
-    // 1. Direct fetch ke Web App URL (dengan redirect: follow)
+    // 1. Direct fetch ke Web App URL dengan batas waktu (timeout 6 detik)
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+
       const response = await fetch(webAppUrl, {
         method: 'GET',
         headers: { Accept: 'application/json, text/plain, */*' },
-        redirect: 'follow'
+        redirect: 'follow',
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
+
       if (response.ok) {
         const text = await response.text();
         if (text && (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
@@ -145,19 +234,24 @@ export async function fetchBoxesFromAppsScript(
         }
       }
     } catch (err) {
-      console.warn('[fetchBoxesFromAppsScript] Direct fetch error, mencoba proxy server...', err);
+      console.warn('[fetchBoxesFromAppsScript] Direct fetch timeout/error, mencoba proxy backend...', err);
     }
 
     // 2. Jika direct fetch terhalang (misal CORS browser di lokal), coba via proxy backend
     if (!rawData) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+
         const proxyUrl = `/api/apps-script/get?url=${encodeURIComponent(webAppUrl)}`;
-        const proxyRes = await fetch(proxyUrl);
+        const proxyRes = await fetch(proxyUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (proxyRes.ok) {
           rawData = await proxyRes.json();
         }
       } catch (proxyErr) {
-        console.warn('[fetchBoxesFromAppsScript] Proxy fetch error:', proxyErr);
+        console.warn('[fetchBoxesFromAppsScript] Proxy fetch error/timeout:', proxyErr);
       }
     }
 
@@ -184,7 +278,7 @@ export async function fetchBoxesFromAppsScript(
 
         if (mappedBoxes.length > 0) {
           console.log(`[fetchBoxesFromAppsScript] Berhasil menarik ${mappedBoxes.length} boks dari Google Apps Script Web App.`);
-          return mappedBoxes;
+          return verifyAndSanitizeBoxes(mappedBoxes);
         }
       }
     }
@@ -470,21 +564,26 @@ export async function fetchBoxesData(
     try {
       const appsScriptBoxes = await fetchBoxesFromAppsScript();
       if (appsScriptBoxes && appsScriptBoxes.length > 0) {
-        return appsScriptBoxes;
+        return verifyAndSanitizeBoxes(appsScriptBoxes);
       }
     } catch (appsScriptErr) {
-      console.warn('[fetchBoxesData] Apps Script fetch error, beralih ke CSV export:', appsScriptErr);
+      console.warn('[fetchBoxesData] Apps Script fetch lambat/error, mencoba sumber cadangan:', appsScriptErr);
     }
 
     let csvText = '';
 
-    // 1. Upaya pertama: Fetch langsung dari client ke URL Google Sheets CSV
+    // 2. Upaya kedua: Fetch langsung dari client ke URL Google Sheets CSV
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
       const response = await fetch(sheetCsvUrl, {
         headers: {
           Accept: 'text/csv,text/plain,*/*'
-        }
+        },
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const text = await response.text();
@@ -501,16 +600,21 @@ export async function fetchBoxesData(
       }
     } catch (directErr) {
       console.warn(
-        '[fetchBoxesData] Direct fetch ke Google Sheets terhalang CORS, beralih ke proxy server...',
+        '[fetchBoxesData] Direct fetch ke Google Sheets terhalang/timeout, mencoba proxy backend...',
         directErr
       );
     }
 
-    // 2. Upaya kedua: Menggunakan proxy backend internal jika direct fetch terhalang CORS
+    // 3. Upaya ketiga: Menggunakan proxy backend internal jika direct fetch terhalang
     if (!csvText) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
         const proxyUrl = `/api/sheets-proxy?url=${encodeURIComponent(sheetCsvUrl)}`;
-        const proxyRes = await fetch(proxyUrl);
+        const proxyRes = await fetch(proxyUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (proxyRes.ok) {
           const text = await proxyRes.text();
           if (
@@ -522,33 +626,26 @@ export async function fetchBoxesData(
           }
         }
       } catch (proxyErr) {
-        console.warn('[fetchBoxesData] Server proxy Google Sheets juga tidak merespons:', proxyErr);
+        console.warn('[fetchBoxesData] Server proxy Google Sheets tidak merespons:', proxyErr);
       }
     }
 
-    // 3. Jika CSV berhasil didapatkan, lakukan parsing dengan urutan kolom spreadsheet
+    // 4. Jika CSV berhasil didapatkan, lakukan parsing dengan urutan kolom spreadsheet
     if (csvText) {
       const mappedBoxes = parseGoogleSheetsCsv(csvText);
-
       if (mappedBoxes.length > 0) {
-        console.log(
-          `[fetchBoxesData] Berhasil memuat ${mappedBoxes.length} boks arsip langsung dari Google Sheets CSV.`
-        );
-        return mappedBoxes;
+        return verifyAndSanitizeBoxes(mappedBoxes);
       }
     }
 
-    // 4. Jika teks CSV kosong atau tidak ada data yang terpetakan, gunakan fallback INITIAL_BOXES
-    console.warn(
-      '[fetchBoxesData] Data CSV kosong atau format tidak sesuai, menggunakan INITIAL_BOXES sebagai fallback cadangan.'
-    );
-    return INITIAL_BOXES;
+    // 5. Fallback aman ke INITIAL_BOXES agar antarmuka tidak blank
+    return verifyAndSanitizeBoxes(INITIAL_BOXES);
   } catch (error) {
     console.error(
-      '[fetchBoxesData] Terjadi error saat memuat data dari Google Sheets, menggunakan data cadangan (INITIAL_BOXES):',
+      '[fetchBoxesData] Error tidak terduga, menggunakan data cadangan aman (INITIAL_BOXES):',
       error
     );
-    return INITIAL_BOXES;
+    return verifyAndSanitizeBoxes(INITIAL_BOXES);
   }
 }
 

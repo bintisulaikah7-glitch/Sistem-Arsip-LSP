@@ -339,21 +339,31 @@ export function deduplicateBoxes(boxes: BoksArsip[]): BoksArsip[] {
  * - Status Arsip & Status Barang (e.g. 'Tersedia', 'Lengkap')
  */
 export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
-  const q = searchQuery.toLowerCase().trim();
+  if (!box) return false;
+  const q = String(searchQuery || '').toLowerCase().trim();
   if (!q) return true;
 
+  const nama = String(box.nama_pelatihan || '').toLowerCase();
+  const idBox = String(box.id_box || '').toLowerCase();
+  const tahun = String(box.tahun_pelaksanaan ?? '');
+  const sArsip = String(box.status_arsip || '').toLowerCase();
+  const sBarang = String(box.status_barang || '').toLowerCase();
+  const lemariVal = box.lokasi?.lemari ?? '';
+  const isPositiveLemari = typeof lemariVal === 'number' ? lemariVal > 0 : Boolean(lemariVal && lemariVal !== '0');
+  const rak = String(box.lokasi?.rak ?? '').toLowerCase().trim();
+  const baris = String(box.lokasi?.baris ?? '').toLowerCase().trim();
+  const hasilUji = String(box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '').toLowerCase().trim();
+
   // 1. Nama Pelatihan
-  if (box.nama_pelatihan.toLowerCase().includes(q)) return true;
+  if (nama.includes(q)) return true;
 
   // 2. ID Box
-  if (box.id_box.toLowerCase().includes(q)) return true;
+  if (idBox.includes(q)) return true;
 
   // 3. Tahun Pelaksanaan
-  if (box.tahun_pelaksanaan.toString().includes(q)) return true;
+  if (tahun.includes(q)) return true;
 
   // 4. Lemari
-  const lemariVal = box.lokasi.lemari;
-  const isPositiveLemari = typeof lemariVal === 'number' ? lemariVal > 0 : Boolean(lemariVal && lemariVal !== '0');
   if (isPositiveLemari) {
     if (
       q === `lemari ${lemariVal}` ||
@@ -371,19 +381,16 @@ export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
   }
 
   // 5. Rak
-  const rak = String(box.lokasi.rak ?? '').toLowerCase().trim();
   if (rak.includes(q) || `rak ${rak}`.includes(q)) return true;
 
   // 6. Baris
-  const baris = String(box.lokasi.baris ?? '').toLowerCase().trim();
   if (baris.includes(q) || `baris ${baris}`.includes(q)) return true;
 
   // 7. Status Arsip & Barang
-  if (box.status_arsip.toLowerCase().includes(q)) return true;
-  if (box.status_barang.toLowerCase().includes(q)) return true;
+  if (sArsip.includes(q)) return true;
+  if (sBarang.includes(q)) return true;
 
   // 8. Hasil Uji Kompetensi
-  const hasilUji = String(box.hasilUjiKompetensi || box.hasil_uji_kompetensi || '').toLowerCase().trim();
   if (hasilUji && hasilUji.includes(q)) return true;
 
   // 9. Multi-word search for general combinations like 'Pembatik 2024' or 'Assembly 2022'
@@ -392,17 +399,15 @@ export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
     const words = q.split(/\s+/).filter(Boolean);
     if (words.length > 1) {
       const allWordsMatch = words.every((word) => {
-        const wName = box.nama_pelatihan.toLowerCase().includes(word);
-        const wId = box.id_box.toLowerCase().includes(word);
-        const wYear = box.tahun_pelaksanaan.toString().includes(word);
-        const wRak = String(box.lokasi.rak ?? '').toLowerCase().includes(word);
-        const wBaris = String(box.lokasi.baris ?? '').toLowerCase().includes(word);
-        const wStatus =
-          box.status_arsip.toLowerCase().includes(word) ||
-          box.status_barang.toLowerCase().includes(word);
+        const wName = nama.includes(word);
+        const wId = idBox.includes(word);
+        const wYear = tahun.includes(word);
+        const wRak = rak.includes(word);
+        const wBaris = baris.includes(word);
+        const wStatus = sArsip.includes(word) || sBarang.includes(word);
         const wLemari =
           isPositiveLemari
-            ? (word.startsWith('l') && `l${box.lokasi.lemari}`.toLowerCase().includes(word)) || word === 'lemari'
+            ? (word.startsWith('l') && `l${lemariVal}`.toLowerCase().includes(word)) || word === 'lemari'
             : word === 'antrian';
 
         return wName || wId || wYear || wRak || wBaris || wStatus || wLemari;
