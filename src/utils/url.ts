@@ -1,52 +1,46 @@
 /**
- * Konfigurasi URL Publik Portal LSP & Generator QR Code
- * Domain Dasar Publik: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/
+ * Konfigurasi URL Dinamis Portal LSP & Generator QR Code
+ * Menggunakan URL dinamis berbasis window.location.origin + window.location.pathname
+ * agar otomatis menyesuaikan domain di mana pun web dipublikasikan tanpa hardcode.
  */
-
-export const PUBLIC_PORTAL_BASE_URL = 'https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/';
 
 /**
  * Menghasilkan Dynamic Base URL untuk QR Code:
- * - Jika sedang berjalan di GitHub Pages (*.github.io), gunakan `window.location.origin + window.location.pathname`
- * - Jika diakses di environment preview (Cloud Run *.run.app, localhost, dll), KUNCI ke domain publik GitHub Pages
- *   agar QR Code yang dicetak selalu mengarah ke domain publik GitHub Pages resmi yang dapat diakses publik.
+ * Menggunakan `window.location.origin + window.location.pathname` secara dinamis
+ * agar tautan otomatis berfungsi di domain apa pun (GitHub Pages, Cloud Run, localhost, dll.)
  */
 export function getBasePortalUrl(): string {
   if (typeof window !== 'undefined' && window.location) {
-    const hostname = window.location.hostname || '';
-    // Jika diakses dari domain GitHub Pages
-    if (hostname.includes('github.io')) {
-      const origin = window.location.origin;
-      let pathname = window.location.pathname || '/';
-      // Bersihkan jika ada index.html di akhir pathname
-      if (pathname.endsWith('index.html')) {
-        pathname = pathname.substring(0, pathname.length - 'index.html'.length);
-      }
-      if (!pathname.endsWith('/')) {
-        pathname = `${pathname}/`;
-      }
-      return `${origin}${pathname}`;
+    const origin = window.location.origin || '';
+    let pathname = window.location.pathname || '/';
+    // Bersihkan jika ada index.html di akhir pathname
+    if (pathname.endsWith('index.html')) {
+      pathname = pathname.substring(0, pathname.length - 'index.html'.length);
     }
+    // Pastikan berakhiran '/'
+    if (!pathname.endsWith('/')) {
+      pathname = `${pathname}/`;
+    }
+    return `${origin}${pathname}`;
   }
-  // Default fallback: Kunci ke domain publik GitHub Pages
-  return PUBLIC_PORTAL_BASE_URL;
+  return '/';
 }
 
 /**
- * Menghasilkan link lengkap portal publik untuk boks arsip tertentu dalam format HashRouter:
- * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?box=KODE_BOKS
- * Otomatis mengikuti domain publik GitHub Pages + format HashRouter SPA.
+ * Menghasilkan link lengkap portal publik untuk boks arsip tertentu:
+ * Format parameter URL untuk QR Code: ?boxId=[ID_BOKS]
+ * Menggunakan URL dinamis berbasis window.location.origin + window.location.pathname
  */
 export function getBoxPublicUrl(idBox: string): string {
   const cleanId = (idBox || '').trim();
   const base = getBasePortalUrl();
-  const normalizedBase = base.endsWith('/') ? base : `${base}/`;
-  return `${normalizedBase}#/?box=${encodeURIComponent(cleanId)}`;
+  const separator = base.includes('?') ? '&' : '?';
+  return `${base}${separator}boxId=${encodeURIComponent(cleanId)}`;
 }
 
 /**
- * Menghasilkan URL gambar QR code SVG/PNG beresolusi tajam (240x240)
- * yang meng-encode tautan domain publik GitHub Pages.
+ * Menghasilkan URL gambar QR code SVG/PNG beresolusi tajam
+ * yang meng-encode tautan boks dinamis (?boxId=[ID_BOKS]).
  */
 export function getBoxQrImageUrl(idBox: string, size = 240): string {
   const targetUrl = getBoxPublicUrl(idBox);
@@ -54,17 +48,17 @@ export function getBoxQrImageUrl(idBox: string, size = 240): string {
 }
 
 /**
- * Menghasilkan link lengkap portal publik untuk filter lokasi berkas LSP:
- * Format HashRouter: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?pelatihan=...&lemari=...&rak=...
+ * Menghasilkan link lengkap portal untuk filter lokasi berkas LSP:
+ * Format: [base]?pelatihan=...&lemari=...&rak=...
  */
 export function getLocationPublicUrl(pelatihan: string, lemari: string, rak: string): string {
   const base = getBasePortalUrl();
-  const normalizedBase = base.endsWith('/') ? base : `${base}/`;
   const params = new URLSearchParams();
   if (pelatihan && pelatihan.trim()) params.set('pelatihan', pelatihan.trim());
   if (lemari && lemari.trim()) params.set('lemari', lemari.trim());
   if (rak && rak.trim()) params.set('rak', rak.trim());
-  return `${normalizedBase}#/?${params.toString()}`;
+  const separator = base.includes('?') ? '&' : '?';
+  return `${base}${separator}${params.toString()}`;
 }
 
 /**
@@ -77,7 +71,7 @@ export function getLocationQrImageUrl(pelatihan: string, lemari: string, rak: st
 
 /**
  * Mengambil parameter lokasi (pelatihan, lemari, rak) dari URL:
- * Memeriksa window.location.hash dan window.location.search
+ * Memeriksa window.location.search dan window.location.hash
  */
 export function getUrlLocationParams(): { pelatihan: string | null; lemari: string | null; rak: string | null } {
   if (typeof window === 'undefined') {
@@ -86,17 +80,23 @@ export function getUrlLocationParams(): { pelatihan: string | null; lemari: stri
 
   let params: URLSearchParams | null = null;
 
-  // 1. Cek dari window.location.hash (#/?pelatihan=...)
-  if (window.location.hash && window.location.hash.includes('?')) {
-    const hashQuery = window.location.hash.split('?')[1];
-    if (hashQuery) {
-      params = new URLSearchParams(hashQuery);
+  // 1. Cek dari window.location.search (?pelatihan=...)
+  if (window.location.search) {
+    params = new URLSearchParams(window.location.search);
+  }
+
+  // 2. Cek juga dari window.location.hash (#/?pelatihan=...)
+  if (!params || (!params.get('pelatihan') && !params.get('lemari') && !params.get('rak'))) {
+    if (window.location.hash && window.location.hash.includes('?')) {
+      const hashQuery = window.location.hash.split('?')[1];
+      if (hashQuery) {
+        params = new URLSearchParams(hashQuery);
+      }
     }
   }
 
-  // 2. Fallback cek dari window.location.search (?pelatihan=...)
-  if (!params || (!params.get('pelatihan') && !params.get('lemari') && !params.get('rak'))) {
-    params = new URLSearchParams(window.location.search);
+  if (!params) {
+    return { pelatihan: null, lemari: null, rak: null };
   }
 
   const pelatihan = params.get('pelatihan') ? decodeURIComponent(params.get('pelatihan')!).trim() : null;
@@ -107,18 +107,18 @@ export function getUrlLocationParams(): { pelatihan: string | null; lemari: stri
 }
 
 /**
- * Mengambil nilai parameter `box` atau `id` dari URL:
- * - Memeriksa window.location.search (?box=...)
- * - Fallback memeriksa window.location.hash jika URL menggunakan hash routing (#/?box=...)
- * - Membersihkan decodeURIComponent, trim spasi
+ * Mengambil nilai parameter boxId (atau fallback box/id) dari URL:
+ * - Memeriksa window.location.search (?boxId=...)
+ * - Fallback memeriksa window.location.hash jika ada hash routing (#/?boxId=...)
+ * - Membersihkan decodeURIComponent dan spasi
  */
 export function getUrlBoxParam(): string | null {
   if (typeof window === 'undefined') return null;
 
-  // 1. Membaca standard search params (?box=...)
+  // 1. Membaca standard search params (?boxId=...)
   try {
     const searchParams = new URLSearchParams(window.location.search);
-    const boxParam = searchParams.get('box') || searchParams.get('id');
+    const boxParam = searchParams.get('boxId') || searchParams.get('box_id') || searchParams.get('box') || searchParams.get('id');
     if (boxParam && boxParam.trim()) {
       return decodeURIComponent(boxParam).trim();
     }
@@ -126,13 +126,20 @@ export function getUrlBoxParam(): string | null {
     // abaikan jika parsing error
   }
 
-  // 2. Fallback membaca hash params (#/?box=...)
+  // 2. Fallback membaca hash params (#/?boxId=... atau #boxId=...)
   try {
-    if (window.location.hash && window.location.hash.includes('?')) {
-      const hashQuery = window.location.hash.split('?')[1];
-      if (hashQuery) {
-        const hashParams = new URLSearchParams(hashQuery);
-        const boxParam = hashParams.get('box') || hashParams.get('id');
+    if (window.location.hash) {
+      const hashStr = window.location.hash;
+      const qIndex = hashStr.indexOf('?');
+      if (qIndex !== -1) {
+        const hashParams = new URLSearchParams(hashStr.substring(qIndex));
+        const boxParam = hashParams.get('boxId') || hashParams.get('box_id') || hashParams.get('box') || hashParams.get('id');
+        if (boxParam && boxParam.trim()) {
+          return decodeURIComponent(boxParam).trim();
+        }
+      } else if (hashStr.includes('=')) {
+        const hashParams = new URLSearchParams(hashStr.replace(/^#\/?/, ''));
+        const boxParam = hashParams.get('boxId') || hashParams.get('box_id') || hashParams.get('box') || hashParams.get('id');
         if (boxParam && boxParam.trim()) {
           return decodeURIComponent(boxParam).trim();
         }

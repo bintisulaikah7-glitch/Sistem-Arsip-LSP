@@ -98,37 +98,36 @@ export default function App() {
   };
 
   /**
-   * Helper pembacaan URL parameter setelah data Google Sheets selesai di-fetch/di-load:
-   * 1. Mendukung HashRouter (format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/#/?box=KODE_BOKS)
-   *    maupun standard search params (?box=KODE_BOKS)
-   * 2. Mendukung filter lokasi berkas (#/?pelatihan=...&lemari=...&rak=...)
-   * 3. Melakukan pencarian toleran (case-insensitive & hapus spasi) dengan null-check data?.find
-   * 4. Membuka modal detail boks secara otomatis (setIsModalOpen(true) dan setSelectedBox(foundBox))
+   * Helper pembacaan URL parameter saat aplikasi dimuat atau URL berubah:
+   * 1. Mendukung format standar ?boxId=[ID_BOKS] (serta fallback ?box= dan ?id=)
+   * 2. Mendukung filter lokasi berkas (?pelatihan=...&lemari=...&rak=...)
+   * 3. Melakukan pencarian toleran (case-insensitive & hapus spasi)
+   * 4. Otomatis membuka modal / pop-up detail boks arsip tersebut
    */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
     if (!data || !Array.isArray(data)) return;
 
-    // 1. PEMBACAAN URL PARAMETER UNTUK HASHROUTER & SEARCH:
+    // 1. PEMBACAAN URL PARAMETER UNTUK BOX ID (?boxId=...):
     let targetBoxId: string | null = null;
 
-    // Prioritaskan pembacaan dari window.location.hash (format HashRouter #/?box=... atau #?box=... atau #box=...)
-    if (window.location.hash) {
+    // Prioritaskan dari window.location.search (?boxId=...)
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      targetBoxId = searchParams.get('boxId') || searchParams.get('box_id') || searchParams.get('box') || searchParams.get('id');
+    } catch {}
+
+    // Cek juga dari window.location.hash jika ada hash router
+    if (!targetBoxId && window.location.hash) {
       const hashStr = window.location.hash;
       const qIndex = hashStr.indexOf('?');
       if (qIndex !== -1) {
         const hashParams = new URLSearchParams(hashStr.substring(qIndex));
-        targetBoxId = hashParams.get('box') || hashParams.get('id');
+        targetBoxId = hashParams.get('boxId') || hashParams.get('box_id') || hashParams.get('box') || hashParams.get('id');
       } else if (hashStr.includes('=')) {
         const hashParams = new URLSearchParams(hashStr.replace(/^#\/?/, ''));
-        targetBoxId = hashParams.get('box') || hashParams.get('id');
+        targetBoxId = hashParams.get('boxId') || hashParams.get('box_id') || hashParams.get('box') || hashParams.get('id');
       }
-    }
-
-    // Jika belum ditemukan di hash, periksa window.location.search (?box=... atau ?id=...)
-    if (!targetBoxId) {
-      const searchParams = new URLSearchParams(window.location.search);
-      targetBoxId = searchParams.get('box') || searchParams.get('id');
     }
 
     // Fallback util helper jika ada
@@ -136,14 +135,14 @@ export default function App() {
       targetBoxId = getUrlBoxParam();
     }
 
-    console.log("Mencari Box ID dari URL (HashRouter/Search):", targetBoxId);
+    console.log("Mencari Box ID dari URL (?boxId=):", targetBoxId);
 
     // 2. PENCOCOKAN DATA BOKS (toleran: case-insensitive & trim spasi):
     if (targetBoxId && targetBoxId.trim()) {
       const cleanTarget = targetBoxId.trim().toLowerCase();
       const foundBox = data?.find?.((b: any) => {
         if (!b) return false;
-        const boxCode = (b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || b.id_box || '').toString().trim().toLowerCase();
+        const boxCode = (b.id_box || b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || '').toString().trim().toLowerCase();
         return boxCode === cleanTarget;
       });
 
@@ -348,12 +347,23 @@ export default function App() {
     setIsDetailModalOpen(false);
     setSelectedDetailBox(null);
     hasHandledUrlQueryRef.current = false;
-    // Bersihkan URL query parameter secara halus tanpa reload browser
+    // Bersihkan URL query parameter (?boxId=, ?box=, dll.) secara halus tanpa reload browser
     if (typeof window !== 'undefined') {
-      const hasBoxInSearch = window.location.search.includes('box=') || window.location.search.includes('id=');
-      const hasBoxInHash = window.location.hash.includes('box=') || window.location.hash.includes('id=');
-      if (hasBoxInSearch || hasBoxInHash) {
-        const cleanUrl = window.location.pathname + '#/';
+      try {
+        const url = new URL(window.location.href);
+        let changed = false;
+        ['boxId', 'box_id', 'box', 'id'].forEach((p) => {
+          if (url.searchParams.has(p)) {
+            url.searchParams.delete(p);
+            changed = true;
+          }
+        });
+        if (changed || (window.location.hash && (window.location.hash.includes('boxId') || window.location.hash.includes('box')))) {
+          const cleanSearch = url.searchParams.toString() ? `?${url.searchParams.toString()}` : '';
+          window.history.replaceState({}, '', url.pathname + cleanSearch);
+        }
+      } catch {
+        const cleanUrl = window.location.pathname;
         window.history.replaceState({}, '', cleanUrl);
       }
     }
@@ -394,7 +404,7 @@ export default function App() {
     return years.sort((a, b) => b - a);
   }, [boxes]);
 
-  // Available lemari: HANYA Lemari yang memiliki data Boks Arsip (minimal 1 boks), abaikan Lemari 0/kosong/invalid, max 4 lemari teratas
+  // Available lemari: HANYA Lemari yang memiliki data Boks Arsip (minimal 1 boks), diekstrak otomatis dari Google Sheets (tanpa batas 4 lemari)
   const availableLemari = useMemo(() => {
     if (!boxes || !Array.isArray(boxes)) return [];
     const lemariCountMap = new Map<string, number>();
@@ -430,11 +440,36 @@ export default function App() {
       return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
     });
 
-    // Batasi maksimum hanya untuk 4 Lemari teratas yang aktif dan berisi data
-    return activeKeys.slice(0, 4);
+    // Otomatis dan dinamis tanpa batasan hardcode 4 lemari
+    return activeKeys;
   }, [boxes]);
 
-  // Filtered Boxes (Mendukung Hierarki Lemari & Global Search Exception)
+  // Available raks: Daftar Rak unik yang diekstrak dinamis dari data Google Sheets
+  const availableRaks = useMemo(() => {
+    if (!boxes || !Array.isArray(boxes)) return [];
+    const set = new Set<string>();
+
+    boxes.forEach((b) => {
+      if (b?.lokasi?.rak) {
+        const str = b.lokasi.rak.toString().trim();
+        if (
+          str &&
+          str !== '-' &&
+          str.toLowerCase() !== 'kosong' &&
+          str.toLowerCase() !== 'null' &&
+          str.toLowerCase() !== 'undefined'
+        ) {
+          set.add(str);
+        }
+      }
+    });
+
+    return Array.from(set).sort((a, b) => {
+      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+    });
+  }, [boxes]);
+
+  // Filtered Boxes (Mendukung Hierarki Lemari, Rak & Global Search Exception)
   const filteredBoxes = useMemo(() => {
     if (!boxes || !Array.isArray(boxes)) return [];
     return boxes.filter((b) => {
@@ -464,24 +499,33 @@ export default function App() {
         }
       }
 
-      // 4. Dropdown Status Arsip filter
+      // 4. Dropdown Rak filter (Dinamis dari Google Sheets)
+      if (selectedRak !== null && selectedRak !== 'Semua') {
+        const targetRak = selectedRak.trim().toLowerCase();
+        const bRak = (b.lokasi?.rak || '').toString().trim().toLowerCase();
+        if (bRak !== targetRak && bRak.replace(/[-_\s]/g, '') !== targetRak.replace(/[-_\s]/g, '')) {
+          return false;
+        }
+      }
+
+      // 5. Dropdown Status Arsip filter
       if (selectedStatusArsip !== 'Semua' && b.status_arsip !== selectedStatusArsip) {
         return false;
       }
 
-      // 5. Dropdown Status Barang filter
+      // 6. Dropdown Status Barang filter
       if (selectedStatusBarang !== 'Semua' && b.status_barang !== selectedStatusBarang) {
         return false;
       }
 
-      // 6. Dropdown Tahun filter
+      // 7. Dropdown Tahun filter
       if (selectedTahun !== 'Semua' && b.tahun_pelaksanaan?.toString() !== selectedTahun) {
         return false;
       }
 
       return true;
     });
-  }, [boxes, searchQuery, selectedCabinet, selectedLemari, selectedStatusArsip, selectedStatusBarang, selectedTahun]);
+  }, [boxes, searchQuery, selectedCabinet, selectedLemari, selectedRak, selectedStatusArsip, selectedStatusBarang, selectedTahun]);
 
   const isFiltered =
     !!searchQuery.trim() ||
@@ -781,6 +825,9 @@ export default function App() {
           onSelectTahun={setSelectedTahun}
           availableYears={availableYears}
           availableLemari={availableLemari}
+          selectedRak={selectedRak}
+          onSelectRak={(rak) => setSelectedRak(rak)}
+          availableRaks={availableRaks}
           viewMode={viewMode}
           onToggleViewMode={setViewMode}
           onResetFilters={handleResetFilters}

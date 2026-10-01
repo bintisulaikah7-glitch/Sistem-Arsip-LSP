@@ -8,6 +8,8 @@ interface SearchAndFiltersProps {
   onOpenQrScanner?: () => void;
   selectedLemari: (number | string) | null;
   onSelectLemari: (lemari: any) => void;
+  selectedRak?: string | null;
+  onSelectRak?: (rak: string | null) => void;
   selectedStatusArsip: StatusArsip | 'Semua';
   onSelectStatusArsip: (status: StatusArsip | 'Semua') => void;
   selectedStatusBarang: StatusBarang | 'Semua';
@@ -16,6 +18,7 @@ interface SearchAndFiltersProps {
   onSelectTahun: (tahun: string) => void;
   availableYears: number[];
   availableLemari?: (number | string)[];
+  availableRaks?: string[];
   viewMode: 'grid' | 'table';
   onToggleViewMode: (mode: 'grid' | 'table') => void;
   onResetFilters: () => void;
@@ -28,6 +31,8 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   onOpenQrScanner,
   selectedLemari,
   onSelectLemari,
+  selectedRak = null,
+  onSelectRak,
   selectedStatusArsip,
   onSelectStatusArsip,
   selectedStatusBarang,
@@ -36,17 +41,25 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   onSelectTahun,
   availableYears,
   availableLemari = [1, 2, 3, 4],
+  availableRaks = [],
   viewMode,
   onToggleViewMode,
   onResetFilters,
   isFiltered
 }) => {
   const lemariList = React.useMemo(() => {
-    return availableLemari.filter((item) => {
+    return (availableLemari || []).filter((item) => {
       const str = item.toString().replace(/lemari[-_\s]*/i, '').trim();
       return str !== '0' && parseInt(str, 10) !== 0 && str !== '' && str.toLowerCase() !== 'kosong';
     });
   }, [availableLemari]);
+
+  const rakList = React.useMemo(() => {
+    return (availableRaks || []).filter((item) => {
+      const str = item.toString().trim();
+      return str !== '' && str !== '-' && str.toLowerCase() !== 'kosong';
+    });
+  }, [availableRaks]);
 
   const bukaScannerQR = () => {
     if (onOpenQrScanner) {
@@ -153,9 +166,9 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           </div>
         </div>
 
-        {/* Filter Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-800/80 text-xs">
-          {/* Lemari Selector */}
+        {/* Filter Row - Dropdown Lemari & Rak Dinamis Otomatis dari Google Sheets */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-3 border-t border-slate-800/80 text-xs">
+          {/* 1. Dropdown Lokasi Lemari (Dinamis dari Google Sheets) */}
           <div>
             <label className="block text-slate-400 font-medium mb-1.5 flex items-center justify-between">
               <span>Lokasi Lemari</span>
@@ -163,34 +176,56 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 <span className="text-[10px] text-emerald-400 font-semibold">Lemari {selectedLemari}</span>
               )}
             </label>
-            <div className="flex flex-wrap gap-1">
-              <button
-                onClick={() => onSelectLemari(null)}
-                className={`py-1.5 px-2.5 text-center rounded border transition text-[11px] font-medium ${
-                  selectedLemari === null
-                    ? 'bg-emerald-600/30 border-emerald-500 text-emerald-300'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                }`}
-              >
-                Semua
-              </button>
+            <select
+              value={selectedLemari !== null ? selectedLemari.toString() : 'Semua'}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === 'Semua') {
+                  onSelectLemari(null);
+                } else {
+                  const numVal = parseInt(val, 10);
+                  onSelectLemari(!isNaN(numVal) ? numVal : val);
+                }
+              }}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs cursor-pointer"
+            >
+              <option value="Semua">Semua Lemari ({lemariList.length} Lemari)</option>
               {lemariList.map((num) => (
-                <button
-                  key={num}
-                  onClick={() => onSelectLemari(num)}
-                  className={`py-1.5 px-2.5 text-center rounded border transition text-[11px] font-medium ${
-                    selectedLemari === num
-                      ? 'bg-emerald-600 border-emerald-500 text-white'
-                      : 'bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
-                >
-                  {`L-${num}`}
-                </button>
+                <option key={num} value={num.toString()}>
+                  Lemari {num}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
-          {/* Status Arsip Filter */}
+          {/* 2. Dropdown Sekat / Rak (Dinamis dari Google Sheets) */}
+          <div>
+            <label className="block text-slate-400 font-medium mb-1.5 flex items-center justify-between">
+              <span>Sekat / Rak</span>
+              {selectedRak && (
+                <span className="text-[10px] text-emerald-400 font-semibold">{selectedRak}</span>
+              )}
+            </label>
+            <select
+              value={selectedRak || 'Semua'}
+              onChange={(e) => {
+                if (onSelectRak) {
+                  const val = e.target.value;
+                  onSelectRak(val === 'Semua' ? null : val);
+                }
+              }}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs cursor-pointer"
+            >
+              <option value="Semua">Semua Rak ({rakList.length} Rak)</option>
+              {rakList.map((rak) => (
+                <option key={rak} value={rak}>
+                  {rak.toString().startsWith('Rak') ? rak : `Rak ${rak}`}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 3. Status Arsip Filter */}
           <div>
             <label className="block text-slate-400 font-medium mb-1.5">Status Arsip</label>
             <select
@@ -208,7 +243,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </select>
           </div>
 
-          {/* Status Barang Filter */}
+          {/* 4. Status Barang Filter */}
           <div>
             <label className="block text-slate-400 font-medium mb-1.5">Status Fisik Boks</label>
             <select
@@ -225,7 +260,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </select>
           </div>
 
-          {/* Tahun Pelaksanaan */}
+          {/* 5. Tahun Pelaksanaan */}
           <div>
             <label className="block text-slate-400 font-medium mb-1.5">Tahun Pelaksanaan</label>
             <select

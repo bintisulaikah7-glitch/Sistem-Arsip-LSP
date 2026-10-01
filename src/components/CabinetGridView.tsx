@@ -69,8 +69,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
       return keyA.localeCompare(keyB, undefined, { numeric: true, sensitivity: 'base' });
     });
 
-    // Batasi maksimum hanya 4 Lemari teratas yang aktif dan berisi data
-    return validEntries.slice(0, 4);
+    // Tampilkan seluruh Lemari aktif secara dinamis dari Google Sheets (tanpa batasan 4 lemari)
+    return validEntries;
   }, [boxes]);
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Printer, QrCode, ArrowLeft, Copy, Check, ExternalLink, Link as LinkIcon, Globe } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
-import { getBoxPublicUrl, getBoxQrImageUrl, PUBLIC_PORTAL_BASE_URL } from '../utils/url.ts';
+import { getBoxPublicUrl, getBoxQrImageUrl } from '../utils/url.ts';
 
 interface QrCardModalProps {
   isOpen: boolean;
@@ -136,7 +136,7 @@ export const QrCardModal: React.FC<QrCardModalProps> = ({
             <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
               <span className="flex items-center space-x-1.5 font-medium text-slate-300">
                 <Globe className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Link Publik (GitHub Pages):</span>
+                <span>Tautan QR Code Dinamis:</span>
               </span>
               <button
                 onClick={handleCopyUrl}
