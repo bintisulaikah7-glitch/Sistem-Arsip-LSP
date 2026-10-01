@@ -22,11 +22,10 @@ export const QrCardModal: React.FC<QrCardModalProps> = ({
     window.print();
   };
 
-  // Generate full URL pointing to public GitHub Pages domain + query parameter ?box=KODE_BOKS
-  // Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=KODE_BOKS
+  // Menghasilkan link dinamis: ${BASE_URL}?boxId=${idBoks}
   const fullScanUrl = getBoxPublicUrl(box.id_box);
 
-  // Generate an SVG QR code visual that encodes the public GitHub Pages URL
+  // Menghasilkan gambar QR code SVG/PNG dengan link dinamis
   const qrSvgUrl = getBoxQrImageUrl(box.id_box, 240);
 
   const handleCopyUrl = (e: React.MouseEvent) => {

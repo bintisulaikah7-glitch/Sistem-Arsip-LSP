@@ -1,64 +1,53 @@
 /**
  * Konfigurasi URL Dinamis Portal LSP & Generator QR Code
- * Menggunakan URL dinamis berbasis window.location.origin + window.location.pathname
- * agar otomatis menyesuaikan domain di mana pun web dipublikasikan tanpa hardcode.
+ * Menggunakan URL dinamis berbasis:
+ * const BASE_URL = window.location.origin + window.location.pathname;
+ * Link QR Code dibuat menjadi:
+ * ${BASE_URL}?boxId=${idBoks}
+ *
+ * Menjamin QR Code otomatis mengarah ke alamat website mana pun sistem dijalankan
+ * (baik di environment internal maupun di domain publik seperti GitHub Pages).
  */
-
-/**
- * Menghasilkan Dynamic Base URL untuk QR Code:
- * Menggunakan `window.location.origin + window.location.pathname` secara dinamis
- * agar tautan otomatis berfungsi di domain apa pun (GitHub Pages, Cloud Run, localhost, dll.)
- */
-export function getBasePortalUrl(): string {
-  if (typeof window !== 'undefined' && window.location) {
-    const origin = window.location.origin || '';
-    let pathname = window.location.pathname || '/';
-    // Bersihkan jika ada index.html di akhir pathname
-    if (pathname.endsWith('index.html')) {
-      pathname = pathname.substring(0, pathname.length - 'index.html'.length);
-    }
-    // Pastikan berakhiran '/'
-    if (!pathname.endsWith('/')) {
-      pathname = `${pathname}/`;
-    }
-    return `${origin}${pathname}`;
-  }
-  return '/';
-}
 
 /**
  * Menghasilkan link lengkap portal publik untuk boks arsip tertentu:
- * Format parameter URL untuk QR Code: ?boxId=[ID_BOKS]
- * Menggunakan URL dinamis berbasis window.location.origin + window.location.pathname
+ * ${BASE_URL}?boxId=${idBoks}
  */
-export function getBoxPublicUrl(idBox: string): string {
-  const cleanId = (idBox || '').trim();
-  const base = getBasePortalUrl();
-  const separator = base.includes('?') ? '&' : '?';
-  return `${base}${separator}boxId=${encodeURIComponent(cleanId)}`;
+export function getBoxPublicUrl(idBoks: string): string {
+  if (typeof window === 'undefined' || !window.location) {
+    return `?boxId=${encodeURIComponent(idBoks || '')}`;
+  }
+  const BASE_URL = window.location.origin + window.location.pathname;
+  return `${BASE_URL}?boxId=${encodeURIComponent(idBoks || '')}`;
 }
 
 /**
  * Menghasilkan URL gambar QR code SVG/PNG beresolusi tajam
- * yang meng-encode tautan boks dinamis (?boxId=[ID_BOKS]).
+ * yang meng-encode tautan dinamis: ${BASE_URL}?boxId=${idBoks}
  */
-export function getBoxQrImageUrl(idBox: string, size = 240): string {
-  const targetUrl = getBoxPublicUrl(idBox);
+export function getBoxQrImageUrl(idBoks: string, size = 240): string {
+  if (typeof window === 'undefined' || !window.location) {
+    return '';
+  }
+  const BASE_URL = window.location.origin + window.location.pathname;
+  const targetUrl = `${BASE_URL}?boxId=${encodeURIComponent(idBoks || '')}`;
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(targetUrl)}`;
 }
 
 /**
  * Menghasilkan link lengkap portal untuk filter lokasi berkas LSP:
- * Format: [base]?pelatihan=...&lemari=...&rak=...
+ * Format: ${BASE_URL}?pelatihan=...&lemari=...&rak=...
  */
 export function getLocationPublicUrl(pelatihan: string, lemari: string, rak: string): string {
-  const base = getBasePortalUrl();
+  if (typeof window === 'undefined' || !window.location) {
+    return '';
+  }
+  const BASE_URL = window.location.origin + window.location.pathname;
   const params = new URLSearchParams();
   if (pelatihan && pelatihan.trim()) params.set('pelatihan', pelatihan.trim());
   if (lemari && lemari.trim()) params.set('lemari', lemari.trim());
   if (rak && rak.trim()) params.set('rak', rak.trim());
-  const separator = base.includes('?') ? '&' : '?';
-  return `${base}${separator}${params.toString()}`;
+  return `${BASE_URL}?${params.toString()}`;
 }
 
 /**

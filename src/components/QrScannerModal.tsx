@@ -41,16 +41,16 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
     let cleanId = idToScan.trim();
     if (!cleanId) return;
 
-    // Support scanning raw URL like https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=KODE_BOKS
+    // Mendukung scan raw URL dinamis (?boxId=ID_BOKS)
     if (cleanId.includes('?') || cleanId.includes('http')) {
       try {
         const parsedUrl = new URL(cleanId, window.location.origin);
-        const queryBox = parsedUrl.searchParams.get('box') || parsedUrl.searchParams.get('id');
+        const queryBox = parsedUrl.searchParams.get('boxId') || parsedUrl.searchParams.get('box_id') || parsedUrl.searchParams.get('box') || parsedUrl.searchParams.get('id');
         if (queryBox) {
           cleanId = queryBox.trim();
         }
       } catch {
-        const match = cleanId.match(/[?&](?:box|id)=([^&#]+)/i);
+        const match = cleanId.match(/[?&](?:boxId|box_id|box|id)=([^&#]+)/i);
         if (match && match[1]) {
           cleanId = decodeURIComponent(match[1]).trim();
         }
