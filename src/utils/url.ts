@@ -1,36 +1,29 @@
 /**
  * Konfigurasi URL Dinamis Portal LSP & Generator QR Code
- * Menggunakan URL dinamis berbasis:
- * const BASE_URL = window.location.origin + window.location.pathname;
- * Link QR Code dibuat menjadi:
- * ${BASE_URL}?boxId=${idBoks}
- *
- * Menjamin QR Code otomatis mengarah ke alamat website mana pun sistem dijalankan
- * (baik di environment internal maupun di domain publik seperti GitHub Pages).
+ * Menggunakan tautan:
+ * window.location.href.split('?')[0] + '?boxId=' + idBoks
+ * agar selalu mengambil domain aktif saat ini secara dinamis.
  */
 
 /**
  * Menghasilkan link lengkap portal publik untuk boks arsip tertentu:
- * ${BASE_URL}?boxId=${idBoks}
+ * window.location.href.split('?')[0] + '?boxId=' + idBoks
  */
 export function getBoxPublicUrl(idBoks: string): string {
   if (typeof window === 'undefined' || !window.location) {
     return `?boxId=${encodeURIComponent(idBoks || '')}`;
   }
-  const BASE_URL = window.location.origin + window.location.pathname;
-  return `${BASE_URL}?boxId=${encodeURIComponent(idBoks || '')}`;
+  const cleanId = (idBoks || '').trim();
+  const currentBase = window.location.href.split('?')[0];
+  return `${currentBase}?boxId=${encodeURIComponent(cleanId)}`;
 }
 
 /**
  * Menghasilkan URL gambar QR code SVG/PNG beresolusi tajam
- * yang meng-encode tautan dinamis: ${BASE_URL}?boxId=${idBoks}
+ * yang meng-encode tautan: window.location.href.split('?')[0] + '?boxId=' + idBoks
  */
 export function getBoxQrImageUrl(idBoks: string, size = 240): string {
-  if (typeof window === 'undefined' || !window.location) {
-    return '';
-  }
-  const BASE_URL = window.location.origin + window.location.pathname;
-  const targetUrl = `${BASE_URL}?boxId=${encodeURIComponent(idBoks || '')}`;
+  const targetUrl = getBoxPublicUrl(idBoks);
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(targetUrl)}`;
 }
 

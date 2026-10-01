@@ -30,7 +30,7 @@ function copyIndexTo404Plugin(): Plugin {
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: '/Sistem-Arsip-LSP/',
     plugins: [react(), tailwindcss(), copyIndexTo404Plugin()],
     resolve: {
       alias: {
