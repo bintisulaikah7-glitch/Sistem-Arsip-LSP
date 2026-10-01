@@ -1,0 +1,476 @@
+@import "tailwindcss";
+
+/* Background Seluruh Halaman (Terang & Bersih) */
+body {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Header & Top Bar Tema Terang */
+header, .top-bar, .navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* TOP BAR HEADER BERSIH */
+.top-bar-clean {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.header-icon {
+  width: 42px !important;
+  height: 42px !important;
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  flex-shrink: 0 !important;
+}
+
+.header-title h1 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.25 !important;
+}
+
+.header-title p {
+  margin: 3px 0 0 0 !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.3 !important;
+}
+
+.header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.btn-icon-only {
+  width: 38px !important;
+  height: 38px !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  color: #334155 !important;
+}
+
+.btn-icon-only:hover {
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  transform: rotate(45deg);
+}
+
+.btn-tambah-boks {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border: 1px solid #059669 !important;
+  padding: 8px 18px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.btn-tambah-boks:hover {
+  background: #059669 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+@media (max-width: 640px) {
+  .top-bar-clean {
+    padding: 10px 14px !important;
+  }
+  .header-title h1 {
+    font-size: 16px !important;
+  }
+  .header-title p {
+    font-size: 11px !important;
+  }
+}
+
+
+/* Container Layout Grid (Laptop/Komputer: Pas 2 Kolom) */
+.grid-container {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important; /* 2 Kolom Sejajar */
+  gap: 20px !important;
+  width: 100% !important;
+  max-width: 1000px !important; /* Membatasi lebar agar kartu tidak terlalu lebar */
+  margin: 20px auto !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+}
+
+/* Penyesuaian Otomatis untuk Layar HP (1 Kolom) */
+@media (max-width: 640px) {
+  .grid-container {
+    grid-template-columns: 1fr !important; /* Kembali ke 1 kolom di HP */
+  }
+}
+
+/* Style Kartu Kompak & Modern */
+.card-lemari {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.card-lemari:hover {
+  transform: translateY(-4px);
+  border-color: #10b981;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
+}
+
+.lemari-3.card-lemari:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+}
+
+.lemari-4.card-lemari:hover {
+  border-color: #a855f7;
+  box-shadow: 0 10px 20px rgba(168, 85, 247, 0.15);
+}
+
+/* Header Kartu */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Variasi Warna Icon per Kartu */
+.lemari-1 .card-icon { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.lemari-2 .card-icon { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.lemari-3 .card-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+.lemari-4 .card-icon { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+.badge-boks {
+  background: #1e293b;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+}
+
+/* List Detail Data */
+.card-info-list {
+  font-size: 13px;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item strong {
+  color: #e2e8f0;
+}
+
+/* Footer Kartu */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #1e293b;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.btn-buka {
+  color: #10b981;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-buka:hover {
+  color: #34d399;
+}
+
+/* Kartu Folder Rak */
+.card-folder {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 24px 16px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.25s ease-in-out !important;
+}
+
+.card-folder:hover {
+  border-color: #059669 !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 10px 20px rgba(5, 150, 105, 0.12) !important;
+  background-color: #f0fdf4 !important;
+}
+
+.card-folder .icon {
+  font-size: 42px !important;
+  margin-bottom: 12px !important;
+  display: block !important;
+}
+
+.card-folder h3 {
+  margin: 6px 0 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+.card-folder p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #64748b !important;
+}
+
+.card-folder span {
+  display: inline-block !important;
+  margin-top: 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #059669 !important;
+}
+
+/* Container Utama Bar Pencarian */
+.search-box-container {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.search-box-container:focus-within {
+  border-color: #10b981; /* Highlight warna hijau saat diklik */
+}
+
+/* Wrapper Input & Icon */
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.search-icon {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.search-input-wrapper input::placeholder {
+  color: #64748b;
+}
+
+/* Area Tombol Aksi */
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Tombol Scan QR (Sekunder) */
+.btn-scan-qr {
+  background: #1e293b;
+  color: #10b981;
+  border: 1px solid #334155;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-scan-qr:hover {
+  background: #064e3b;
+  color: #a7f3d0;
+}
+
+/* Tombol Cari Utama (Primary Search Button) */
+.btn-cari-utama {
+  background: #10b981;
+  color: #022c22;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-cari-utama:hover {
+  background: #059669;
+  color: #ffffff;
+}
+
+/* Responsif untuk Layar HP */
+@media (max-width: 640px) {
+  .search-box-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-actions {
+    justify-content: flex-end;
+  }
+}
+
+.stats-grid-peserta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .stats-grid-peserta {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.stat-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.stat-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Badge Persentase K & BK */
+.stat-badge {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.badge-green {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.badge-purple {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.color-purple {
+  color: #a855f7;
+}
+
+
