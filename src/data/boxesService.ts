@@ -9,6 +9,193 @@ export const GOOGLE_SHEETS_CSV_URL =
   'https://docs.google.com/spreadsheets/d/1Cq3QzccIPDSVyXY2dq4S61wHVRJFh0LaP2xT6OViK-M/export?format=csv';
 
 /**
+ * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP
+ */
+export const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
+  'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
+
+/**
+ * Pemetaan baris objek dari Google Apps Script Web App JSON menjadi objek BoksArsip
+ */
+export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip | null {
+  if (!rawItem || typeof rawItem !== 'object') return null;
+
+  // Normalisasi key menjadi lowercase & trim spasi
+  const cleanItem: Record<string, any> = {};
+  for (const [key, val] of Object.entries(rawItem)) {
+    cleanItem[key.trim().toLowerCase()] = val;
+  }
+
+  const rawLemari = cleanItem['kode lemari'] || cleanItem['kode_lemari'] || cleanItem['lemari'] || '';
+  const rawRak = cleanItem['nomor rak'] || cleanItem['nomor_rak'] || cleanItem['rak'] || '';
+  const rawBox = cleanItem['nomor box'] || cleanItem['nomor_box'] || cleanItem['box'] || '';
+  const rawIdBox = cleanItem['id_box'] || cleanItem['id box'] || cleanItem['id'] || '';
+  const rawNama = cleanItem['nama pelatihan'] || cleanItem['nama_pelatihan'] || cleanItem['nama'] || '';
+  const rawTahun = cleanItem['tahun pelaksanaan'] || cleanItem['tahun_pelaksanaan'] || cleanItem['tahun'] || '';
+  const rawPeserta = cleanItem['jumlah peserta'] || cleanItem['jumlah_peserta'] || cleanItem['peserta'] || 0;
+  const rawPesertaBk = cleanItem['jumlah peserta bk'] || cleanItem['jumlah_peserta_bk'] || cleanItem['bk'] || 0;
+  const rawStatusArsip = cleanItem['status arsip'] || cleanItem['status_arsip'] || 'Tersedia';
+  const rawStatusBarang = cleanItem['status barang'] || cleanItem['status_barang'] || 'Lengkap';
+  const rawHasilUji = cleanItem['hasil uji kompetensi'] || cleanItem['hasil_uji_kompetensi'] || '-';
+  const rawDrive = cleanItem['link google drive'] || cleanItem['link_dokumentasi'] || cleanItem['link'] || 'https://drive.google.com';
+
+  const namaPelatihan = String(rawNama || '').trim();
+  if (!namaPelatihan || namaPelatihan.toLowerCase() === 'kosong') {
+    return null;
+  }
+
+  // Parse Lemari (misal: "Lemari 1", "Lemari 4", "1", "4")
+  let lemariNum: number = 0;
+  const lemariStr = String(rawLemari || '').trim();
+  const lemariDigits = lemariStr.replace(/\D/g, '');
+  if (lemariDigits) {
+    lemariNum = parseInt(lemariDigits, 10);
+  }
+
+  // Parse Rak (misal: "Rak A ", "Rak D")
+  let rakClean = String(rawRak || '').trim();
+  if (rakClean.toLowerCase() === 'kosong' || rakClean === '-') {
+    rakClean = '';
+  }
+
+  // Parse Nomor Box (misal: "Box 1 ", "Box 5")
+  let boxClean = String(rawBox || '').trim();
+  if (boxClean.toLowerCase() === 'kosong') boxClean = '';
+
+  const tahunNum = parseInt(String(rawTahun).replace(/\D/g, ''), 10) || new Date().getFullYear();
+
+  // ID Box
+  let idBoxClean = String(rawIdBox || '').trim();
+  if (!idBoxClean || idBoxClean === '1' || idBoxClean.toLowerCase() === 'kosong') {
+    if (lemariNum > 0 && rakClean) {
+      idBoxClean = `L${lemariNum}-${rakClean.replace(/\s+/g, '')}-BOX${boxClean.replace(/\D/g, '') || String(index + 1).padStart(2, '0')}-${tahunNum}`;
+    } else {
+      idBoxClean = `BOX-${tahunNum}-${String(index + 1).padStart(3, '0')}`;
+    }
+  }
+
+  // Normalisasi status arsip
+  let status_arsip: StatusArsip = 'Tersedia';
+  const sArsipLower = String(rawStatusArsip).toLowerCase().trim();
+  if (sArsipLower.includes('aktif') || sArsipLower.includes('tersedia')) {
+    status_arsip = 'Tersedia';
+  } else if (sArsipLower.includes('tidak lengkap')) {
+    status_arsip = 'Tidak Lengkap';
+  } else if (sArsipLower.includes('tidak') || sArsipLower.includes('inaktif')) {
+    status_arsip = 'Tidak Tersedia';
+  } else if (sArsipLower.includes('musnah')) {
+    status_arsip = 'Dimusnahkan';
+  }
+
+  // Normalisasi status barang
+  let status_barang: StatusBarang = 'Lengkap';
+  const sBarangLower = String(rawStatusBarang).toLowerCase().trim();
+  if (sBarangLower.includes('lengkap') && !sBarangLower.includes('tidak')) {
+    status_barang = 'Lengkap';
+  } else if (sBarangLower.includes('tidak lengkap')) {
+    status_barang = 'Tidak Lengkap';
+  } else if (sBarangLower.includes('tidak ada') || sBarangLower.includes('tidak')) {
+    status_barang = 'Tidak Ada';
+  } else if (sBarangLower.includes('pinjam')) {
+    status_barang = 'Dipinjam';
+  } else if (sBarangLower.includes('perbaik')) {
+    status_barang = 'Diperbaiki';
+  }
+
+  return {
+    id_box: idBoxClean,
+    nama_pelatihan: namaPelatihan,
+    tahun_pelaksanaan: tahunNum,
+    jumlah_peserta: Number(rawPeserta) || 0,
+    jumlah_peserta_bk: Number(rawPesertaBk) || 0,
+    lokasi: {
+      lemari: lemariNum > 0 ? lemariNum : (lemariStr || 1),
+      rak: rakClean || 'Rak A',
+      baris: boxClean || 'Box 1'
+    },
+    status_arsip,
+    status_barang,
+    hasilUjiKompetensi: String(rawHasilUji || '-').trim(),
+    hasil_uji_kompetensi: String(rawHasilUji || '-').trim(),
+    'Hasil Uji Kompetensi': String(rawHasilUji || '-').trim(),
+    link_dokumentasi: String(rawDrive || 'https://drive.google.com').trim()
+  };
+}
+
+/**
+ * Tarik seluruh data boks dari Web App URL Google Apps Script saat aplikasi pertama kali dimuat
+ */
+export async function fetchBoxesFromAppsScript(
+  webAppUrl: string = GOOGLE_APPS_SCRIPT_WEB_APP_URL
+): Promise<BoksArsip[]> {
+  try {
+    let rawData: any = null;
+
+    // 1. Direct fetch ke Web App URL (dengan redirect: follow)
+    try {
+      const response = await fetch(webAppUrl, {
+        method: 'GET',
+        headers: { Accept: 'application/json, text/plain, */*' },
+        redirect: 'follow'
+      });
+      if (response.ok) {
+        const text = await response.text();
+        if (text && (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
+          rawData = JSON.parse(text);
+        }
+      }
+    } catch (err) {
+      console.warn('[fetchBoxesFromAppsScript] Direct fetch error, mencoba proxy server...', err);
+    }
+
+    // 2. Jika direct fetch terhalang (misal CORS browser di lokal), coba via proxy backend
+    if (!rawData) {
+      try {
+        const proxyUrl = `/api/apps-script/get?url=${encodeURIComponent(webAppUrl)}`;
+        const proxyRes = await fetch(proxyUrl);
+        if (proxyRes.ok) {
+          rawData = await proxyRes.json();
+        }
+      } catch (proxyErr) {
+        console.warn('[fetchBoxesFromAppsScript] Proxy fetch error:', proxyErr);
+      }
+    }
+
+    if (rawData) {
+      const arrayData = Array.isArray(rawData) ? rawData : (rawData.data || rawData.boxes || []);
+      if (Array.isArray(arrayData) && arrayData.length > 0) {
+        const mappedBoxes: BoksArsip[] = [];
+        const seenIds = new Set<string>();
+
+        arrayData.forEach((item, idx) => {
+          const box = mapAppsScriptItemToBox(item, idx);
+          if (box) {
+            let uniqueId = box.id_box;
+            let counter = 2;
+            while (seenIds.has(uniqueId.toUpperCase())) {
+              uniqueId = `${box.id_box}-${counter}`;
+              counter++;
+            }
+            seenIds.add(uniqueId.toUpperCase());
+            box.id_box = uniqueId;
+            mappedBoxes.push(box);
+          }
+        });
+
+        if (mappedBoxes.length > 0) {
+          console.log(`[fetchBoxesFromAppsScript] Berhasil menarik ${mappedBoxes.length} boks dari Google Apps Script Web App.`);
+          return mappedBoxes;
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[fetchBoxesFromAppsScript] Gagal membaca data Apps Script:', err);
+  }
+
+  return [];
+}
+
+/**
  * Normalisasi string nama header kolom:
  * - Huruf kecil (lowercase)
  * - Menghilangkan spasi berlebih, underscore, tanda minus, dan karakter non-alfanumerik
@@ -279,6 +466,16 @@ export async function fetchBoxesData(
   sheetCsvUrl: string = GOOGLE_SHEETS_CSV_URL
 ): Promise<BoksArsip[]> {
   try {
+    // 1. PRIORITAS UTAMA: Tarik seluruh data boks dari Web App URL Google Apps Script
+    try {
+      const appsScriptBoxes = await fetchBoxesFromAppsScript();
+      if (appsScriptBoxes && appsScriptBoxes.length > 0) {
+        return appsScriptBoxes;
+      }
+    } catch (appsScriptErr) {
+      console.warn('[fetchBoxesData] Apps Script fetch error, beralih ke CSV export:', appsScriptErr);
+    }
+
     let csvText = '';
 
     // 1. Upaya pertama: Fetch langsung dari client ke URL Google Sheets CSV

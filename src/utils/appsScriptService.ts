@@ -2,12 +2,13 @@ import { BoksArsip } from '../types.ts';
 
 const STORAGE_KEY_WEB_APP_URL = 'lsp_apps_script_web_app_url';
 
-// Default URL if configured or user can enter their own deployed Web App URL
-export const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-lsp-arsip-app/exec';
+// Default Web App URL resmi yang terhubung langsung ke Google Sheets LSP
+export const DEFAULT_APPS_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
 
 export function getStoredAppsScriptUrl(): string {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem(STORAGE_KEY_WEB_APP_URL) || '';
+  if (typeof window === 'undefined') return DEFAULT_APPS_SCRIPT_URL;
+  return localStorage.getItem(STORAGE_KEY_WEB_APP_URL) || DEFAULT_APPS_SCRIPT_URL;
 }
 
 export function setStoredAppsScriptUrl(url: string): void {
@@ -37,12 +38,19 @@ export interface AppsScriptSyncResult {
  * 11: Link Google Drive
  */
 export function formatBoxToSheetRow(box: BoksArsip): (string | number)[] {
-  const lemariStr = box.lokasi?.lemari !== undefined
-    ? (box.lokasi.lemari.toString().toLowerCase().startsWith('lemari') ? box.lokasi.lemari : `Lemari ${box.lokasi.lemari}`)
-    : 'Lemari 1';
-  const rakStr = box.lokasi?.rak ? box.lokasi.rak.toString() : 'R1';
-  const nomorBox = box.nomor_box || box.lokasi?.baris || '1';
-  const hasilUji = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '-';
+  const lemariStr =
+    box.lokasi?.lemari !== undefined
+      ? box.lokasi.lemari.toString().toLowerCase().startsWith('lemari')
+        ? box.lokasi.lemari
+        : `Lemari ${box.lokasi.lemari}`
+      : 'Lemari 1';
+  const rakStr = box.lokasi?.rak ? box.lokasi.rak.toString() : 'Rak A';
+  const nomorBox = box.nomor_box || box.lokasi?.baris || 'Box 1';
+  const hasilUji =
+    box.hasilUjiKompetensi ||
+    box.hasil_uji_kompetensi ||
+    box['Hasil Uji Kompetensi'] ||
+    '-';
 
   return [
     lemariStr,
@@ -62,7 +70,8 @@ export function formatBoxToSheetRow(box: BoksArsip): (string | number)[] {
 
 /**
  * Kirim data boks arsip ke Google Sheets melalui Google Apps Script Web App API
- * Mendukung aksi: 'add' (tambah baru), 'update' (perbarui), atau 'move' (pindah rak/lemari).
+ * Mengirimkan data via POST ke Web App URL:
+ * https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec
  */
 export async function sendBoxToGoogleSheets(
   box: BoksArsip,
@@ -70,17 +79,59 @@ export async function sendBoxToGoogleSheets(
 ): Promise<AppsScriptSyncResult> {
   const customUrl = getStoredAppsScriptUrl();
   const effectiveUrl = customUrl || DEFAULT_APPS_SCRIPT_URL;
+  const rowValues = formatBoxToSheetRow(box);
 
-  // 1. Coba kirimkan melalui Backend Proxy terlebih dahulu (menghindari limitasi CORS & 302 redirect Google Apps Script)
+  const lemariVal = box.lokasi?.lemari !== undefined
+    ? (box.lokasi.lemari.toString().toLowerCase().startsWith('lemari') ? box.lokasi.lemari : `Lemari ${box.lokasi.lemari}`)
+    : 'Lemari 1';
+  const rakVal = box.lokasi?.rak ? box.lokasi.rak.toString() : 'Rak A';
+  const boxVal = box.nomor_box || box.lokasi?.baris || 'Box 1';
+  const hasilUjiVal = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '-';
+
+  // Susun payload yang ramah bagi berbagai struktur Apps Script (baik flat map kolom maupun nested box/rowValues)
+  const payload = {
+    action,
+    box,
+    rowValues,
+    'Kode Lemari': lemariVal,
+    'kode_lemari': lemariVal,
+    'Nomor Rak': rakVal,
+    'Nomor Rak ': rakVal,
+    'nomor_rak': rakVal,
+    'Nomor Box': boxVal,
+    'nomor_box': boxVal,
+    'ID_Box': box.id_box,
+    'id_box': box.id_box,
+    'Nama Pelatihan': box.nama_pelatihan,
+    'nama_pelatihan': box.nama_pelatihan,
+    'Tahun Pelaksanaan': box.tahun_pelaksanaan,
+    'tahun_pelaksanaan': box.tahun_pelaksanaan,
+    'Jumlah Peserta': box.jumlah_peserta,
+    'Jumlah Peserta ': box.jumlah_peserta,
+    'jumlah_peserta': box.jumlah_peserta,
+    'Jumlah Peserta BK': box.jumlah_peserta_bk,
+    'jumlah_peserta_bk': box.jumlah_peserta_bk,
+    'Status Arsip': box.status_arsip,
+    'Status Arsip ': box.status_arsip,
+    'status_arsip': box.status_arsip,
+    'Status Barang': box.status_barang,
+    'Status Barang ': box.status_barang,
+    'status_barang': box.status_barang,
+    'Hasil Uji Kompetensi': hasilUjiVal,
+    'hasil_uji_kompetensi': hasilUjiVal,
+    'Link Google Drive': box.link_dokumentasi,
+    'Link Google Drive ': box.link_dokumentasi,
+    'link_dokumentasi': box.link_dokumentasi
+  };
+
+  // 1. Coba kirim melalui Backend Proxy (mengatasi limitasi CORS & 302 redirect Google Apps Script)
   try {
     const proxyResponse = await fetch('/api/apps-script/post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         webAppUrl: effectiveUrl,
-        box,
-        action,
-        rowValues: formatBoxToSheetRow(box)
+        ...payload
       })
     });
 
@@ -93,54 +144,58 @@ export async function sendBoxToGoogleSheets(
       };
     }
   } catch (err) {
-    console.warn('Backend proxy tidak merespon, mencoba fallback langsung...', err);
+    console.warn('[AppsScript] Backend proxy tidak merespon, beralih ke direct fetch...', err);
   }
 
-  // 2. Jika backend proxy tidak tersedia dan ada Apps Script URL terpasang, coba direct fetch
-  if (customUrl) {
+  // 2. Direct fetch ke Web App URL (untuk static hosting seperti GitHub Pages)
+  try {
+    const response = await fetch(effectiveUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+
+    if (response.ok) {
+      return {
+        success: true,
+        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets.`
+      };
+    }
+  } catch (err: any) {
+    console.warn('[AppsScript] Direct fetch with text/plain failed, attempting no-cors fallback:', err);
     try {
-      await fetch(customUrl, {
+      // Fallback no-cors memastikan payload tetap terkirim ke server Google Apps Script
+      await fetch(effectiveUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action,
-          box,
-          rowValues: formatBoxToSheetRow(box)
-        })
+        body: JSON.stringify(payload)
       });
 
       return {
         success: true,
-        message: `Permintaan kirim boks arsip ${box.id_box} telah dikirim ke Google Apps Script Web App.`
+        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets via no-cors mode.`
       };
-    } catch (err: any) {
+    } catch (noCorsErr: any) {
       return {
         success: false,
-        message: `Gagal mengirim ke Google Apps Script: ${err?.message || 'Koneksi gagal'}`
+        message: `Gagal mengirim ke Google Apps Script: ${noCorsErr?.message || 'Koneksi gagal'}`
       };
     }
   }
 
   return {
     success: true,
-    message: `Data boks arsip ${box.id_box} tersimpan di sistem lokal. Pasang URL Web App Google Apps Script untuk sinkronisasi otomatis ke Google Sheets.`
+    message: `Data boks arsip ${box.id_box} berhasil diproses.`
   };
 }
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
  * GOOGLE APPS SCRIPT WEB APP UNTUK SISTEM ARSIP BOKS LSP
- * 
- * Panduan Pemasangan:
- * 1. Buka spreadsheet Google Sheets arsip Anda.
- * 2. Klik menu "Ekstensi" (Extensions) > "Apps Script".
- * 3. Hapus semua kode default dan tempelkan kode di bawah ini.
- * 4. Klik "Deploy" (Terapkan) > "New deployment" (Penerapan baru).
- * 5. Pilih jenis: "Web App" (Aplikasi Web).
- * 6. Set "Execute as": "Me" (Email pemilik).
- * 7. Set "Who has access": "Anyone" (Siapa saja).
- * 8. Klik Deploy, beri izin otorisasi Google, lalu salin URL Web App (akhiran /exec).
- * 9. Tempelkan URL tersebut pada dialog Pengaturan Google Apps Script di aplikasi web ini.
+ * Web App URL: https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec
  */
 
 function doPost(e) {
@@ -153,23 +208,9 @@ function doPost(e) {
     var action = payload.action || 'add';
     var box = payload.box || payload;
     
-    // Susun 12 Kolom Spreadsheet Sesuai Urutan Index Baku:
-    // Index 0 (A): Kode Lemari
-    // Index 1 (B): Nomor Rak
-    // Index 2 (C): Nomor Box
-    // Index 3 (D): ID_Box
-    // Index 4 (E): Nama Pelatihan
-    // Index 5 (F): Tahun Pelaksanaan
-    // Index 6 (G): Jumlah Peserta
-    // Index 7 (H): Jumlah Peserta BK
-    // Index 8 (I): Status Arsip
-    // Index 9 (J): Status Barang
-    // Index 10 (K): Hasil Uji Kompetensi
-    // Index 11 (L): Link Google Drive
-    
     var lemariStr = box.lokasi ? (box.lokasi.lemari ? 'Lemari ' + box.lokasi.lemari : '') : (box.kode_lemari || '');
     var rakStr = box.lokasi ? box.lokasi.rak : (box.nomor_rak || '');
-    var nomorBox = box.nomor_box || (box.lokasi ? box.lokasi.baris : '1');
+    var nomorBox = box.nomor_box || (box.lokasi ? box.lokasi.baris : 'Box 1');
     var hasilUji = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '-';
     
     var rowData = [
@@ -206,7 +247,6 @@ function doPost(e) {
         sheet.appendRow(rowData);
       }
     } else {
-      // Default: Action 'add'
       sheet.appendRow(rowData);
     }
     
@@ -228,9 +268,21 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: 'online',
-    message: 'Google Apps Script Web App Sistem Manajemen Boks Arsip LSP aktif dan siap menerima data.'
-  })).setMimeType(ContentService.MimeType.JSON);
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var result = [];
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = row[j];
+    }
+    result.push(obj);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 `;

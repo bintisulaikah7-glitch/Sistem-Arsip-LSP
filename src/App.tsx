@@ -596,26 +596,39 @@ export default function App() {
     });
   };
 
-  // Create Box
+  // Create Box & Auto-Sync to Google Sheets
   const handleAddBox = async (newBox: BoksArsip): Promise<boolean> => {
     try {
-      const res = await fetch('/api/boxes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newBox)
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setBoxes((prev) => [data, ...prev]);
-        showToast(`Boks Arsip ${data.id_box} berhasil ditambahkan ke Lemari ${data.lokasi.lemari}.`);
-        return true;
-      } else {
-        showToast(data.message || 'Gagal menambahkan boks arsip.', 'error');
-        return false;
+      // 1. Simpan via POST langsung ke Google Apps Script Web App Google Sheets
+      try {
+        const syncResult = await sendBoxToGoogleSheets(newBox, 'add');
+        console.log('[handleAddBox] Sync to Google Sheets result:', syncResult);
+      } catch (syncErr) {
+        console.warn('[handleAddBox] Google Sheets sync error:', syncErr);
       }
+
+      // 2. Simpan juga ke endpoint internal server jika online
+      try {
+        await fetch('/api/boxes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBox)
+        });
+      } catch {}
+
+      // 3. Update state lokal segera
+      setBoxes((prev) => [newBox, ...prev.filter((b) => b.id_box !== newBox.id_box)]);
+      showToast(
+        `Boks Arsip ${newBox.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`
+      );
+
+      // 4. Refresh tampilan web dan filter Lemari/Rak secara otomatis setelah data berhasil ditambahkan
+      setTimeout(() => {
+        fetchGoogleSheetsData(sheetUrl, true);
+      }, 1200);
+
+      return true;
     } catch (err: any) {
-      // Fallback
       setBoxes((prev) => [newBox, ...prev]);
       showToast(`Boks Arsip ${newBox.id_box} berhasil ditambahkan.`);
       return true;

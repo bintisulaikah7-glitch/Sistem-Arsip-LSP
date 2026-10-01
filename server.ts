@@ -535,10 +535,40 @@ async function startServer() {
     }
   });
 
+  const OFFICIAL_WEB_APP_URL =
+    "https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec";
+
+  // 11b. Google Apps Script Web App GET Proxy (Bypasses Browser CORS)
+  app.get("/api/apps-script/get", async (req: Request, res: Response) => {
+    const targetUrl = (req.query.url as string) || OFFICIAL_WEB_APP_URL;
+    try {
+      const response = await fetch(targetUrl, {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "User-Agent": "Mozilla/5.0 Sistem-Manajemen-Boks-Arsip-LSP"
+        },
+        redirect: "follow"
+      });
+      const text = await response.text();
+      try {
+        const json = JSON.parse(text);
+        res.json(json);
+      } catch {
+        res.setHeader("Content-Type", "application/json");
+        res.send(text);
+      }
+    } catch (err: any) {
+      res.status(502).json({ error: "Apps Script Get Error", message: err.message });
+    }
+  });
+
   // 12. Google Apps Script Web App POST Proxy (Auto-Save and Move Boks Arsip)
   // POST /api/apps-script/post
   app.post("/api/apps-script/post", async (req: Request, res: Response) => {
     const { webAppUrl, box, action, rowValues } = req.body;
+    const targetUrl = (webAppUrl && typeof webAppUrl === "string" && webAppUrl.trim().startsWith("http"))
+      ? webAppUrl.trim()
+      : OFFICIAL_WEB_APP_URL;
 
     // Update state in memory & disk
     if (box && box.id_box) {
@@ -561,17 +591,8 @@ async function startServer() {
       }
     }
 
-    if (!webAppUrl || typeof webAppUrl !== "string" || !webAppUrl.trim().startsWith("http")) {
-      res.json({
-        status: "saved_locally",
-        message: "Data boks arsip tersimpan di server lokal. Masukkan URL Google Apps Script Web App untuk auto-save ke Google Sheets.",
-        box
-      });
-      return;
-    }
-
     try {
-      const response = await fetch(webAppUrl.trim(), {
+      const response = await fetch(targetUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -580,8 +601,10 @@ async function startServer() {
         body: JSON.stringify({
           action: action || "add",
           box,
-          rowValues
-        })
+          rowValues,
+          ...req.body
+        }),
+        redirect: "follow"
       });
 
       const responseText = await response.text();

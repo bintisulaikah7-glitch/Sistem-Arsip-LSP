@@ -1,6 +1,10 @@
 [
   {
-    "id_box": "L1-R1-BOX01-2022",
+    "id_box": "Lemari 1 - Rak A  - Box 1",
+    "Kode Boks": "Lemari 1 - Rak A  - Box 1",
+    "kode_box": "Lemari 1 - Rak A  - Box 1",
+    "id": "Lemari 1 - Rak A  - Box 1",
+    "code": "Lemari 1 - Rak A  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Assembly Solder",
     "tahun_pelaksanaan": 2022,
     "jumlah_peserta": 25,
@@ -8,854 +12,791 @@
     "lokasi": {
       "lemari": 1,
       "rak": "Rak A",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R1-BOX02-2023",
-    "nama_pelatihan": "OJK 1",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak A",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R1-BOX03-2023",
-    "nama_pelatihan": "OJK 2",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 46,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak A",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R1-BOX04-2023",
-    "nama_pelatihan": "OJK 3",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak A",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R1-BOX05-2023",
-    "nama_pelatihan": "OJK 4",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak A",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R2-BOX01-2023",
-    "nama_pelatihan": "OJK 5",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak B",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R2-BOX02-2023",
-    "nama_pelatihan": "OJK 6",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak B",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R2-BOX03-2023",
-    "nama_pelatihan": "OJK 7",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak B",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R2-BOX04-2023",
-    "nama_pelatihan": "OJK 8",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak B",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R2-BOX05-2023",
-    "nama_pelatihan": "OJK 9",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 4,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak B",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R3-BOX01-2023",
-    "nama_pelatihan": "OJK 10",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak C",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R3-BOX02-2023",
-    "nama_pelatihan": "OJK 11",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 4,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak C",
-      "baris": "Baris 2"
+      "baris": "Box 1"
     },
     "status_arsip": "Tidak Lengkap",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R3-BOX03-2023",
-    "nama_pelatihan": "OJK 12",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak C",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R3-BOX04-2023",
-    "nama_pelatihan": "OJK 13",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 2,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak C",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tidak Lengkap",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R3-BOX05-2023",
-    "nama_pelatihan": "OJK 14",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 48,
-    "jumlah_peserta_bk": 2,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak C",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R4-BOX01-2023",
-    "nama_pelatihan": "OJK 15",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak D",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R4-BOX02-2023",
-    "nama_pelatihan": "OJK 16",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak D",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R4-BOX03-2023",
-    "nama_pelatihan": "OJK 17",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak D",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tidak Lengkap",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R4-BOX04-2023",
-    "nama_pelatihan": "OJK 18",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak D",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L1-R4-BOX05-2023",
-    "nama_pelatihan": "OJK 19",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 1,
-      "rak": "Rak D",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tidak Lengkap",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R1-BOX01-2023",
-    "nama_pelatihan": "OJK 20",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 46,
-    "jumlah_peserta_bk": 3,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak A",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R1-BOX02-2023",
-    "nama_pelatihan": "OJK 21",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak A",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R1-BOX03-2023",
-    "nama_pelatihan": "OJK 22",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak A",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R1-BOX04-2023",
-    "nama_pelatihan": "OJK 23",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak A",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R1-BOX05-2023",
-    "nama_pelatihan": "OJK 24",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak A",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R2-BOX01-2023",
-    "nama_pelatihan": "OJK 25",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 48,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak B",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R2-BOX02-2023",
-    "nama_pelatihan": "OJK 26",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak B",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R2-BOX03-2023",
-    "nama_pelatihan": "OJK 27",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak B",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R2-BOX04-2023",
-    "nama_pelatihan": "OJK 28",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak B",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R2-BOX05-2023",
-    "nama_pelatihan": "OJK 29",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak B",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R3-BOX01-2023",
-    "nama_pelatihan": "OJK 30",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak C",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R3-BOX02-2023",
-    "nama_pelatihan": "OJK 31",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 3,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak C",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R3-BOX03-2023",
-    "nama_pelatihan": "OJK 32",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 47,
-    "jumlah_peserta_bk": 6,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak C",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R3-BOX04-2023",
-    "nama_pelatihan": "OJK 33",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak C",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R3-BOX05-2023",
-    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 1 Yogyakarta",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak C",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R4-BOX01-2023",
-    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
-    "tahun_pelaksanaan": 2023,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 4,
-    "lokasi": {
-      "lemari": 2,
-      "rak": "Rak D",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R1-BOX01-2024",
-    "nama_pelatihan": "OJK 1",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak A",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R1-BOX02-2024",
-    "nama_pelatihan": "OJK 2",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak A",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R1-BOX03-2024",
-    "nama_pelatihan": "OJK 3",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak A",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R1-BOX04-2024",
-    "nama_pelatihan": "OJK 4",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 3,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak A",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R1-BOX05-2024",
-    "nama_pelatihan": "OJK 5",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak A",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R2-BOX01-2024",
-    "nama_pelatihan": "OJK 6",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak B",
-      "baris": "Baris 1"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R2-BOX02-2024",
-    "nama_pelatihan": "OJK 7",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 6,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak B",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R2-BOX03-2024",
-    "nama_pelatihan": "OJK 8",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 49,
-    "jumlah_peserta_bk": 5,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak B",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R2-BOX04-2024",
-    "nama_pelatihan": "OJK 9",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 5,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak B",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
     "status_barang": "Tidak Ada",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "PCB Speaker",
+    "hasil_uji_kompetensi": "PCB Speaker",
+    "Hasil Uji Kompetensi": "PCB Speaker",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1dsLp9ZCK47Pr0aCiDhOzloY71EKcIrRWK8dXsulgUjk/edit?usp=sharing"
   },
   {
-    "id_box": "L3-R2-BOX05-2024",
-    "nama_pelatihan": "OJK 10",
-    "tahun_pelaksanaan": 2024,
+    "id_box": "Lemari 1 - Rak A  - Box 2",
+    "Kode Boks": "Lemari 1 - Rak A  - Box 2",
+    "kode_box": "Lemari 1 - Rak A  - Box 2",
+    "id": "Lemari 1 - Rak A  - Box 2",
+    "code": "Lemari 1 - Rak A  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 1",
+    "tahun_pelaksanaan": 2023,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 3,
-      "rak": "Rak B",
-      "baris": "Baris 5"
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1k_7kGhxvla1g594_2v62Z13Dypjhawep?usp=drive_link"
   },
   {
-    "id_box": "L3-R3-BOX01-2024",
-    "nama_pelatihan": "OJK 11",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
+    "id_box": "Lemari 1 - Rak A  - Box 3",
+    "Kode Boks": "Lemari 1 - Rak A  - Box 3",
+    "kode_box": "Lemari 1 - Rak A  - Box 3",
+    "id": "Lemari 1 - Rak A  - Box 3",
+    "code": "Lemari 1 - Rak A  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 2",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 46,
+    "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 3,
-      "rak": "Rak C",
-      "baris": "Baris 1"
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Box 3"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Rompi Putih Merah",
+    "hasil_uji_kompetensi": "Rompi Putih Merah",
+    "Hasil Uji Kompetensi": "Rompi Putih Merah",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1lqV57zPz_DrKA4fxIuiyOzoFpiZtbwwT?usp=drive_link"
   },
   {
-    "id_box": "L3-R3-BOX02-2024",
-    "nama_pelatihan": "OJK 12",
-    "tahun_pelaksanaan": 2024,
+    "id_box": "BOX-2023-004",
+    "Kode Boks": "BOX-2023-004",
+    "kode_box": "BOX-2023-004",
+    "id": "BOX-2023-004",
+    "code": "BOX-2023-004",
+    "nama_pelatihan": "Operator Jahit Komponen 3",
+    "tahun_pelaksanaan": 2023,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 3,
-      "rak": "Rak C",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R3-BOX03-2024",
-    "nama_pelatihan": "OJK 13",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak C",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R3-BOX04-2024",
-    "nama_pelatihan": "OJK14",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak C",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R3-BOX05-2024",
-    "nama_pelatihan": "OJK 15",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 0,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak C",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R4-BOX01-2024",
-    "nama_pelatihan": "OJK 16",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 1"
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
     },
     "status_arsip": "Tidak Tersedia",
     "status_barang": "Tidak Ada",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1opsoWGkkLkXOyBIUW3dUzF4EhZ9jZ0_swXy9tcPMjJk/edit?usp=drive_link"
   },
   {
-    "id_box": "L3-R4-BOX02-2024",
-    "nama_pelatihan": "OJK 17",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 8,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 2"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R4-BOX03-2024",
-    "nama_pelatihan": "OJK 18",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 2,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 3"
-    },
-    "status_arsip": "Tidak Lengkap",
-    "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R4-BOX04-2024",
-    "nama_pelatihan": "OJK 19",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 1,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 4"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L3-R4-BOX05-2024",
-    "nama_pelatihan": "OJK 20",
-    "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 3,
-    "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 5"
-    },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
-  },
-  {
-    "id_box": "L2-R4-BOX02-2024",
-    "nama_pelatihan": "GMAW 2",
-    "tahun_pelaksanaan": 2024,
+    "id_box": "Lemari 1 - Rak A  - Box 4",
+    "Kode Boks": "Lemari 1 - Rak A  - Box 4",
+    "kode_box": "Lemari 1 - Rak A  - Box 4",
+    "id": "Lemari 1 - Rak A  - Box 4",
+    "code": "Lemari 1 - Rak A  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 4",
+    "tahun_pelaksanaan": 2023,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 3,
-      "rak": "Rak D",
-      "baris": "Baris 2"
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Rompi Merah Putih",
+    "hasil_uji_kompetensi": "Rompi Merah Putih",
+    "Hasil Uji Kompetensi": "Rompi Merah Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1nCrinCn6OMUtr0UkMEUpwrOlrNMNN0oS?usp=drive_link"
   },
   {
-    "id_box": "L2-R4-BOX03-2024",
+    "id_box": "Lemari 1 - Rak A  - Box 5",
+    "Kode Boks": "Lemari 1 - Rak A  - Box 5",
+    "kode_box": "Lemari 1 - Rak A  - Box 5",
+    "id": "Lemari 1 - Rak A  - Box 5",
+    "code": "Lemari 1 - Rak A  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 5",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak A",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Peach",
+    "hasil_uji_kompetensi": "Rompi Peach",
+    "Hasil Uji Kompetensi": "Rompi Peach",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1Slb84DSc1Apawwn0PmA27sBDvzjHS-Vm?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak B  - Box 1",
+    "Kode Boks": "Lemari 1 - Rak B  - Box 1",
+    "kode_box": "Lemari 1 - Rak B  - Box 1",
+    "id": "Lemari 1 - Rak B  - Box 1",
+    "code": "Lemari 1 - Rak B  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 6",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Kaos Putih",
+    "hasil_uji_kompetensi": "Kaos Putih",
+    "Hasil Uji Kompetensi": "Kaos Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1GVCk9CoaEcP6_DVgrwkXF3jeG7cKbbwT?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak B  - Box 2",
+    "Kode Boks": "Lemari 1 - Rak B  - Box 2",
+    "kode_box": "Lemari 1 - Rak B  - Box 2",
+    "id": "Lemari 1 - Rak B  - Box 2",
+    "code": "Lemari 1 - Rak B  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 7",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih Merah",
+    "hasil_uji_kompetensi": "Rompi Putih Merah",
+    "Hasil Uji Kompetensi": "Rompi Putih Merah",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1u1j8uMe7NSGxjsyICC2ETiqg-NA08B0f?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak B  - Box 3",
+    "Kode Boks": "Lemari 1 - Rak B  - Box 3",
+    "kode_box": "Lemari 1 - Rak B  - Box 3",
+    "id": "Lemari 1 - Rak B  - Box 3",
+    "code": "Lemari 1 - Rak B  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 8",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Lengan Baju Hijau Tosca",
+    "hasil_uji_kompetensi": "Lengan Baju Hijau Tosca",
+    "Hasil Uji Kompetensi": "Lengan Baju Hijau Tosca",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1zRQs7REUZv07PeRWiSG6r_9iqoZVQPnb?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak B  - Box 4",
+    "Kode Boks": "Lemari 1 - Rak B  - Box 4",
+    "kode_box": "Lemari 1 - Rak B  - Box 4",
+    "id": "Lemari 1 - Rak B  - Box 4",
+    "code": "Lemari 1 - Rak B  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 9",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1vJfIs6OtoeoMlmtakKRk6X93ehCEhvOK?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak B  - Box 5",
+    "Kode Boks": "Lemari 1 - Rak B  - Box 5",
+    "kode_box": "Lemari 1 - Rak B  - Box 5",
+    "id": "Lemari 1 - Rak B  - Box 5",
+    "code": "Lemari 1 - Rak B  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 10",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak B",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Peach",
+    "hasil_uji_kompetensi": "Rompi Peach",
+    "Hasil Uji Kompetensi": "Rompi Peach",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1qg_ij7vqCIzDAREwKCG3zM8qunr-c1sB?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak C  - Box 1",
+    "Kode Boks": "Lemari 1 - Rak C  - Box 1",
+    "kode_box": "Lemari 1 - Rak C  - Box 1",
+    "id": "Lemari 1 - Rak C  - Box 1",
+    "code": "Lemari 1 - Rak C  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 11",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Kaos Hijau",
+    "hasil_uji_kompetensi": "Kaos Hijau",
+    "Hasil Uji Kompetensi": "Kaos Hijau",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1qEXKgVa1PGZFedMs09dAZ3nFitljjuZm?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak C  - Box 2",
+    "Kode Boks": "Lemari 1 - Rak C  - Box 2",
+    "kode_box": "Lemari 1 - Rak C  - Box 2",
+    "id": "Lemari 1 - Rak C  - Box 2",
+    "code": "Lemari 1 - Rak C  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 12",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1XzRSo9OD3atcVkkw6ym_GK9C3DEUWDpW?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak C  - Box 3",
+    "Kode Boks": "Lemari 1 - Rak C  - Box 3",
+    "kode_box": "Lemari 1 - Rak C  - Box 3",
+    "id": "Lemari 1 - Rak C  - Box 3",
+    "code": "Lemari 1 - Rak C  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 13",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1viIPnEiGj-K6lO44cLN9J286xplp5kGo?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak C  - Box 4",
+    "Kode Boks": "Lemari 1 - Rak C  - Box 4",
+    "kode_box": "Lemari 1 - Rak C  - Box 4",
+    "id": "Lemari 1 - Rak C  - Box 4",
+    "code": "Lemari 1 - Rak C  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 14",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1SPelki4mn4Vfbx82v3akbjs9tVrWed6S?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak C  - Box 5",
+    "Kode Boks": "Lemari 1 - Rak C  - Box 5",
+    "kode_box": "Lemari 1 - Rak C  - Box 5",
+    "id": "Lemari 1 - Rak C  - Box 5",
+    "code": "Lemari 1 - Rak C  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 15",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak C",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1OPqJm4r90_jDJDN3FrabjK4-FaLC8fHG?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak D - Box 1",
+    "Kode Boks": "Lemari 1 - Rak D - Box 1",
+    "kode_box": "Lemari 1 - Rak D - Box 1",
+    "id": "Lemari 1 - Rak D - Box 1",
+    "code": "Lemari 1 - Rak D - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 16",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1mNp3K2dJhWZhvd3s1zLGlhn-0pLzOK78?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak D - Box 2",
+    "Kode Boks": "Lemari 1 - Rak D - Box 2",
+    "kode_box": "Lemari 1 - Rak D - Box 2",
+    "id": "Lemari 1 - Rak D - Box 2",
+    "code": "Lemari 1 - Rak D - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 17",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1wKnBXYPKPVISoQLHhoS4IKhPnZ4Db-Ht?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak D - Box 3",
+    "Kode Boks": "Lemari 1 - Rak D - Box 3",
+    "kode_box": "Lemari 1 - Rak D - Box 3",
+    "id": "Lemari 1 - Rak D - Box 3",
+    "code": "Lemari 1 - Rak D - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 18",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1B0c1o5EQXbBF7mYOetBQKGoOvTPF985u?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 1 - Rak D - Box 4",
+    "Kode Boks": "Lemari 1 - Rak D - Box 4",
+    "kode_box": "Lemari 1 - Rak D - Box 4",
+    "id": "Lemari 1 - Rak D - Box 4",
+    "code": "Lemari 1 - Rak D - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 19",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 1,
+      "rak": "Rak D",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1u8i1Tn2eb_cnE85m1m31g7cBV3JNncvs?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak D - Box 5",
+    "Kode Boks": "Lemari 2  - Rak D - Box 5",
+    "kode_box": "Lemari 2  - Rak D - Box 5",
+    "id": "Lemari 2  - Rak D - Box 5",
+    "code": "Lemari 2  - Rak D - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 20",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Kaos Kuning",
+    "hasil_uji_kompetensi": "Kaos Kuning",
+    "Hasil Uji Kompetensi": "Kaos Kuning",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1uWlGOnXznLw2VsmJgZ_luUha4Ns7G8K_?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak A  - Box 1",
+    "Kode Boks": "Lemari 2  - Rak A  - Box 1",
+    "kode_box": "Lemari 2  - Rak A  - Box 1",
+    "id": "Lemari 2  - Rak A  - Box 1",
+    "code": "Lemari 2  - Rak A  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 21",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1N7j__ipCZ1VGRgopzM-6JvgFq4VMbP3X?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak A  - Box 2",
+    "Kode Boks": "Lemari 2  - Rak A  - Box 2",
+    "kode_box": "Lemari 2  - Rak A  - Box 2",
+    "id": "Lemari 2  - Rak A  - Box 2",
+    "code": "Lemari 2  - Rak A  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 22",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1aYzizPw9nwl_prVHFV338yhQtHXvpLda?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak A  - Box 3",
+    "Kode Boks": "Lemari 2  - Rak A  - Box 3",
+    "kode_box": "Lemari 2  - Rak A  - Box 3",
+    "id": "Lemari 2  - Rak A  - Box 3",
+    "code": "Lemari 2  - Rak A  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 23",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/16tTZ_oL-p8DtTLG6RlSzyEbCFX2XQXXW?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak A  - Box 4",
+    "Kode Boks": "Lemari 2  - Rak A  - Box 4",
+    "kode_box": "Lemari 2  - Rak A  - Box 4",
+    "id": "Lemari 2  - Rak A  - Box 4",
+    "code": "Lemari 2  - Rak A  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 24",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Kaos Navy",
+    "hasil_uji_kompetensi": "Kaos Navy",
+    "Hasil Uji Kompetensi": "Kaos Navy",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1eGa8Z1GQjVaoZgdTMngURgnz-UZR8GK5?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak A  - Box 5",
+    "Kode Boks": "Lemari 2  - Rak A  - Box 5",
+    "kode_box": "Lemari 2  - Rak A  - Box 5",
+    "id": "Lemari 2  - Rak A  - Box 5",
+    "code": "Lemari 2  - Rak A  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 25",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak A",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1LbMI5q4MPsNVKXE3MtTm8hg3PHFrTf8x?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak B  - Box 1",
+    "Kode Boks": "Lemari 2  - Rak B  - Box 1",
+    "kode_box": "Lemari 2  - Rak B  - Box 1",
+    "id": "Lemari 2  - Rak B  - Box 1",
+    "code": "Lemari 2  - Rak B  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 26",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1WyymtauxTnC3xXWS-5PEOzvGUSjXes4z?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak B  - Box 2",
+    "Kode Boks": "Lemari 2  - Rak B  - Box 2",
+    "kode_box": "Lemari 2  - Rak B  - Box 2",
+    "id": "Lemari 2  - Rak B  - Box 2",
+    "code": "Lemari 2  - Rak B  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 27",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Celana Pendek Putih",
+    "hasil_uji_kompetensi": "Celana Pendek Putih",
+    "Hasil Uji Kompetensi": "Celana Pendek Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1obQBp8VJxc1YYXzqzXhVQMHEi4tqRExe?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak B  - Box 3",
+    "Kode Boks": "Lemari 2  - Rak B  - Box 3",
+    "kode_box": "Lemari 2  - Rak B  - Box 3",
+    "id": "Lemari 2  - Rak B  - Box 3",
+    "code": "Lemari 2  - Rak B  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 28",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Hijau Botol",
+    "hasil_uji_kompetensi": "Rompi Hijau Botol",
+    "Hasil Uji Kompetensi": "Rompi Hijau Botol",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1Es_mrZALGhrV8wJGgHl30SIjJIYiQ4e_?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak B  - Box 4",
+    "Kode Boks": "Lemari 2  - Rak B  - Box 4",
+    "kode_box": "Lemari 2  - Rak B  - Box 4",
+    "id": "Lemari 2  - Rak B  - Box 4",
+    "code": "Lemari 2  - Rak B  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 29",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Kaos Putih",
+    "hasil_uji_kompetensi": "Kaos Putih",
+    "Hasil Uji Kompetensi": "Kaos Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1oNukIRbkttz6TnXoJj20ZHdc-WXIjaR_?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak B  - Box 5",
+    "Kode Boks": "Lemari 2  - Rak B  - Box 5",
+    "kode_box": "Lemari 2  - Rak B  - Box 5",
+    "id": "Lemari 2  - Rak B  - Box 5",
+    "code": "Lemari 2  - Rak B  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 30",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak B",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Kaos Putih",
+    "hasil_uji_kompetensi": "Kaos Putih",
+    "Hasil Uji Kompetensi": "Kaos Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1TY4iFNVrVSZXAoCJHlVCp_UJlbQlsrox?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak C  - Box 1",
+    "Kode Boks": "Lemari 2  - Rak C  - Box 1",
+    "kode_box": "Lemari 2  - Rak C  - Box 1",
+    "id": "Lemari 2  - Rak C  - Box 1",
+    "code": "Lemari 2  - Rak C  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 31",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1d6Dvh5culQ1Svlwkp8GYM5TJYRradxO4?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak C  - Box 2",
+    "Kode Boks": "Lemari 2  - Rak C  - Box 2",
+    "kode_box": "Lemari 2  - Rak C  - Box 2",
+    "id": "Lemari 2  - Rak C  - Box 2",
+    "code": "Lemari 2  - Rak C  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 32",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 6,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Kerah Baju",
+    "hasil_uji_kompetensi": "Kerah Baju",
+    "Hasil Uji Kompetensi": "Kerah Baju",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/14ZyMoaH6ByiByPPTWXUmUvx87jGn2YUo?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak C  - Box 3",
+    "Kode Boks": "Lemari 2  - Rak C  - Box 3",
+    "kode_box": "Lemari 2  - Rak C  - Box 3",
+    "id": "Lemari 2  - Rak C  - Box 3",
+    "code": "Lemari 2  - Rak C  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 33",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Underwear (Bra crem)",
+    "hasil_uji_kompetensi": "Underwear (Bra crem)",
+    "Hasil Uji Kompetensi": "Underwear (Bra crem)",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/10EfS-HT0sD3zCgeZwRbFaaB1_S6QwlCJ?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 2  - Rak C  - Box 4",
+    "Kode Boks": "Lemari 2  - Rak C  - Box 4",
+    "kode_box": "Lemari 2  - Rak C  - Box 4",
+    "id": "Lemari 2  - Rak C  - Box 4",
+    "code": "Lemari 2  - Rak C  - Box 4",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 1 Yogyakarta",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 4,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1YmSu4dYR4aQXALkuz8FdLhKhxpGPUqxg7tlbhHi_VMI/edit?usp=sharing"
+  },
+  {
+    "id_box": "Lemari 2  - Rak C  - Box 5",
+    "Kode Boks": "Lemari 2  - Rak C  - Box 5",
+    "kode_box": "Lemari 2  - Rak C  - Box 5",
+    "id": "Lemari 2  - Rak C  - Box 5",
+    "code": "Lemari 2  - Rak C  - Box 5",
+    "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
+    "tahun_pelaksanaan": 2023,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 2,
+      "rak": "Rak C",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1MRFsZGJ15S86Y8qIG3vy7uczCfJGuTuN9NnUr9AndKU/edit?usp=sharing"
+  },
+  {
+    "id_box": "Lemari 2  - Rak D - Box 1",
+    "Kode Boks": "Lemari 2  - Rak D - Box 1",
+    "kode_box": "Lemari 2  - Rak D - Box 1",
+    "id": "Lemari 2  - Rak D - Box 1",
+    "code": "Lemari 2  - Rak D - Box 1",
     "nama_pelatihan": "Jointer 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
@@ -863,14 +804,21 @@
     "lokasi": {
       "lemari": 2,
       "rak": "Rak D",
-      "baris": "Baris 3"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Fiber Optik",
+    "hasil_uji_kompetensi": "Fiber Optik",
+    "Hasil Uji Kompetensi": "Fiber Optik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1RgPbcK5PFfSmAIGv0WYFGGgMWd3pL1Md?usp=sharing"
   },
   {
-    "id_box": "L2-R4-BOX04-2024",
+    "id_box": "Lemari 2  - Rak D - Box 2",
+    "Kode Boks": "Lemari 2  - Rak D - Box 2",
+    "kode_box": "Lemari 2  - Rak D - Box 2",
+    "id": "Lemari 2  - Rak D - Box 2",
+    "code": "Lemari 2  - Rak D - Box 2",
     "nama_pelatihan": "Perbaikan Mesin Jahit Angkatan 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
@@ -878,14 +826,21 @@
     "lokasi": {
       "lemari": 2,
       "rak": "Rak D",
-      "baris": "Baris 4"
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Kain",
+    "hasil_uji_kompetensi": "Lembaran Kain",
+    "Hasil Uji Kompetensi": "Lembaran Kain",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1OglzXlgLo87bUFHbI5OI0rYgfrNK92L6?usp=drive_link"
   },
   {
-    "id_box": "L2-R4-BOX05-2024",
+    "id_box": "Lemari 2  - Rak D - Box 3",
+    "Kode Boks": "Lemari 2  - Rak D - Box 3",
+    "kode_box": "Lemari 2  - Rak D - Box 3",
+    "id": "Lemari 2  - Rak D - Box 3",
+    "code": "Lemari 2  - Rak D - Box 3",
     "nama_pelatihan": "Jahit Busana Custom Made Angkatan 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -893,14 +848,21 @@
     "lokasi": {
       "lemari": 2,
       "rak": "Rak D",
-      "baris": "Baris 4"
+      "baris": "Box 3"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Baju Coklat Bunga Pink",
+    "hasil_uji_kompetensi": "Baju Coklat Bunga Pink",
+    "Hasil Uji Kompetensi": "Baju Coklat Bunga Pink",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/18Ve_Wp4uXiRF2mc3GMCrVA7s7VJJGd3M?usp=drive_link"
   },
   {
-    "id_box": "L4-R1-BOX01-2024",
+    "id_box": "Lemari 2  - Rak D - Box 4",
+    "Kode Boks": "Lemari 2  - Rak D - Box 4",
+    "kode_box": "Lemari 2  - Rak D - Box 4",
+    "id": "Lemari 2  - Rak D - Box 4",
+    "code": "Lemari 2  - Rak D - Box 4",
     "nama_pelatihan": "Jahit Busana Custom Made Angkatan 2",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -908,44 +870,505 @@
     "lokasi": {
       "lemari": 2,
       "rak": "Rak D",
-      "baris": "Baris 1"
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Baju Coklat Bunga Kuning",
+    "hasil_uji_kompetensi": "Baju Coklat Bunga Kuning",
+    "Hasil Uji Kompetensi": "Baju Coklat Bunga Kuning",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1Ldu0TajOc8wbKeH_pa7hHbEJJXUTW6U5?usp=drive_link"
   },
   {
-    "id_box": "L4-R1-BOX02-2024",
+    "id_box": "Lemari 2  - Rak D - Box 5-2",
+    "Kode Boks": "Lemari 2  - Rak D - Box 5-2",
+    "kode_box": "Lemari 2  - Rak D - Box 5-2",
+    "id": "Lemari 2  - Rak D - Box 5-2",
+    "code": "Lemari 2  - Rak D - Box 5-2",
     "nama_pelatihan": "SMAW 5",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 1,
     "lokasi": {
-      "lemari": 4,
-      "rak": "Rak A",
-      "baris": "Baris 2"
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "Box 5"
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Kit Running Led",
+    "hasil_uji_kompetensi": "Kit Running Led",
+    "Hasil Uji Kompetensi": "Kit Running Led",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1HqBnGa69aPkh5nHbhKl-sz7GzpBn-xgo?usp=drive_link"
   },
   {
-    "id_box": "L4-R1-BOX03-2024",
-    "nama_pelatihan": "SMAW 9",
+    "id_box": "Lemari 2  - Rak D - box 6",
+    "Kode Boks": "Lemari 2  - Rak D - box 6",
+    "kode_box": "Lemari 2  - Rak D - box 6",
+    "id": "Lemari 2  - Rak D - box 6",
+    "code": "Lemari 2  - Rak D - box 6",
+    "nama_pelatihan": "GMAW 2",
     "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 25,
-    "jumlah_peserta_bk": 1,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 4,
+      "lemari": 2,
+      "rak": "Rak D",
+      "baris": "box 6"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/14unsyb3QYbx1up-2UJV88MWMCai3vSnkZxL8Xij3d30/edit?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak A  - Box 1",
+    "Kode Boks": "Lemari 3 - Rak A  - Box 1",
+    "kode_box": "Lemari 3 - Rak A  - Box 1",
+    "id": "Lemari 3 - Rak A  - Box 1",
+    "code": "Lemari 3 - Rak A  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 1",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
       "rak": "Rak A",
-      "baris": "Baris 3"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Rompi Orange",
+    "hasil_uji_kompetensi": "Rompi Orange",
+    "Hasil Uji Kompetensi": "Rompi Orange",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1yWq_rmbQBone4oSnafQYTM2yYB34RCPE?usp=sharing"
   },
   {
-    "id_box": "L4-R1-BOX04-2024",
+    "id_box": "Lemari 3 - Rak A  - Box 2",
+    "Kode Boks": "Lemari 3 - Rak A  - Box 2",
+    "kode_box": "Lemari 3 - Rak A  - Box 2",
+    "id": "Lemari 3 - Rak A  - Box 2",
+    "code": "Lemari 3 - Rak A  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 2",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Kuning",
+    "hasil_uji_kompetensi": "Rompi Kuning",
+    "Hasil Uji Kompetensi": "Rompi Kuning",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1yin7xelVfLKrIFtgRQCPlj7nvKDoZtCa?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak A  - Box 3",
+    "Kode Boks": "Lemari 3 - Rak A  - Box 3",
+    "kode_box": "Lemari 3 - Rak A  - Box 3",
+    "id": "Lemari 3 - Rak A  - Box 3",
+    "code": "Lemari 3 - Rak A  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 3",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Kaos Kuning",
+    "hasil_uji_kompetensi": "Kaos Kuning",
+    "Hasil Uji Kompetensi": "Kaos Kuning",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1Oj_AejBRu8CyoXuzUp1HnAaPBT7aBUvW?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak A  - Box 4",
+    "Kode Boks": "Lemari 3 - Rak A  - Box 4",
+    "kode_box": "Lemari 3 - Rak A  - Box 4",
+    "id": "Lemari 3 - Rak A  - Box 4",
+    "code": "Lemari 3 - Rak A  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 4",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1crxOafboRfQCxtX1uLDbWMMk7Jinb8Iq?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak A  - Box 5",
+    "Kode Boks": "Lemari 3 - Rak A  - Box 5",
+    "kode_box": "Lemari 3 - Rak A  - Box 5",
+    "id": "Lemari 3 - Rak A  - Box 5",
+    "code": "Lemari 3 - Rak A  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 5",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak A",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1o2QzLW4vD7OhMh8DbJIFQVs3NI21lbPJ?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak B  - Box 1",
+    "Kode Boks": "Lemari 3 - Rak B  - Box 1",
+    "kode_box": "Lemari 3 - Rak B  - Box 1",
+    "id": "Lemari 3 - Rak B  - Box 1",
+    "code": "Lemari 3 - Rak B  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 6",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1H-49wrmkk0uTOfgG7xP8yKxRuBPTE4Z-?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak B  - Box 2",
+    "Kode Boks": "Lemari 3 - Rak B  - Box 2",
+    "kode_box": "Lemari 3 - Rak B  - Box 2",
+    "id": "Lemari 3 - Rak B  - Box 2",
+    "code": "Lemari 3 - Rak B  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 7",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 6,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Benang Merah",
+    "hasil_uji_kompetensi": "Rompi Benang Merah",
+    "Hasil Uji Kompetensi": "Rompi Benang Merah",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1haYf-iU7EvB4aein2XgwXoofJ_lrHR7U?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak B  - Box 3",
+    "Kode Boks": "Lemari 3 - Rak B  - Box 3",
+    "kode_box": "Lemari 3 - Rak B  - Box 3",
+    "id": "Lemari 3 - Rak B  - Box 3",
+    "code": "Lemari 3 - Rak B  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 8",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 49,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1Cw6wmN_ykHjVdhRfdXO3-vlUJVvzcz9y?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak B  - Box 4",
+    "Kode Boks": "Lemari 3 - Rak B  - Box 4",
+    "kode_box": "Lemari 3 - Rak B  - Box 4",
+    "id": "Lemari 3 - Rak B  - Box 4",
+    "code": "Lemari 3 - Rak B  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 9",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 5,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1yoobPQjB97aaZ6Rf5KQ4nPmauglfWkF6Bx45gxjnnME/edit?usp=sharing"
+  },
+  {
+    "id_box": "Lemari 3 - Rak B  - Box 5",
+    "Kode Boks": "Lemari 3 - Rak B  - Box 5",
+    "kode_box": "Lemari 3 - Rak B  - Box 5",
+    "id": "Lemari 3 - Rak B  - Box 5",
+    "code": "Lemari 3 - Rak B  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 10",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak B",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Hitam",
+    "hasil_uji_kompetensi": "Rompi Hitam",
+    "Hasil Uji Kompetensi": "Rompi Hitam",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1kPu1JVCyG4r2QszE3ZYdDFZoWcT4lI2-?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak C  - Box 1",
+    "Kode Boks": "Lemari 3 - Rak C  - Box 1",
+    "kode_box": "Lemari 3 - Rak C  - Box 1",
+    "id": "Lemari 3 - Rak C  - Box 1",
+    "code": "Lemari 3 - Rak C  - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 11",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Underwear (Bra Putih)",
+    "hasil_uji_kompetensi": "Underwear (Bra Putih)",
+    "Hasil Uji Kompetensi": "Underwear (Bra Putih)",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/12JuArDH_JPQ5YIBbg_6OKmiuNmwWkIht?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak C  - Box 2",
+    "Kode Boks": "Lemari 3 - Rak C  - Box 2",
+    "kode_box": "Lemari 3 - Rak C  - Box 2",
+    "id": "Lemari 3 - Rak C  - Box 2",
+    "code": "Lemari 3 - Rak C  - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 12",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/15IR3L7dNuCrLGRYIF7d2kxJvh7cvon0z?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak C  - Box 3",
+    "Kode Boks": "Lemari 3 - Rak C  - Box 3",
+    "kode_box": "Lemari 3 - Rak C  - Box 3",
+    "id": "Lemari 3 - Rak C  - Box 3",
+    "code": "Lemari 3 - Rak C  - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 13",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rok Berbie Putih",
+    "hasil_uji_kompetensi": "Rok Berbie Putih",
+    "Hasil Uji Kompetensi": "Rok Berbie Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/17N4gLyt5eIKxejhC3_pIxzgjlr2dwzou?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak C  - Box 4",
+    "Kode Boks": "Lemari 3 - Rak C  - Box 4",
+    "kode_box": "Lemari 3 - Rak C  - Box 4",
+    "id": "Lemari 3 - Rak C  - Box 4",
+    "code": "Lemari 3 - Rak C  - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen14",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Kaos Anak-Anak Merah Putih",
+    "hasil_uji_kompetensi": "Kaos Anak-Anak Merah Putih",
+    "Hasil Uji Kompetensi": "Kaos Anak-Anak Merah Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1G0xop8JAM0owvtJKaUWbn-h1JtEKVOiR?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak C  - Box 5",
+    "Kode Boks": "Lemari 3 - Rak C  - Box 5",
+    "kode_box": "Lemari 3 - Rak C  - Box 5",
+    "id": "Lemari 3 - Rak C  - Box 5",
+    "code": "Lemari 3 - Rak C  - Box 5",
+    "nama_pelatihan": "Operator Jahit Komponen 15",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak C",
+      "baris": "Box 5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Putih",
+    "hasil_uji_kompetensi": "Rompi Putih",
+    "Hasil Uji Kompetensi": "Rompi Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1xD6eAEIIj0cH-ckvsRt-jDOrWrpUZplF?usp=drive_link"
+  },
+  {
+    "id_box": "BOX-2024-058",
+    "Kode Boks": "BOX-2024-058",
+    "kode_box": "BOX-2024-058",
+    "id": "BOX-2024-058",
+    "code": "BOX-2024-058",
+    "nama_pelatihan": "Operator Jahit Komponen 16",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tidak Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/10JO2TiPiXHEI-lCt8hSbiG0w1xOplmqrSZCUhCx2tyc/edit?usp=sharing"
+  },
+  {
+    "id_box": "Lemari 3 - Rak D - Box 1",
+    "Kode Boks": "Lemari 3 - Rak D - Box 1",
+    "kode_box": "Lemari 3 - Rak D - Box 1",
+    "id": "Lemari 3 - Rak D - Box 1",
+    "code": "Lemari 3 - Rak D - Box 1",
+    "nama_pelatihan": "Operator Jahit Komponen 17",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 8,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Celana Pendek Putih",
+    "hasil_uji_kompetensi": "Celana Pendek Putih",
+    "Hasil Uji Kompetensi": "Celana Pendek Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1WlX_tbnQig5FqxiRmIfm_Ib9teWxBfCj?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak D - Box 2",
+    "Kode Boks": "Lemari 3 - Rak D - Box 2",
+    "kode_box": "Lemari 3 - Rak D - Box 2",
+    "id": "Lemari 3 - Rak D - Box 2",
+    "code": "Lemari 3 - Rak D - Box 2",
+    "nama_pelatihan": "Operator Jahit Komponen 18",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 2,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Box 2"
+    },
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Underware Putih",
+    "hasil_uji_kompetensi": "Underware Putih",
+    "Hasil Uji Kompetensi": "Underware Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1j2AMkASUYJudxqbzWRHyWrUzRd6_hGP7?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak D - Box 3",
+    "Kode Boks": "Lemari 3 - Rak D - Box 3",
+    "kode_box": "Lemari 3 - Rak D - Box 3",
+    "id": "Lemari 3 - Rak D - Box 3",
+    "code": "Lemari 3 - Rak D - Box 3",
+    "nama_pelatihan": "Operator Jahit Komponen 19",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Box 3"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Benang Putih",
+    "hasil_uji_kompetensi": "Rompi Benang Putih",
+    "Hasil Uji Kompetensi": "Rompi Benang Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1xMGt1CJLaOYLPmizxDmjNhdJ_BbOOHqB?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 3 - Rak D - Box 4",
+    "Kode Boks": "Lemari 3 - Rak D - Box 4",
+    "kode_box": "Lemari 3 - Rak D - Box 4",
+    "id": "Lemari 3 - Rak D - Box 4",
+    "code": "Lemari 3 - Rak D - Box 4",
+    "nama_pelatihan": "Operator Jahit Komponen 20",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 50,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "Box 4"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "Rompi Benang Putih",
+    "hasil_uji_kompetensi": "Rompi Benang Putih",
+    "Hasil Uji Kompetensi": "Rompi Benang Putih",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1FU9_U09ywHBRVnMhcPmGZ8hzR3UpM9TL?usp=drive_link"
+  },
+  {
+    "id_box": "Lemari 4 - Rak A  - Box 5",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 5",
+    "kode_box": "Lemari 4 - Rak A  - Box 5",
+    "id": "Lemari 4 - Rak A  - Box 5",
+    "code": "Lemari 4 - Rak A  - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Teknisi AC Residential Angkatan 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
@@ -953,14 +1376,21 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak A",
-      "baris": "Baris 4"
+      "baris": "Box 5"
     },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1MxGkx1sx40MDeONDKUOFpU5D417aLd6Y1vUdMMrYM-U/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R1-BOX05-2024",
+    "id_box": "Lemari 4 - Rak A  - Box 1",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 1",
+    "kode_box": "Lemari 4 - Rak A  - Box 1",
+    "id": "Lemari 4 - Rak A  - Box 1",
+    "code": "Lemari 4 - Rak A  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Teknisi AC Residential Angkatan 2",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
@@ -968,14 +1398,21 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak A",
-      "baris": "Baris 5"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1BDXtp1SXLmjfwHZC-wiXf2p9Nzczis0ZbCB1PN8Iv2s/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R2-BOX01-2024",
+    "id_box": "Lemari 4 - Rak A  - Box 2",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 2",
+    "kode_box": "Lemari 4 - Rak A  - Box 2",
+    "id": "Lemari 4 - Rak A  - Box 2",
+    "code": "Lemari 4 - Rak A  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
@@ -983,59 +1420,87 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak A",
-      "baris": "Baris 1"
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1ekpeWEc2X8vPFepvzNNxzQIJ39sGk2xsfynM9cRHuDw/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R2-BOX02-2024",
+    "id_box": "Lemari 4 - Rak A  - Box 3",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 3",
+    "kode_box": "Lemari 4 - Rak A  - Box 3",
+    "id": "Lemari 4 - Rak A  - Box 3",
+    "code": "Lemari 4 - Rak A  - Box 3",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 2",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 2,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak B",
-      "baris": "Baris 2"
+      "rak": "Rak A",
+      "baris": "Box 3"
     },
     "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1uqhHOaKySL0i-zORAyL9l3x6CrMGHyBSp99BTPhh-gY/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R2-BOX03-2024",
+    "id_box": "Lemari 4 - Rak A  - Box 4",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 4",
+    "kode_box": "Lemari 4 - Rak A  - Box 4",
+    "id": "Lemari 4 - Rak A  - Box 4",
+    "code": "Lemari 4 - Rak A  - Box 4",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 3",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 1,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak B",
-      "baris": "Baris 3"
+      "rak": "Rak A",
+      "baris": "Box 4"
     },
     "status_arsip": "Tidak Lengkap",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1Bm6_7OurXa21EIxy_crdcZl84OKWdHKE6P-yoDitsNY/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R2-BOX04-2024",
+    "id_box": "Lemari 4 - Rak A  - Box 5-2",
+    "Kode Boks": "Lemari 4 - Rak A  - Box 5-2",
+    "kode_box": "Lemari 4 - Rak A  - Box 5-2",
+    "id": "Lemari 4 - Rak A  - Box 5-2",
+    "code": "Lemari 4 - Rak A  - Box 5-2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Assembly Solder Angkatan 4",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 1,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak B",
-      "baris": "Baris 4"
+      "rak": "Rak A",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1Twh8DQifmr2dMeDQU2atku6x1tiCsG-AXrujOX9G6dY/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R2-BOX05-2024",
+    "id_box": "Lemari 4 - Rak B  - Box 1",
+    "Kode Boks": "Lemari 4 - Rak B  - Box 1",
+    "kode_box": "Lemari 4 - Rak B  - Box 1",
+    "id": "Lemari 4 - Rak B  - Box 1",
+    "code": "Lemari 4 - Rak B  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 1",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1043,14 +1508,21 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak B",
-      "baris": "Baris 5"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1a1WKJU6ZAk8jZFmXKU1LQgfWyX79NEWCsv078_wcnJU/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R3-BOX01-2024",
+    "id_box": "Lemari 4 - Rak B  - Box 2",
+    "Kode Boks": "Lemari 4 - Rak B  - Box 2",
+    "kode_box": "Lemari 4 - Rak B  - Box 2",
+    "id": "Lemari 4 - Rak B  - Box 2",
+    "code": "Lemari 4 - Rak B  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 2",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 49,
@@ -1058,59 +1530,87 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak B",
-      "baris": "Baris 1"
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1OAg0qweVHv_o5Tztr2jT4xc-TcNCoCuUvIpZamZzcrM/edit?usp=sharing"
   },
   {
-    "id_box": "L4-R3-BOX02-2024",
+    "id_box": "Lemari 4 - Rak B  - Box 3",
+    "Kode Boks": "Lemari 4 - Rak B  - Box 3",
+    "kode_box": "Lemari 4 - Rak B  - Box 3",
+    "id": "Lemari 4 - Rak B  - Box 3",
+    "code": "Lemari 4 - Rak B  - Box 3",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 3",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 3,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak C",
-      "baris": "Baris 2"
+      "rak": "Rak B",
+      "baris": "Box 3"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1YAmBUVjZGilXa409zdtdb7dh4EIKGRMpqvs4ZcV8vqU/edit?usp=sharing"
   },
   {
-    "id_box": "L4-R3-BOX03-2024",
+    "id_box": "Lemari 4 - Rak B  - Box 4",
+    "Kode Boks": "Lemari 4 - Rak B  - Box 4",
+    "kode_box": "Lemari 4 - Rak B  - Box 4",
+    "id": "Lemari 4 - Rak B  - Box 4",
+    "code": "Lemari 4 - Rak B  - Box 4",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 4",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 4,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak C",
-      "baris": "Baris 3"
+      "rak": "Rak B",
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1aghsnbHTHfGYUBraiw_8sw60fPGfnQPyM_4C4o8zsGg/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R3-BOX04-2024",
+    "id_box": "Lemari 4 - Rak B  - Box 5",
+    "Kode Boks": "Lemari 4 - Rak B  - Box 5",
+    "kode_box": "Lemari 4 - Rak B  - Box 5",
+    "id": "Lemari 4 - Rak B  - Box 5",
+    "code": "Lemari 4 - Rak B  - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 5",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 46,
     "jumlah_peserta_bk": 2,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak C",
-      "baris": "Baris 4"
+      "rak": "Rak B",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1yDrZKSMT2K7vQVft_3pMHiH2Gmrmr4wTxUJwUW26zgI/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R3-BOX05-2024",
+    "id_box": "Lemari 4 - Rak C  - Box 1",
+    "Kode Boks": "Lemari 4 - Rak C  - Box 1",
+    "kode_box": "Lemari 4 - Rak C  - Box 1",
+    "id": "Lemari 4 - Rak C  - Box 1",
+    "code": "Lemari 4 - Rak C  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 6",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 47,
@@ -1118,14 +1618,21 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak C",
-      "baris": "Baris 5"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1PfP_wcNNyw8D6VqszTnu6H6WNsuDBYg7Zd1vOMOH0OA/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX01-2024",
+    "id_box": "Lemari 4 - Rak C  - Box 2",
+    "Kode Boks": "Lemari 4 - Rak C  - Box 2",
+    "kode_box": "Lemari 4 - Rak C  - Box 2",
+    "id": "Lemari 4 - Rak C  - Box 2",
+    "code": "Lemari 4 - Rak C  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 7",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1133,59 +1640,87 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak C",
-      "baris": "Baris 1"
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/14xKZPEaTe1l-ZJ6hOlxiWDbMhKx8DS2Fp9BXJtqRidU/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX02-2024",
+    "id_box": "Lemari 4 - Rak C  - Box 3",
+    "Kode Boks": "Lemari 4 - Rak C  - Box 3",
+    "kode_box": "Lemari 4 - Rak C  - Box 3",
+    "id": "Lemari 4 - Rak C  - Box 3",
+    "code": "Lemari 4 - Rak C  - Box 3",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 8",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 3,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak D",
-      "baris": "Baris 2"
+      "rak": "Rak C",
+      "baris": "Box 3"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1KEFTgVfSftQL0ysZjAbL5deAiFwZxax0By9UXBAafBc/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX03-2024",
+    "id_box": "Lemari 4 - Rak C  - Box 4",
+    "Kode Boks": "Lemari 4 - Rak C  - Box 4",
+    "kode_box": "Lemari 4 - Rak C  - Box 4",
+    "id": "Lemari 4 - Rak C  - Box 4",
+    "code": "Lemari 4 - Rak C  - Box 4",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 9",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 5,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak D",
-      "baris": "Baris 3"
+      "rak": "Rak C",
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1DtN9-cxs7bk54B6Brue7bDQ5IwRjflSiNa5aWeqZqwA/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX04-2024",
+    "id_box": "Lemari 4 - Rak C  - Box 5",
+    "Kode Boks": "Lemari 4 - Rak C  - Box 5",
+    "kode_box": "Lemari 4 - Rak C  - Box 5",
+    "id": "Lemari 4 - Rak C  - Box 5",
+    "code": "Lemari 4 - Rak C  - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 10",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 2,
     "lokasi": {
       "lemari": 4,
-      "rak": "Rak D",
-      "baris": "Baris 4"
+      "rak": "Rak C",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1PXkD5xe2G8D6rGNE4rwc3onyB1MY4dMd2RNotI86IoU/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX05-2024",
+    "id_box": "Lemari 4 - Rak D - Box 1",
+    "Kode Boks": "Lemari 4 - Rak D - Box 1",
+    "kode_box": "Lemari 4 - Rak D - Box 1",
+    "id": "Lemari 4 - Rak D - Box 1",
+    "code": "Lemari 4 - Rak D - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 11",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1193,14 +1728,21 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak D",
-      "baris": "Baris 5"
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1avqL0qz0hsmy9ubXvX_E50K1RKBHIoZYqe110Efc5rM/edit?usp=drive_link"
   },
   {
-    "id_box": "L4-R4-BOX01-2024",
+    "id_box": "Lemari 4 - Rak D - Box 2",
+    "Kode Boks": "Lemari 4 - Rak D - Box 2",
+    "kode_box": "Lemari 4 - Rak D - Box 2",
+    "id": "Lemari 4 - Rak D - Box 2",
+    "code": "Lemari 4 - Rak D - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 12",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1208,59 +1750,87 @@
     "lokasi": {
       "lemari": 4,
       "rak": "Rak D",
-      "baris": "Baris 1"
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1dbcZA8pqnWHOYciA6-xQNu-tbIgVvlUNJc82sPWvQx0/edit?usp=drive_link"
   },
   {
-    "id_box": "BOX-2024-082",
+    "id_box": "Lemari 4 - Rak D - Box 3",
+    "Kode Boks": "Lemari 4 - Rak D - Box 3",
+    "kode_box": "Lemari 4 - Rak D - Box 3",
+    "id": "Lemari 4 - Rak D - Box 3",
+    "code": "Lemari 4 - Rak D - Box 3",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 13",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
-    "jumlah_peserta_bk": 2,
+    "jumlah_peserta_bk": 1,
     "lokasi": {
-      "lemari": 0,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Box 3"
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/19LMoDBgrfXeAMYhOzriQe94asjHK566DcnfrfhM_q6c/edit?usp=drive_link"
   },
   {
-    "id_box": "BOX-2024-083",
+    "id_box": "Lemari 4 - Rak D - Box 4",
+    "Kode Boks": "Lemari 4 - Rak D - Box 4",
+    "kode_box": "Lemari 4 - Rak D - Box 4",
+    "id": "Lemari 4 - Rak D - Box 4",
+    "code": "Lemari 4 - Rak D - Box 4",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 14",
     "tahun_pelaksanaan": 2024,
-    "jumlah_peserta": 50,
+    "jumlah_peserta": 48,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 0,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1SoHnCgi3b4AC-hWYvbrKAz6Lm7zSL2brKwlEarcNfZQ/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-084",
+    "id_box": "Lemari 4 - Rak D - Box 5",
+    "Kode Boks": "Lemari 4 - Rak D - Box 5",
+    "kode_box": "Lemari 4 - Rak D - Box 5",
+    "id": "Lemari 4 - Rak D - Box 5",
+    "code": "Lemari 4 - Rak D - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 15",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 48,
     "jumlah_peserta_bk": 2,
     "lokasi": {
-      "lemari": 0,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 4,
+      "rak": "Rak D",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1P87DTCeVBKGpq43VW8Xb2hAeRg9gM8lMelI_r-LF-UA/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-085",
+    "id_box": "BOX-2024-084",
+    "Kode Boks": "BOX-2024-084",
+    "kode_box": "BOX-2024-084",
+    "id": "BOX-2024-084",
+    "code": "BOX-2024-084",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 16",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1272,10 +1842,17 @@
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1y-80MjWNYFbcqWuX_Xgsr-pNDYD-YQUTUyyghLs1qqM/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-086",
+    "id_box": "BOX-2024-085",
+    "Kode Boks": "BOX-2024-085",
+    "kode_box": "BOX-2024-085",
+    "id": "BOX-2024-085",
+    "code": "BOX-2024-085",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
@@ -1287,10 +1864,17 @@
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1eQ3b8bq781ycwNd9gMREyAnrrJDkNXeIpKPmvQ7qmAM/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-087",
+    "id_box": "BOX-2024-086",
+    "Kode Boks": "BOX-2024-086",
+    "kode_box": "BOX-2024-086",
+    "id": "BOX-2024-086",
+    "code": "BOX-2024-086",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 18",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 49,
@@ -1300,12 +1884,63 @@
       "rak": "-",
       "baris": "-"
     },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Lembaran Batik",
+    "hasil_uji_kompetensi": "Lembaran Batik",
+    "Hasil Uji Kompetensi": "Lembaran Batik",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1nEFDMenxKp1-QuhwP2P8n-sr4_-t78W_Jxk-AIKB1Q0/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-088",
+    "id_box": "BOX-2024-087",
+    "Kode Boks": "BOX-2024-087",
+    "kode_box": "BOX-2024-087",
+    "id": "BOX-2024-087",
+    "code": "BOX-2024-087",
+    "nama_pelatihan": "SMBC",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 0,
+      "rak": "-",
+      "baris": "-"
+    },
+    "status_arsip": "Tidak Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "-",
+    "hasil_uji_kompetensi": "-",
+    "Hasil Uji Kompetensi": "-",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/19xR1w0vwp4nRxqQCG2Y4QsKlfevLT8dJ?usp=drive_link"
+  },
+  {
+    "id_box": "L3-R1-BOX88-2024",
+    "Kode Boks": "L3-R1-BOX88-2024",
+    "kode_box": "L3-R1-BOX88-2024",
+    "id": "L3-R1-BOX88-2024",
+    "code": "L3-R1-BOX88-2024",
+    "nama_pelatihan": "SMAW 9",
+    "tahun_pelaksanaan": 2024,
+    "jumlah_peserta": 25,
+    "jumlah_peserta_bk": 1,
+    "lokasi": {
+      "lemari": 3,
+      "rak": "Rak D",
+      "baris": "box 6"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1fciO6fsoksGPAg76fa-xjxl6PERzPUj0yXSFY3avuN8/edit?usp=drive_link"
+  },
+  {
+    "id_box": "BOX-2025-089",
+    "Kode Boks": "BOX-2025-089",
+    "kode_box": "BOX-2025-089",
+    "id": "BOX-2025-089",
+    "code": "BOX-2025-089",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Fiber Optik Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 25,
@@ -1317,10 +1952,17 @@
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Fiber Optik",
+    "hasil_uji_kompetensi": "Fiber Optik",
+    "Hasil Uji Kompetensi": "Fiber Optik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1j7azEV7O1Ejh9m1Fx5bYnexFuKNjmDi0?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-089",
+    "id_box": "BOX-2025-090",
+    "Kode Boks": "BOX-2025-090",
+    "kode_box": "BOX-2025-090",
+    "id": "BOX-2025-090",
+    "code": "BOX-2025-090",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 25,
@@ -1332,14 +1974,21 @@
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Teknisi AC",
+    "hasil_uji_kompetensi": "Teknisi AC",
+    "Hasil Uji Kompetensi": "Teknisi AC",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1pjcipg2EUYbcgXFp3PfMrA9M2BELHZFE?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-090",
+    "id_box": "BOX-2025-091",
+    "Kode Boks": "BOX-2025-091",
+    "kode_box": "BOX-2025-091",
+    "id": "BOX-2025-091",
+    "code": "BOX-2025-091",
     "nama_pelatihan": "Sistem 3-in-1 (ReSkilling) Fiber Optik Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 16,
-    "jumlah_peserta_bk": 16,
+    "jumlah_peserta_bk": 0,
     "lokasi": {
       "lemari": 0,
       "rak": "-",
@@ -1347,10 +1996,17 @@
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Fiber Optik",
+    "hasil_uji_kompetensi": "Fiber Optik",
+    "Hasil Uji Kompetensi": "Fiber Optik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1_EXSPeU8R7T537BHID4f6sMARbjmLuzZ?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-091",
+    "id_box": "BOX-2025-092",
+    "Kode Boks": "BOX-2025-092",
+    "kode_box": "BOX-2025-092",
+    "id": "BOX-2025-092",
+    "code": "BOX-2025-092",
     "nama_pelatihan": "Jahit Busana Custom Made Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 40,
@@ -1362,11 +2018,18 @@
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Tidak Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Blouse Pink, Biru, Merah",
+    "hasil_uji_kompetensi": "Blouse Pink, Biru, Merah",
+    "Hasil Uji Kompetensi": "Blouse Pink, Biru, Merah",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1IaRdqoovEWbKfrEUpn-1CuN-T3gXki6j8BNRRskso7Q/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-092",
-    "nama_pelatihan": "OJK 1",
+    "id_box": "BOX-2025-093",
+    "Kode Boks": "BOX-2025-093",
+    "kode_box": "BOX-2025-093",
+    "id": "BOX-2025-093",
+    "code": "BOX-2025-093",
+    "nama_pelatihan": "Operator Jahit Komponen 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 9,
@@ -1375,14 +2038,21 @@
       "rak": "-",
       "baris": "-"
     },
-    "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_arsip": "Tidak Lengkap",
+    "status_barang": "Tidak Lengkap",
+    "hasilUjiKompetensi": "Boneka Ikan Pink",
+    "hasil_uji_kompetensi": "Boneka Ikan Pink",
+    "Hasil Uji Kompetensi": "Boneka Ikan Pink",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1shcxDUfcL4fd_hiUik47nYr7SJJW-EaC?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-093",
+    "id_box": "BOX-2026-094",
+    "Kode Boks": "BOX-2026-094",
+    "kode_box": "BOX-2026-094",
+    "id": "BOX-2026-094",
+    "code": "BOX-2026-094",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential JIIPE",
-    "tahun_pelaksanaan": 2025,
+    "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 20,
     "jumlah_peserta_bk": 1,
     "lokasi": {
@@ -1391,11 +2061,18 @@
       "baris": "-"
     },
     "status_arsip": "Tersedia",
-    "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "status_barang": "Tidak Ada",
+    "hasilUjiKompetensi": "Tidak Ada",
+    "hasil_uji_kompetensi": "Tidak Ada",
+    "Hasil Uji Kompetensi": "Tidak Ada",
+    "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1j747SrsNMr6RifrO271Z2mpEqkpAekSm9Jo-4mDGCc0/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2026-094",
+    "id_box": "BOX-2026-095",
+    "Kode Boks": "BOX-2026-095",
+    "kode_box": "BOX-2026-095",
+    "id": "BOX-2026-095",
+    "code": "BOX-2026-095",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential PNBP Batch 1",
     "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 7,
@@ -1403,14 +2080,21 @@
     "lokasi": {
       "lemari": 0,
       "rak": "-",
-      "baris": "-"
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Teknisi AC",
+    "hasil_uji_kompetensi": "Teknisi AC",
+    "Hasil Uji Kompetensi": "Teknisi AC",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1PHVfGrmTMv5I1NxURCfWCx0VbOUb5gjL?usp=sharing"
   },
   {
-    "id_box": "BOX-2026-095",
+    "id_box": "BOX-2026-096",
+    "Kode Boks": "BOX-2026-096",
+    "kode_box": "BOX-2026-096",
+    "id": "BOX-2026-096",
+    "code": "BOX-2026-096",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Jointer PNBP Batch 1",
     "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 5,
@@ -1418,10 +2102,13 @@
     "lokasi": {
       "lemari": 0,
       "rak": "-",
-      "baris": "-"
+      "baris": "box 6"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
-    "link_dokumentasi": "https://drive.google.com"
+    "hasilUjiKompetensi": "Fiber Optik (Jointer)",
+    "hasil_uji_kompetensi": "Fiber Optik (Jointer)",
+    "Hasil Uji Kompetensi": "Fiber Optik (Jointer)",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/1pmzfGpO7_xQ3DdaXzc6-LnlBlktqLf0_?usp=drive_link"
   }
 ]
