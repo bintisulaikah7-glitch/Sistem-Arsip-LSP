@@ -72,7 +72,10 @@ export const PelatihanRakView: React.FC<PelatihanRakViewProps> = ({
           <div className="h-6 w-px bg-slate-200 hidden sm:block" />
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-emerald-700 font-bold">📁 {namaRak}</span>
+              <span className="text-emerald-700 font-bold inline-flex items-center gap-1.5">
+                <Folder className="w-4 h-4 text-emerald-600" />
+                <span>{namaRak}</span>
+              </span>
               <span className="text-slate-400">•</span>
               <span className="text-xs text-slate-600 font-semibold">{lemariDisplay}</span>
               <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">

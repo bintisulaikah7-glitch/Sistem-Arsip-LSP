@@ -1,6 +1,6 @@
 import React from 'react';
 import { BoksArsip } from '../types.ts';
-import { Boxes, CheckCircle2, Clock, Trash2 } from 'lucide-react';
+import { Boxes, CheckCircle2, Clock, Trash2, Users, ShieldCheck } from 'lucide-react';
 
 interface StatsBarProps {
   boxes: BoksArsip[];
@@ -43,8 +43,10 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* KARTU PESERTA ASESMEN */}
         <div className="stat-card">
           <div className="stat-header">
-            <span>Peserta Asesmen</span>
-            <span className="stat-icon icon-green">👥</span>
+            <span className="font-medium text-slate-300">Peserta Asesmen</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/25">
+              <Users className="w-4 h-4" />
+            </div>
           </div>
           <div className="stat-body">
             <span className="stat-number" id="stat-peserta-total">{totalPeserta}</span>
@@ -55,8 +57,10 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* KARTU PESERTA BK (SAMA DENGAN ADA PERSENTASE) */}
         <div className="stat-card">
           <div className="stat-header">
-            <span>Peserta BK</span>
-            <span className="stat-icon icon-purple">🛡️</span>
+            <span className="font-medium text-slate-300">Peserta BK</span>
+            <div className="w-7 h-7 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/25">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
           </div>
           <div className="stat-body">
             <span className="stat-number color-purple" id="stat-peserta-bk">{totalBK}</span>

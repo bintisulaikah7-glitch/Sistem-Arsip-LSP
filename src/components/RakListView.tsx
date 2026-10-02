@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Layers, QrCode, Database, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Layers, QrCode, Database, ArrowRight, Folder } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
 
 interface RakListViewProps {
@@ -149,10 +149,17 @@ export const RakListView: React.FC<RakListViewProps> = ({
                 onClick={() => onSelectRak(rak)}
                 className="card-folder"
               >
-                <div className="icon">📁</div>
+                <div className="flex justify-center mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-xs">
+                    <Folder className="w-6 h-6" />
+                  </div>
+                </div>
                 <h3>{rakTitle}</h3>
                 <p>{jumlahBoks} Pelatihan / Boks Arsip</p>
-                <span>Klik untuk membuka &rarr;</span>
+                <span className="inline-flex items-center gap-1">
+                  <span>Klik untuk membuka</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </span>
               </div>
             );
           })}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Archive, MapPin } from 'lucide-react';
+import { Archive, MapPin, Folder, Users, CheckCircle2, ClipboardCheck, Layers, Calendar, ArrowRight } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
 
 interface CabinetGridViewProps {
@@ -143,7 +143,9 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
               >
                 <div className="card-header">
                   <div className="card-title-box">
-                    <div className="card-icon">📁</div>
+                    <div className="card-icon">
+                      <Folder className="w-5 h-5" />
+                    </div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: '17px' }}>Lemari {lemariKey}</h4>
                       <span style={{ fontSize: '12px', color: '#64748b' }}>Gedung Arsip LSP</span>
@@ -156,31 +158,47 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
 
                 <div className="card-info-list">
                   <div className="info-item">
-                    <span>👥 Jumlah Peserta</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Jumlah Peserta</span>
+                    </span>
                     <strong>{totalPeserta > 0 ? `${totalPeserta} Peserta` : '0 Peserta'}</strong>
                   </div>
                   <div className="info-item">
-                    <span>📂 Status Arsip</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Archive className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Status Arsip</span>
+                    </span>
                     <strong style={{ color: '#10b981' }}>{tersediaCount}/{cabinetBoxes.length} Tersedia</strong>
                   </div>
                   <div className="info-item">
-                    <span>📋 Kelengkapan</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <ClipboardCheck className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Kelengkapan</span>
+                    </span>
                     <strong>{lengkapCount} Lengkap</strong>
                   </div>
                   <div className="info-item">
-                    <span>🗄️ Rak Tersedia</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Rak Tersedia</span>
+                    </span>
                     <strong className="truncate max-w-[170px]" title={rakText}>{rakText}</strong>
                   </div>
                   <div className="info-item">
-                    <span>📅 Tahun</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Tahun</span>
+                    </span>
                     <strong>{tahunText}</strong>
                   </div>
                 </div>
 
                 <div className="card-footer">
                   <span style={{ color: '#64748b' }}>Klik untuk membuka</span>
-                  <span className="btn-buka" style={{ color: palette.btn }}>
-                    Buka Lemari {lemariKey} &rarr;
+                  <span className="btn-buka inline-flex items-center gap-1" style={{ color: palette.btn }}>
+                    <span>Buka Lemari {lemariKey}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>

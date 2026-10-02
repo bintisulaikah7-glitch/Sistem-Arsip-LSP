@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LayoutGrid, Table, X } from 'lucide-react';
+import { LayoutGrid, Table, X, Search, QrCode } from 'lucide-react';
 import { StatusArsip, StatusBarang } from '../types.ts';
 
 interface SearchAndFiltersProps {
@@ -89,7 +89,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       <div className="search-box-container">
         {/* Input Teks Pencarian */}
         <div className="search-input-wrapper">
-          <span className="search-icon">🔍</span>
+          <Search className="w-4 h-4 text-slate-400 shrink-0" />
           <input
             type="text"
             id="inputPencarian"
@@ -109,18 +109,20 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               className="text-slate-400 hover:text-white px-1 text-sm cursor-pointer"
               title="Hapus teks"
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
         {/* Aksi Tombol (Scan QR & Tombol Cari Utama) */}
         <div className="search-actions">
-          <button type="button" className="btn-scan-qr" onClick={bukaScannerQR}>
-            📷 Scan QR
+          <button type="button" className="btn-scan-qr inline-flex items-center gap-1.5" onClick={bukaScannerQR}>
+            <QrCode className="w-4 h-4 text-emerald-400" />
+            <span>Scan QR</span>
           </button>
-          <button type="button" className="btn-cari-utama" onClick={eksekusiPencarian}>
-            Cari
+          <button type="button" className="btn-cari-utama inline-flex items-center gap-1.5" onClick={eksekusiPencarian}>
+            <Search className="w-3.5 h-3.5" />
+            <span>Cari</span>
           </button>
         </div>
       </div>
