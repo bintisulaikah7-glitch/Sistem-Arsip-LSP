@@ -6,23 +6,38 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Plugin untuk menduplikasi dist/index.html menjadi dist/404.html secara otomatis saat proses build.
- * Sangat krusial untuk SPA di GitHub Pages agar direct URL & query parameter (?box=...) tidak blank screen.
+ * Plugin untuk memastikan:
+ * 1. dist/index.html disalin ke dist/404.html (untuk SPA routing di GitHub Pages)
+ * 2. dist/assets dan dist/index.html disinkronkan ke root folder jika dideploy langsung dari branch main
  */
-function copyIndexTo404Plugin(): Plugin {
+function githubPagesBuildPlugin(): Plugin {
   return {
-    name: 'copy-index-to-404',
+    name: 'github-pages-build-plugin',
     closeBundle() {
       try {
-        const distDir = path.resolve(process.cwd(), 'dist');
+        const rootDir = process.cwd();
+        const distDir = path.resolve(rootDir, 'dist');
         const indexPath = path.join(distDir, 'index.html');
         const notFoundPath = path.join(distDir, '404.html');
+
+        // 1. Buat dist/404.html untuk GitHub Pages SPA
         if (fs.existsSync(indexPath)) {
           fs.copyFileSync(indexPath, notFoundPath);
-          console.log('[GitHub Pages SPA] Berhasil membuat dist/404.html dari dist/index.html');
+          console.log('[GitHub Pages] Berhasil membuat dist/404.html dari dist/index.html');
+
+          // 2. Salin juga ke root 404.html
+          fs.copyFileSync(indexPath, path.join(rootDir, '404.html'));
+        }
+
+        // 3. Salin file-file aset terkompilasi ke ./assets di root
+        const distAssetsDir = path.join(distDir, 'assets');
+        const rootAssetsDir = path.join(rootDir, 'assets');
+        if (fs.existsSync(distAssetsDir)) {
+          fs.cpSync(distAssetsDir, rootAssetsDir, { recursive: true });
+          console.log('[GitHub Pages] Berhasil menyinkronkan seluruh aset ke folder root ./assets');
         }
       } catch (err) {
-        console.warn('[GitHub Pages SPA] Gagal menyalin index.html ke 404.html:', err);
+        console.warn('[GitHub Pages] Warning saat menyalin build asset:', err);
       }
     }
   };
@@ -30,18 +45,26 @@ function copyIndexTo404Plugin(): Plugin {
 
 export default defineConfig(() => {
   return {
-    base: '/Sistem-Arsip-LSP/',
-    plugins: [react(), tailwindcss(), copyIndexTo404Plugin()],
+    base: './',
+    plugins: [react(), tailwindcss(), githubPagesBuildPlugin()],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('.', import.meta.url)),
       },
     },
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/app-bundle.js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name].[ext]'
+        }
+      }
+    },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };

@@ -278,38 +278,42 @@ export default function App() {
   // Background fetch on mount & recurring 15-second polling (tanpa memblokir tampilan awal)
   useEffect(() => {
     let isMounted = true;
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
 
-    // 1. Initial background fetch saat aplikasi pertama kali dimuat
-    const targetUrl = convertGoogleSheetsUrlToCsv(sheetUrl || GOOGLE_SHEETS_CSV_URL);
-    fetchBoxesData(targetUrl)
-      .then((loadedBoxes) => {
+    // Pengambilan Data Apps Script yang Safe & Sederhana
+    fetch(appsScriptUrl, { redirect: 'follow' })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
         if (!isMounted) return;
+        if (Array.isArray(data) && data.length > 0) {
+          const verified = verifyAndSanitizeBoxes(data);
+          if (verified.length > 0) {
+            setBoxes(verified);
+            setSyncState({
+              status: 'connected',
+              lastSyncedAt: new Date(),
+              message: `Berhasil sinkronisasi ${verified.length} boks arsip langsung dari Google Sheets.`,
+              sourceUrl: appsScriptUrl,
+              totalParsed: verified.length
+            });
 
-        if (loadedBoxes && loadedBoxes.length > 0) {
-          const verified = verifyAndSanitizeBoxes(loadedBoxes);
-          setBoxes(verified);
-          setSyncState({
-            status: 'connected',
-            lastSyncedAt: new Date(),
-            message: `Berhasil sinkronisasi ${verified.length} boks arsip langsung dari Google Sheets.`,
-            sourceUrl: sheetUrl || GOOGLE_SHEETS_CSV_URL,
-            totalParsed: verified.length
-          });
+            // Sinkronkan ke API backend
+            fetch('/api/boxes/sync-sheets', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(verified)
+            }).catch(() => {});
 
-          // Sinkronkan ke API backend
-          fetch('/api/boxes/sync-sheets', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(verified)
-          }).catch(() => {});
-
-          handleCheckUrlAndOpenBox(verified);
-        } else {
-          handleCheckUrlAndOpenBox(boxes);
+            handleCheckUrlAndOpenBox(verified);
+          }
         }
       })
       .catch((err) => {
-        console.warn("Gagal fetch data awal Google Sheets, menggunakan data cadangan (INITIAL_BOXES):", err);
+        console.error('Error fetching data:', err);
+        // Tetap menggunakan data bawaan awal tanpa memblokir tampilan web
         if (isMounted) {
           handleCheckUrlAndOpenBox(boxes);
         }
@@ -321,7 +325,7 @@ export default function App() {
         // Lewati polling saat pengguna sedang mengetik di form
         return;
       }
-      fetchGoogleSheetsData(sheetUrl, true);
+      fetchGoogleSheetsData(appsScriptUrl, true);
       setPollCountdown(15);
     }, 15000);
 
@@ -419,69 +423,53 @@ export default function App() {
     return years.sort((a, b) => b - a);
   }, [boxes]);
 
-  // Available lemari: HANYA Lemari yang memiliki data Boks Arsip (minimal 1 boks), diekstrak otomatis dari Google Sheets (tanpa batas 4 lemari)
+  // Daftar Lemari dinamis menggunakan Array.from(new Set(...)) secara aman
   const availableLemari = useMemo(() => {
-    if (!boxes || !Array.isArray(boxes)) return [];
-    const lemariCountMap = new Map<string, number>();
+    if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
+      return ['1', '2', '3', '4'];
+    }
 
-    boxes.forEach((b) => {
-      if (b?.lokasi?.lemari !== undefined && b?.lokasi?.lemari !== null) {
-        const str = b.lokasi.lemari.toString().replace(/lemari[-_\s]*/i, '').trim();
-        // Saring keluar Lemari yang tidak valid, kosong, atau Lemari 0
-        if (
-          !str ||
-          str === '0' ||
-          parseInt(str, 10) === 0 ||
-          str.toLowerCase() === 'kosong' ||
-          str.toLowerCase() === 'invalid' ||
-          str.toLowerCase() === 'undefined' ||
-          str.toLowerCase() === 'null' ||
-          str === '-'
-        ) {
-          return;
-        }
-        lemariCountMap.set(str, (lemariCountMap.get(str) || 0) + 1);
-      }
-    });
+    const rawLemariList = boxes
+      .map((b) => {
+        const val = b?.lokasi?.lemari ?? (b as any)?.['Kode Lemari'] ?? (b as any)?.kode_lemari;
+        if (val === undefined || val === null) return '';
+        const str = String(val).replace(/lemari[-_\s]*/i, '').trim();
+        if (!str || str === '0' || str.toLowerCase() === 'kosong' || str === '-') return '';
+        return str;
+      })
+      .filter(Boolean);
 
-    const activeKeys = Array.from(lemariCountMap.entries())
-      .filter(([_, count]) => count > 0)
-      .map(([key]) => key);
-
-    activeKeys.sort((a, b) => {
+    const uniqueLemari = Array.from(new Set(rawLemariList));
+    uniqueLemari.sort((a, b) => {
       const numA = parseInt(a, 10);
       const numB = parseInt(b, 10);
       if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
       return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
     });
 
-    // Otomatis dan dinamis tanpa batasan hardcode 4 lemari
-    return activeKeys;
+    return uniqueLemari.length > 0 ? uniqueLemari : ['1', '2', '3', '4'];
   }, [boxes]);
 
-  // Available raks: Daftar Rak unik yang diekstrak dinamis dari data Google Sheets
+  // Daftar Rak dinamis menggunakan Array.from(new Set(...)) secara aman
   const availableRaks = useMemo(() => {
-    if (!boxes || !Array.isArray(boxes)) return [];
-    const set = new Set<string>();
+    if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
+      return ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
+    }
 
-    boxes.forEach((b) => {
-      if (b?.lokasi?.rak) {
-        const str = b.lokasi.rak.toString().trim();
-        if (
-          str &&
-          str !== '-' &&
-          str.toLowerCase() !== 'kosong' &&
-          str.toLowerCase() !== 'null' &&
-          str.toLowerCase() !== 'undefined'
-        ) {
-          set.add(str);
-        }
-      }
-    });
+    const rawRakList = boxes
+      .map((b) => {
+        const val = b?.lokasi?.rak ?? (b as any)?.['Nomor Rak'] ?? (b as any)?.['Nomor Rak '] ?? (b as any)?.nomor_rak;
+        if (!val) return '';
+        const str = String(val).trim();
+        if (!str || str === '-' || str.toLowerCase() === 'kosong') return '';
+        return str;
+      })
+      .filter(Boolean);
 
-    return Array.from(set).sort((a, b) => {
-      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-    });
+    const uniqueRaks = Array.from(new Set(rawRakList));
+    uniqueRaks.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+
+    return uniqueRaks.length > 0 ? uniqueRaks : ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
   }, [boxes]);
 
   // Filtered Boxes (Mendukung Hierarki Lemari, Rak & Global Search Exception)
