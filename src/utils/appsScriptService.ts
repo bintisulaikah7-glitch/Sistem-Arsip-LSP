@@ -1,19 +1,18 @@
 import { BoksArsip } from '../types.ts';
 
-const STORAGE_KEY_WEB_APP_URL = 'lsp_apps_script_web_app_url';
-
 // Default Web App URL resmi yang terhubung langsung ke Google Sheets LSP
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbySjWrmnPapEJlc42t-3qhHeLMLELWZ14ki160eFlKLL8rhpxypsxwbhlmS3y9XD4oe/exec';
+  'https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec';
 
+/**
+ * Selalu mengembalikan DEFAULT_APPS_SCRIPT_URL agar sistem bebas dari bug cache Local Storage
+ */
 export function getStoredAppsScriptUrl(): string {
-  if (typeof window === 'undefined') return DEFAULT_APPS_SCRIPT_URL;
-  return localStorage.getItem(STORAGE_KEY_WEB_APP_URL) || DEFAULT_APPS_SCRIPT_URL;
+  return DEFAULT_APPS_SCRIPT_URL;
 }
 
 export function setStoredAppsScriptUrl(url: string): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEY_WEB_APP_URL, url.trim());
+  // Kosongkan agar tidak menyimpan URL usang ke Local Storage
 }
 
 export interface AppsScriptSyncResult {
@@ -75,8 +74,7 @@ export async function sendBoxToGoogleSheets(
   box: BoksArsip,
   action: 'add' | 'update' | 'move' = 'add'
 ): Promise<AppsScriptSyncResult> {
-  const customUrl = getStoredAppsScriptUrl();
-  const effectiveUrl = customUrl || DEFAULT_APPS_SCRIPT_URL;
+  const effectiveUrl = DEFAULT_APPS_SCRIPT_URL;
   const rowValues = formatBoxToSheetRow(box);
 
   const lemariVal = box.lokasi?.lemari !== undefined
@@ -116,7 +114,7 @@ export async function sendBoxToGoogleSheets(
     'link_dokumentasi': box.link_dokumentasi
   };
 
-  // Langsung kirim via POST ke Google Apps Script tanpa melewati backend proxy
+  // Langsung kirim via POST ke Google Apps Script
   try {
     await fetch(effectiveUrl, {
       method: 'POST',
@@ -156,7 +154,7 @@ export async function sendBoxToGoogleSheets(
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
  * GOOGLE APPS SCRIPT WEB APP UNTUK SISTEM ARSIP BOKS LSP
- * Web App URL: https://script.google.com/macros/s/AKfycbySjWrmnPapEJlc42t-3qhHeLMLELWZ14ki160eFlKLL8rhpxypsxwbhlmS3y9XD4oe/exec
+ * Web App URL: https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec
  */
 
 function doPost(e) {
