@@ -10,10 +10,10 @@ export const GOOGLE_SHEETS_CSV_URL =
   'https://docs.google.com/spreadsheets/d/1Cq3QzccIPDSVyXY2dq4S61wHVRJFh0LaP2xT6OViK-M/export?format=csv';
 
 /**
- * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP
+ * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP (AKTIF & TERHUBUNG)
  */
 export const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-  'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
+  'https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec';
 
 /**
  * Pemetaan baris objek dari Google Apps Script Web App JSON menjadi objek BoksArsip
@@ -45,7 +45,7 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     return null;
   }
 
-  // Parse Lemari (misal: "Lemari 1", "Lemari 4", "1", "4")
+  // Parse Lemari
   let lemariNum: number = 0;
   const lemariStr = String(rawLemari || '').trim();
   const lemariDigits = lemariStr.replace(/\D/g, '');
@@ -53,13 +53,13 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     lemariNum = parseInt(lemariDigits, 10);
   }
 
-  // Parse Rak (misal: "Rak A ", "Rak D")
+  // Parse Rak
   let rakClean = String(rawRak || '').trim();
   if (rakClean.toLowerCase() === 'kosong' || rakClean === '-') {
     rakClean = '';
   }
 
-  // Parse Nomor Box (misal: "Box 1 ", "Box 5")
+  // Parse Nomor Box
   let boxClean = String(rawBox || '').trim();
   if (boxClean.toLowerCase() === 'kosong') boxClean = '';
 
@@ -125,7 +125,6 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
 
 /**
  * Verifikasi dan sanitasi ketat data boks arsip dari Google Sheets
- * Memastikan semua properti aman dan valid sebelum disalurkan ke filter dan antarmuka pengguna
  */
 export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
   if (!rawBoxes || !Array.isArray(rawBoxes) || rawBoxes.length === 0) {
@@ -142,7 +141,6 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
     const nama = String(b.nama_pelatihan || b['Nama Pelatihan'] || '').trim();
     if (!nama || nama.toLowerCase() === 'kosong') continue;
 
-    // Pastikan lokasi terstruktur
     const rawLokasi = b.lokasi || {};
     let lemariVal = rawLokasi.lemari !== undefined && rawLokasi.lemari !== null ? rawLokasi.lemari : (b['Kode Lemari'] || b.kode_lemari || 1);
     if (typeof lemariVal === 'string') {
@@ -158,7 +156,6 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
     const rakVal = String(rawLokasi.rak || b['Nomor Rak'] || b['Nomor Rak '] || b.nomor_rak || 'Rak A').trim();
     const barisVal = String(rawLokasi.baris || b['Nomor Box'] || b.nomor_box || 'Box 1').trim();
 
-    // Pastikan ID unik & string
     let idVal = String(b.id_box || b['ID_Box'] || b.id || '').trim();
     if (!idVal || idVal === '1' || idVal.toLowerCase() === 'kosong') {
       idVal = `BOX-L${lemariVal}-${rakVal.replace(/\s+/g, '')}-${i + 1}`;
@@ -205,8 +202,7 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
 }
 
 /**
- * Tarik seluruh data boks dari Web App URL Google Apps Script saat aplikasi pertama kali dimuat
- * Dilengkapi pembungkus try...catch dan timeout agar aman dari crash
+ * Tarik data boks dari Apps Script (Langsung dari URL tanpa Proxy Backend)
  */
 export async function fetchBoxesFromAppsScript(
   webAppUrl: string = GOOGLE_APPS_SCRIPT_WEB_APP_URL
@@ -214,44 +210,21 @@ export async function fetchBoxesFromAppsScript(
   try {
     let rawData: any = null;
 
-    // 1. Direct fetch ke Web App URL dengan batas waktu (timeout 6 detik)
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      const response = await fetch(webAppUrl, {
-        method: 'GET',
-        headers: { Accept: 'application/json, text/plain, */*' },
-        redirect: 'follow',
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
+    const response = await fetch(webAppUrl, {
+      method: 'GET',
+      headers: { Accept: 'application/json, text/plain, */*' },
+      redirect: 'follow',
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const text = await response.text();
-        if (text && (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
-          rawData = JSON.parse(text);
-        }
-      }
-    } catch (err) {
-      console.warn('[fetchBoxesFromAppsScript] Direct fetch timeout/error, mencoba proxy backend...', err);
-    }
-
-    // 2. Jika direct fetch terhalang (misal CORS browser di lokal), coba via proxy backend
-    if (!rawData) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-        const proxyUrl = `/api/apps-script/get?url=${encodeURIComponent(webAppUrl)}`;
-        const proxyRes = await fetch(proxyUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        if (proxyRes.ok) {
-          rawData = await proxyRes.json();
-        }
-      } catch (proxyErr) {
-        console.warn('[fetchBoxesFromAppsScript] Proxy fetch error/timeout:', proxyErr);
+    if (response.ok) {
+      const text = await response.text();
+      if (text && (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
+        rawData = JSON.parse(text);
       }
     }
 
@@ -283,26 +256,16 @@ export async function fetchBoxesFromAppsScript(
       }
     }
   } catch (err) {
-    console.error('[fetchBoxesFromAppsScript] Gagal membaca data Apps Script:', err);
+    console.warn('[fetchBoxesFromAppsScript] Direct Apps Script fetch failed:', err);
   }
 
   return [];
 }
 
-/**
- * Normalisasi string nama header kolom:
- * - Huruf kecil (lowercase)
- * - Menghilangkan spasi berlebih, underscore, tanda minus, dan karakter non-alfanumerik
- * Contoh: "Nomor Rak " -> "nomorrak", "ID_Box" -> "idbox", "Hasil Uji Kompetensi" -> "hasilujikompetensi"
- */
 export function normalizeHeader(name: string): string {
   return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-/**
- * Mencari index kolom berdasarkan beberapa kemungkinan nama header.
- * Jika tidak ditemukan, mengembalikan fallbackIndex default.
- */
 function findColumnIndex(headers: string[], fallbackIndex: number, ...candidates: string[]): number {
   if (!headers || headers.length === 0) return fallbackIndex;
   const normCandidates = candidates.map(normalizeHeader);
@@ -321,43 +284,21 @@ function findColumnIndex(headers: string[], fallbackIndex: number, ...candidates
   return fallbackIndex;
 }
 
-/**
- * Parsing teks CSV Google Sheets menjadi array BoksArsip[]
- * Mematuhi urutan kolom:
- * 1. Index 0 (Kolom A): Kode Lemari
- * 2. Index 1 (Kolom B): Nomor Rak
- * 3. Index 2 (Kolom C): Nomor Box
- * 4. Index 3 (Kolom D): ID_Box
- * 5. Index 4 (Kolom E): Nama Pelatihan
- * 6. Index 5 (Kolom F): Tahun Pelaksanaan
- * 7. Index 6 (Kolom G): Jumlah Peserta
- * 8. Index 7 (Kolom H): Jumlah Peserta BK
- * 9. Index 8 (Kolom I): Status Arsip
- * 10. Index 9 (Kolom J): Status Barang
- * 11. Index 10 (Kolom K): Hasil Uji Kompetensi
- * 12. Index 11 (Kolom L): Link Google Drive
- *
- * KETENTUAN PENTING:
- * Lewati (skip/continue) baris data yang kosong atau bernilai "Kosong" agar siklus pembacaan
- * data tidak terhenti secara prematur dan semua baris data di bawahnya tetap terdeteksi.
- */
 export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
   if (!csvText || typeof csvText !== 'string') return [];
 
   const cleanText = csvText.replace(/^\uFEFF/, '').trim();
   if (!cleanText) return [];
 
-  // Proteksi terhadap respons bukan CSV (misal halaman login HTML atau error Google Drive)
   if (
     cleanText.startsWith('<!DOCTYPE') ||
     cleanText.startsWith('<html') ||
     cleanText.includes('<title>Google Drive') ||
     cleanText.includes('docs.google.com/error')
   ) {
-    throw new Error('Respons dari server bukan format CSV yang valid.');
+    return [];
   }
 
-  // Parse CSV tanpa mengabaikan baris kosong agar kontrol lewati (skip/continue) berjalan konsisten
   const parsed = Papa.parse<string[]>(cleanText, {
     header: false,
     skipEmptyLines: false
@@ -366,10 +307,8 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
   const rawRows = parsed.data;
   if (!rawRows || rawRows.length === 0) return [];
 
-  // Baris pertama diasumsikan sebagai Header
   const headerRow = rawRows[0] || [];
 
-  // Petakan index kolom secara dinamis dengan fallback ke index urutan standar 0-11
   const idxLemari = findColumnIndex(headerRow, 0, 'Kode Lemari', 'KodeLemari', 'Lemari');
   const idxRak = findColumnIndex(headerRow, 1, 'Nomor Rak', 'NomorRak', 'Rak');
   const idxBox = findColumnIndex(headerRow, 2, 'Nomor Box', 'NomorBox', 'Nomor Baris', 'Box', 'Baris');
@@ -386,27 +325,18 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
   const result: BoksArsip[] = [];
   const seenIds = new Set<string>();
 
-  // Mulai iterasi dari baris ke-2 (index 1), melewati header
   for (let i = 1; i < rawRows.length; i++) {
     const row = rawRows[i];
 
-    // 1. Lewati (skip/continue) jika baris null / undefined / array kosong
-    if (!row || !Array.isArray(row) || row.length === 0) {
-      continue;
-    }
+    if (!row || !Array.isArray(row) || row.length === 0) continue;
 
-    // 2. Periksa apakah baris sepenuhnya kosong atau semua sel bernilai "Kosong"
     const isAllEmptyOrKosong = row.every((cell) => {
       const val = String(cell ?? '').trim().toLowerCase();
       return val === '' || val === 'kosong';
     });
 
-    if (isAllEmptyOrKosong) {
-      // Lewati (continue) agar pembacaan tidak berhenti secara prematur
-      continue;
-    }
+    if (isAllEmptyOrKosong) continue;
 
-    // Ekstrak data berdasarkan index kolom
     const rawKodeLemari = String(row[idxLemari] ?? '').trim();
     const rawNomorRak = String(row[idxRak] ?? '').trim();
     const rawNomorBox = String(row[idxBox] ?? '').trim();
@@ -420,70 +350,54 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
     const rawHasilUji = String(row[idxHasilUji] ?? '').trim();
     const rawLinkDrive = String(row[idxLinkDrive] ?? '').trim();
 
-    // 3. Lewati (continue) jika Nama Pelatihan kosong/Kosong DAN ID_Box kosong/Kosong
     const isNamaEmptyOrKosong = !rawNamaPelatihan || rawNamaPelatihan.toLowerCase() === 'kosong';
     const isIdEmptyOrKosong =
       !rawIdBox ||
       rawIdBox.toLowerCase() === 'kosong' ||
       rawIdBox.toLowerCase() === 'kosong - kosong - kosong';
 
-    if (isNamaEmptyOrKosong && isIdEmptyOrKosong) {
-      // Baris ini tidak berisi arsip boks maupun nama pelatihan, lanjutkan ke baris berikutnya
-      continue;
-    }
+    if (isNamaEmptyOrKosong && isIdEmptyOrKosong) continue;
 
-    // Nama Pelatihan (Index 4 / Kolom E)
     const nama_pelatihan = rawNamaPelatihan || 'Pelatihan Sertifikasi LSP';
 
-    // Tahun Pelaksanaan (Index 5 / Kolom F)
     const tahunMatch = rawTahun.match(/\d{4}/);
     const tahun_pelaksanaan = tahunMatch
       ? parseInt(tahunMatch[0], 10)
       : parseInt(rawTahun.replace(/\D/g, ''), 10) || new Date().getFullYear();
 
-    // Jumlah Peserta (Index 6 / Kolom G)
     const cleanPesertaStr = rawPeserta.includes('/') ? rawPeserta.split('/')[0] : rawPeserta;
     const jumlah_peserta = parseInt(cleanPesertaStr.replace(/\D/g, ''), 10) || 0;
 
-    // Jumlah Peserta BK (Index 7 / Kolom H)
     const cleanPesertaBkStr = rawPesertaBk.includes('/') ? rawPesertaBk.split('/')[0] : rawPesertaBk;
     const jumlah_peserta_bk = parseInt(cleanPesertaBkStr.replace(/\D/g, ''), 10) || 0;
 
-    // Kode Lemari (Index 0 / Kolom A)
     const isLemariKosong = !rawKodeLemari || rawKodeLemari.toLowerCase() === 'kosong';
     const lemariDigits = !isLemariKosong ? rawKodeLemari.match(/\d+/) : null;
     const lemari = lemariDigits ? parseInt(lemariDigits[0], 10) : 0;
 
-    // Nomor Rak (Index 1 / Kolom B)
     const isRakKosong = !rawNomorRak || rawNomorRak.toLowerCase() === 'kosong';
     const rak = isRakKosong ? (lemari > 0 ? 'Rak A' : '-') : rawNomorRak;
 
-    // Nomor Box (Index 2 / Kolom C)
     const isBoxKosong = !rawNomorBox || rawNomorBox.toLowerCase() === 'kosong';
     const baris = isBoxKosong ? (lemari > 0 ? 'Box 1' : '-') : rawNomorBox;
 
-    // Status Arsip (Index 8 / Kolom I)
     let status_arsip: StatusArsip = 'Tersedia';
     if (rawStatusArsip && rawStatusArsip.toLowerCase() !== 'kosong') {
-      status_arsip = rawStatusArsip;
+      status_arsip = rawStatusArsip as StatusArsip;
     }
 
-    // Status Barang (Index 9 / Kolom J)
     let status_barang: StatusBarang = 'Lengkap';
     if (rawStatusBarang && rawStatusBarang.toLowerCase() !== 'kosong') {
-      status_barang = rawStatusBarang;
+      status_barang = rawStatusBarang as StatusBarang;
     }
 
-    // Hasil Uji Kompetensi (Index 10 / Kolom K)
     const hasilUjiKompetensi = rawHasilUji || '-';
 
-    // Link Google Drive (Index 11 / Kolom L)
     const link_dokumentasi =
       rawLinkDrive && rawLinkDrive.toLowerCase() !== 'kosong'
         ? rawLinkDrive
         : 'https://drive.google.com';
 
-    // ID_Box (Index 3 / Kolom D)
     let finalId = rawIdBox;
     const isGenericOrEmpty =
       !finalId ||
@@ -498,7 +412,6 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
           : `BOX-${tahun_pelaksanaan}-${String(i).padStart(3, '0')}`;
     }
 
-    // Pastikan ID Boks unik di memori
     let uniqueId = finalId;
     let counter = 2;
     while (seenIds.has(uniqueId.toUpperCase())) {
@@ -534,12 +447,8 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
   return result;
 }
 
-/**
- * Helper untuk pemetaan baris-baris record objek (kompatibilitas backwards)
- */
 export function mapCsvRowsToBoxes(records: Record<string, string>[]): BoksArsip[] {
   if (!records || records.length === 0) return [];
-  // Ubah ke format array of arrays agar diproses oleh parseGoogleSheetsCsv
   const headers = Object.keys(records[0] || {});
   const rows = [headers, ...records.map((rec) => headers.map((h) => rec[h] || ''))];
   const csvText = Papa.unparse(rows);
@@ -547,40 +456,29 @@ export function mapCsvRowsToBoxes(records: Record<string, string>[]): BoksArsip[
 }
 
 /**
- * Fungsi asynchronous utama untuk membaca data boks arsip secara dinamis (real-time)
- * langsung dari URL Google Sheets CSV.
- *
- * Menggunakan INITIAL_BOXES sebagai data cadangan (fallback) jika terjadi
- * kegagalan jaringan atau request fetch mengalami error.
- *
- * @param sheetCsvUrl URL CSV Google Sheets (default: GOOGLE_SHEETS_CSV_URL)
- * @returns Promise<BoksArsip[]> Array objek boks arsip hasil pemetaan
+ * Fungsi asynchronous utama untuk membaca data boks arsip langsung dari Apps Script & Google Sheets CSV.
  */
 export async function fetchBoxesData(
   sheetCsvUrl: string = GOOGLE_SHEETS_CSV_URL
 ): Promise<BoksArsip[]> {
   try {
-    // 1. PRIORITAS UTAMA: Tarik seluruh data boks dari Web App URL Google Apps Script
+    // 1. PRIORITAS UTAMA: Direct Fetch ke Apps Script Web App
     try {
       const appsScriptBoxes = await fetchBoxesFromAppsScript();
       if (appsScriptBoxes && appsScriptBoxes.length > 0) {
         return verifyAndSanitizeBoxes(appsScriptBoxes);
       }
     } catch (appsScriptErr) {
-      console.warn('[fetchBoxesData] Apps Script fetch lambat/error, mencoba sumber cadangan:', appsScriptErr);
+      console.warn('[fetchBoxesData] Direct Apps Script fetch error:', appsScriptErr);
     }
 
-    let csvText = '';
-
-    // 2. Upaya kedua: Fetch langsung dari client ke URL Google Sheets CSV
+    // 2. Upaya Cadangan: Fetch langsung dari URL CSV Google Sheets
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(sheetCsvUrl, {
-        headers: {
-          Accept: 'text/csv,text/plain,*/*'
-        },
+        headers: { Accept: 'text/csv,text/plain,*/*' },
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -588,66 +486,28 @@ export async function fetchBoxesData(
       if (response.ok) {
         const text = await response.text();
         const trimmed = text.trim();
-        // Validasi respon bukan berupa halaman HTML login/error Google
         if (
           !trimmed.startsWith('<!DOCTYPE') &&
           !trimmed.startsWith('<html') &&
           !text.includes('<title>Google Drive') &&
           !text.includes('docs.google.com/error')
         ) {
-          csvText = text;
+          const mappedBoxes = parseGoogleSheetsCsv(trimmed);
+          if (mappedBoxes.length > 0) {
+            return verifyAndSanitizeBoxes(mappedBoxes);
+          }
         }
       }
     } catch (directErr) {
-      console.warn(
-        '[fetchBoxesData] Direct fetch ke Google Sheets terhalang/timeout, mencoba proxy backend...',
-        directErr
-      );
+      console.warn('[fetchBoxesData] Direct CSV fetch error:', directErr);
     }
 
-    // 3. Upaya ketiga: Menggunakan proxy backend internal jika direct fetch terhalang
-    if (!csvText) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-        const proxyUrl = `/api/sheets-proxy?url=${encodeURIComponent(sheetCsvUrl)}`;
-        const proxyRes = await fetch(proxyUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        if (proxyRes.ok) {
-          const text = await proxyRes.text();
-          if (
-            !text.startsWith('<!DOCTYPE') &&
-            !text.startsWith('<html') &&
-            !text.includes('Page not found')
-          ) {
-            csvText = text;
-          }
-        }
-      } catch (proxyErr) {
-        console.warn('[fetchBoxesData] Server proxy Google Sheets tidak merespons:', proxyErr);
-      }
-    }
-
-    // 4. Jika CSV berhasil didapatkan, lakukan parsing dengan urutan kolom spreadsheet
-    if (csvText) {
-      const mappedBoxes = parseGoogleSheetsCsv(csvText);
-      if (mappedBoxes.length > 0) {
-        return verifyAndSanitizeBoxes(mappedBoxes);
-      }
-    }
-
-    // 5. Fallback aman ke INITIAL_BOXES agar antarmuka tidak blank
+    // Fallback jika jaringan gagal total
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   } catch (error) {
-    console.error(
-      '[fetchBoxesData] Error tidak terduga, menggunakan data cadangan aman (INITIAL_BOXES):',
-      error
-    );
+    console.error('[fetchBoxesData] Unexpected error, using fallback:', error);
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   }
 }
 
-// Re-export dataset awal sebagai fallback resmi
 export { INITIAL_BOXES };
