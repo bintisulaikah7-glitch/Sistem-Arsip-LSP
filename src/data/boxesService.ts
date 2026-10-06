@@ -458,6 +458,7 @@ export function mapCsvRowsToBoxes(records: Record<string, string>[]): BoksArsip[
 }
 
 /**
+ /**
  * Fungsi asynchronous utama untuk membaca data boks arsip langsung dari Apps Script & Google Sheets CSV.
  */
 export async function fetchBoxesData(
@@ -474,10 +475,10 @@ export async function fetchBoxesData(
       console.warn('[fetchBoxesData] Direct Apps Script fetch error:', appsScriptErr);
     }
 
-    // 2. Upaya Cadangan: Fetch langsung dari URL CSV Google Sheets
+    // 2. Upaya Cadangan: Fetch langsung dari URL CSV Google Sheets (Timeout diperpanjang ke 15 detik)
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(sheetCsvUrl, {
         headers: { Accept: 'text/csv,text/plain,*/*' },
@@ -496,12 +497,15 @@ export async function fetchBoxesData(
         ) {
           const mappedBoxes = parseGoogleSheetsCsv(trimmed);
           if (mappedBoxes.length > 0) {
+            console.log(`[fetchBoxesData] Berhasil menarik ${mappedBoxes.length} boks via CSV Sheets.`);
             return verifyAndSanitizeBoxes(mappedBoxes);
           }
         }
       }
-    } catch (directErr) {
-      console.warn('[fetchBoxesData] Direct CSV fetch error:', directErr);
+    } catch (directErr: any) {
+      if (directErr.name !== 'AbortError') {
+        console.warn('[fetchBoxesData] Direct CSV fetch error:', directErr);
+      }
     }
 
     // Fallback jika jaringan gagal total
