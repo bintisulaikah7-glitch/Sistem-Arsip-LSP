@@ -4,7 +4,7 @@ const STORAGE_KEY_WEB_APP_URL = 'lsp_apps_script_web_app_url';
 
 // Default Web App URL resmi yang terhubung langsung ke Google Sheets LSP
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/dev';
+  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec';
 
 export function getStoredAppsScriptUrl(): string {
   if (typeof window === 'undefined') return DEFAULT_APPS_SCRIPT_URL;
@@ -71,7 +71,7 @@ export function formatBoxToSheetRow(box: BoksArsip): (string | number)[] {
 /**
  * Kirim data boks arsip ke Google Sheets melalui Google Apps Script Web App API
  * Mengirimkan data via POST ke Web App URL:
- * https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/dev
+ * https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec
  */
 export async function sendBoxToGoogleSheets(
   box: BoksArsip,
@@ -195,7 +195,7 @@ export async function sendBoxToGoogleSheets(
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
  * GOOGLE APPS SCRIPT WEB APP UNTUK SISTEM ARSIP BOKS LSP
- * Web App URL: https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/dev
+ * Web App URL: https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec
  */
 
 function doPost(e) {
