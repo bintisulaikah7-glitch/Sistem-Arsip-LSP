@@ -256,26 +256,26 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
   const hasAppsScriptUrl = !!getStoredAppsScriptUrl();
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden my-auto">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-xl max-h-[92vh] flex flex-col shadow-xl overflow-hidden my-auto text-slate-800">
         {/* Header Modal */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-white">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
               <Archive className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-bold text-sm sm:text-base text-slate-100">
+              <h2 className="font-bold text-base text-slate-900 tracking-tight">
                 {editingBox ? 'Perbarui Data Boks Arsip' : 'Tambah Boks Arsip Baru ke Sistem'}
               </h2>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-xs text-slate-500">
                 Standardisasi Kearsipan LSP • 12 Kolom Google Sheets Terpadu
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800"
+            className="text-slate-400 hover:text-slate-600 transition p-1.5 rounded-lg hover:bg-slate-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -284,23 +284,23 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 flex-1 overflow-y-auto space-y-4 text-xs">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-rose-950/70 border border-rose-900 text-rose-300 text-xs flex items-center space-x-2">
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {/* Banner Status Auto-Sync Google Sheets */}
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2">
+          <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 flex items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 id="auto-sync-sheets"
                 checked={autoSyncGoogleSheets}
                 onChange={(e) => setAutoSyncGoogleSheets(e.target.checked)}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-700 bg-slate-900"
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 bg-white"
               />
-              <label htmlFor="auto-sync-sheets" className="text-slate-300 font-medium cursor-pointer">
+              <label htmlFor="auto-sync-sheets" className="text-slate-700 font-medium cursor-pointer">
                 Kirim otomatis ke Google Sheets (Google Apps Script API)
               </label>
             </div>
@@ -308,7 +308,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
               <button
                 type="button"
                 onClick={onOpenAppsScriptConfig}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 underline font-medium"
+                className="text-[11px] text-blue-600 hover:text-blue-800 underline font-semibold"
               >
                 {hasAppsScriptUrl ? 'Ubah URL API' : 'Pasang URL API'}
               </button>
@@ -317,15 +317,15 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
 
           {/* 1. Judul Skema / Nama Pelatihan */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
-              Judul Skema / Nama Pelatihan <span className="text-emerald-400">*</span>
+            <label className="block text-slate-700 font-semibold mb-1">
+              Judul Skema / Nama Pelatihan <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
               value={namaPelatihan}
               onChange={(e) => setNamaPelatihan(e.target.value)}
               placeholder="Contoh: Pembuatan Pakaian Jadi Dewasa / Junior Web Developer"
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
               required
             />
           </div>
@@ -333,7 +333,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
           {/* 2. Nomor Boks & ID Boks Arsip */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Nomor Boks Arsip (Index 2 / Kolom C)
               </label>
               <input
@@ -344,14 +344,14 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                   handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, isCustomRak ? customRakName : selectedRak, e.target.value);
                 }}
                 placeholder="1 atau 01"
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1 flex items-center justify-between">
-                <span>ID Boks Arsip (ID_Box) <span className="text-emerald-400">*</span></span>
+              <label className="block text-slate-700 font-semibold mb-1 flex items-center justify-between">
+                <span>ID Boks Arsip (ID_Box) <span className="text-rose-500">*</span></span>
                 {!editingBox && (
                   <button
                     type="button"
@@ -361,7 +361,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                       const r = (isCustomRak ? customRakName : selectedRak).replace(/\s/g, '');
                       setIdBox(`BOX-L${l}-${r}-${rand}`);
                     }}
-                    className="text-[10px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                    className="text-[10px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
                   >
                     <Sparkles className="w-3 h-3" /> Auto
                   </button>
@@ -373,25 +373,26 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                 onChange={(e) => setIdBox(e.target.value.toUpperCase())}
                 disabled={!!editingBox}
                 placeholder="BOX-L1-R1-001"
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-emerald-400 uppercase focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:opacity-60"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono text-blue-700 font-bold uppercase focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 transition shadow-2xs"
                 required
               />
             </div>
           </div>
 
           {/* 3. LOKASI FISIK DINAMIS (Lemari & Rak Tanpa Limit) */}
-          <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3">
+          <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-amber-400 flex items-center gap-1.5">
-                <span>🗄️ Lokasi Fisik Lemari &amp; Rak (Dinamis Tanpa Limit)</span>
+              <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                <Archive className="w-4 h-4 text-blue-600" />
+                <span>Lokasi Fisik Lemari &amp; Rak (Dinamis)</span>
               </span>
-              <span className="text-[10px] text-slate-400">Otomatis bertambah</span>
+              <span className="text-[10px] text-slate-500 font-medium">Otomatis bertambah</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               {/* LEMARI DINAMIS */}
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">
+                <label className="block text-[11px] text-slate-600 font-semibold mb-1">
                   Pilih Lemari:
                 </label>
                 <select
@@ -406,7 +407,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                       handleUpdateBoxIdSuggestion(val, isCustomRak ? customRakName : selectedRak, nomorBox);
                     }
                   }}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                 >
                   {availableLemariList.map((lemariItem) => (
                     <option key={`lemari-opt-${lemariItem}`} value={lemariItem}>
@@ -426,7 +427,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                         handleUpdateBoxIdSuggestion(e.target.value, isCustomRak ? customRakName : selectedRak, nomorBox);
                       }}
                       placeholder="Nama Lemari Baru (misal: 5, 6, Arsip A)"
-                      className="w-full bg-slate-900 border border-amber-500/70 rounded-lg px-2.5 py-1.5 text-xs text-amber-300 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      className="w-full bg-white border border-blue-400 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-2xs"
                       required
                     />
                   </div>
@@ -435,7 +436,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
 
               {/* RAK DINAMIS */}
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">
+                <label className="block text-[11px] text-slate-600 font-semibold mb-1">
                   Pilih Rak:
                 </label>
                 <select
@@ -450,7 +451,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                       handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, val, nomorBox);
                     }
                   }}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                 >
                   {availableRakList.map((rakItem) => (
                     <option key={`rak-opt-${rakItem}`} value={rakItem}>
@@ -470,7 +471,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                         handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, e.target.value, nomorBox);
                       }}
                       placeholder="Nama Rak Baru (misal: R5, Rak E)"
-                      className="w-full bg-slate-900 border border-amber-500/70 rounded-lg px-2.5 py-1.5 text-xs text-amber-300 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      className="w-full bg-white border border-blue-400 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-2xs"
                       required
                     />
                   </div>
@@ -479,13 +480,13 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
 
               {/* BARIS / POSISI */}
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Baris / Posisi:</label>
+                <label className="block text-[11px] text-slate-600 font-semibold mb-1">Baris / Posisi:</label>
                 <input
                   type="text"
                   value={baris}
                   onChange={(e) => setBaris(e.target.value)}
                   placeholder="B1 atau Baris 1"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                   required
                 />
               </div>
@@ -495,14 +496,14 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
           {/* 4. Tahun & Peserta Asesmen */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Tahun Pelaksanaan
               </label>
               <input
                 type="number"
                 value={tahunPelaksanaan}
                 onChange={(e) => setTahunPelaksanaan(parseInt(e.target.value, 10))}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                 min="1990"
                 max="2035"
                 required
@@ -510,28 +511,28 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Total Peserta Asesmen
               </label>
               <input
                 type="number"
                 value={jumlahPeserta}
                 onChange={(e) => setJumlahPeserta(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                 min="0"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Peserta BK (Belum Kompeten)
               </label>
               <input
                 type="number"
                 value={jumlahPesertaBk}
                 onChange={(e) => setJumlahPesertaBk(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-purple-700 font-semibold focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 shadow-2xs"
                 min="0"
                 required
               />
@@ -541,13 +542,13 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
           {/* 5. Status Arsip & Status Barang */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Status Arsip (Index 8 / Kolom I)
               </label>
               <select
                 value={statusArsip}
                 onChange={(e) => setStatusArsip(e.target.value as StatusArsip)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs cursor-pointer"
               >
                 <option value="Aktif">Aktif</option>
                 <option value="Inaktif">Inaktif</option>
@@ -558,13 +559,13 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
+              <label className="block text-slate-700 font-semibold mb-1">
                 Status Barang / Fisik Boks Arsip (Index 9 / Kolom J)
               </label>
               <select
                 value={statusBarang}
                 onChange={(e) => setStatusBarang(e.target.value as StatusBarang)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs cursor-pointer"
               >
                 <option value="Lengkap">Lengkap</option>
                 <option value="Dipinjam">Dipinjam</option>
@@ -577,7 +578,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
 
           {/* 6. Hasil Uji Kompetensi (Index 10 / Kolom K) */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
+            <label className="block text-slate-700 font-semibold mb-1">
               Hasil Uji Kompetensi (Sampel Produk / Hasil Praktik Kerja)
             </label>
             <input
@@ -585,38 +586,38 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
               value={hasilUjiKompetensi}
               onChange={(e) => setHasilUjiKompetensi(e.target.value)}
               placeholder="Contoh: Rompi Putih, PCB Speaker, Boneka Ikan Pink, Kaos Hijau"
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-cyan-300 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
             />
           </div>
 
           {/* 7. Link Google Drive (Index 11 / Kolom L) */}
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
-              Link Google Drive Dokumentasi Digital <span className="text-emerald-400">*</span>
+            <label className="block text-slate-700 font-semibold mb-1">
+              Link Google Drive Dokumentasi Digital <span className="text-rose-500">*</span>
             </label>
             <input
               type="url"
               value={linkDokumentasi}
               onChange={(e) => setLinkDokumentasi(e.target.value)}
               placeholder="https://drive.google.com/drive/folders/..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
               required
             />
           </div>
 
           {/* Tombol Aksi */}
-          <div className="pt-3 flex items-center justify-end space-x-2 border-t border-slate-800">
+          <div className="pt-3 flex items-center justify-end space-x-2.5 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition"
+              className="px-4 py-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold transition shadow-2xs"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center space-x-2 px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-md transition disabled:opacity-50"
+              className="inline-flex items-center space-x-2 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>

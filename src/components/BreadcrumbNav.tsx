@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, Home, RefreshCw } from 'lucide-react';
+import { ChevronRight, Home, Folder, Archive, Search, X } from 'lucide-react';
 
 interface BreadcrumbNavProps {
   selectedCabinet: number | string | null;
@@ -27,8 +27,7 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
   return (
     <div
       id="breadcrumb"
-      className="flex items-center flex-wrap gap-2 text-xs sm:text-sm font-bold text-emerald-700 mb-4 bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-xs"
-      style={{ color: '#059669' }}
+      className="flex items-center flex-wrap gap-2 text-xs sm:text-sm font-semibold text-slate-700 mb-4 bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-xs"
     >
       {/* Search Mode Breadcrumb */}
       {searchQuery && searchQuery.trim() ? (
@@ -38,65 +37,67 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
               if (onClearSearch) onClearSearch();
               onGoToLemari();
             }}
-            className="hover:underline flex items-center gap-1.5 text-slate-600 hover:text-emerald-600 transition"
+            className="hover:underline flex items-center gap-1.5 text-slate-600 hover:text-blue-600 transition"
           >
-            <span>📌</span>
+            <Archive className="w-3.5 h-3.5 text-blue-600" />
             <span>Daftar Lemari</span>
           </button>
           <ChevronRight className="w-4 h-4 text-slate-400" />
-          <span className="text-emerald-700 flex items-center gap-1">
-            <span>🔍 Pencarian:</span>
+          <span className="text-blue-700 flex items-center gap-1.5">
+            <Search className="w-3.5 h-3.5" />
+            <span>Pencarian:</span>
             <span className="text-slate-900 font-bold">&quot;{searchQuery}&quot;</span>
           </span>
           <button
             onClick={onClearSearch}
-            className="ml-auto text-[11px] text-rose-600 hover:text-rose-500 font-medium hover:underline"
+            className="ml-auto text-xs text-rose-600 hover:text-rose-700 font-medium hover:underline inline-flex items-center gap-1"
           >
-            Hapus Pencarian
+            <X className="w-3 h-3" />
+            <span>Hapus Pencarian</span>
           </button>
         </>
       ) : selectedCabinet === null ? (
         /* 1. TAMPILAN AWAL: DAFTAR LEMARI */
-        <div className="flex items-center gap-1.5 text-emerald-700">
-          <span>📌</span>
-          <span>Daftar Lemari</span>
+        <div className="flex items-center gap-2 text-blue-700 font-bold">
+          <Archive className="w-4 h-4 text-blue-600" />
+          <span>Daftar Lemari Arsip</span>
         </div>
       ) : selectedRak === null ? (
-        /* 2. TAMPILAN KEDUA: DAFTAR RAK 1 - 4 */
+        /* 2. TAMPILAN KEDUA: DAFTAR RAK */
         <div className="flex items-center flex-wrap gap-2">
           <button
             onClick={onGoToLemari}
-            className="cursor-pointer hover:underline flex items-center gap-1 text-slate-600 hover:text-emerald-700 transition"
+            className="cursor-pointer hover:underline flex items-center gap-1.5 text-slate-600 hover:text-blue-700 transition"
             title="Kembali ke Daftar Lemari"
           >
-            <span>🗄️</span>
+            <Archive className="w-3.5 h-3.5 text-slate-400" />
             <span>{lemariDisplay}</span>
           </button>
           <ChevronRight className="w-4 h-4 text-slate-400" />
-          <span className="text-emerald-700">Pilih Rak</span>
+          <span className="text-blue-700 font-bold">Pilih Rak</span>
         </div>
       ) : (
         /* 3. TAMPILAN KETIGA: DAFTAR PELATIHAN DI DALAM RAK */
         <div className="flex items-center flex-wrap gap-2">
           <button
             onClick={onGoToLemari}
-            className="cursor-pointer hover:underline flex items-center gap-1 text-slate-600 hover:text-emerald-700 transition"
+            className="cursor-pointer hover:underline flex items-center gap-1.5 text-slate-600 hover:text-blue-700 transition"
             title="Kembali ke Daftar Lemari"
           >
-            <span>🗄️</span>
+            <Archive className="w-3.5 h-3.5 text-slate-400" />
             <span>{lemariDisplay}</span>
           </button>
           <ChevronRight className="w-4 h-4 text-slate-400" />
           <button
             onClick={() => onGoToRak && onGoToRak(selectedCabinet)}
-            className="cursor-pointer hover:underline flex items-center gap-1 text-slate-600 hover:text-emerald-700 transition"
+            className="cursor-pointer hover:underline flex items-center gap-1.5 text-slate-600 hover:text-blue-700 transition"
             title={`Kembali ke Daftar Rak di ${lemariDisplay}`}
           >
-            <span>📁</span>
+            <Folder className="w-3.5 h-3.5 text-slate-400" />
             <span>{selectedRak}</span>
           </button>
           <ChevronRight className="w-4 h-4 text-slate-400" />
-          <span className="text-emerald-700">Daftar Pelatihan</span>
+          <span className="text-blue-700 font-bold">Daftar Pelatihan</span>
         </div>
       )}
     </div>

@@ -113,31 +113,31 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in duration-200 my-auto text-slate-100"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden animate-in fade-in duration-200 my-auto text-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-white">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
               <MapPin className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-bold text-base text-white tracking-tight">
+              <h2 className="font-bold text-base text-slate-900 tracking-tight">
                 Input Lokasi Berkas LSP
               </h2>
-              <p className="text-xs text-slate-400">
-                Pencatatan lokasi fisik berkas & generator QR Code filter boks arsip
+              <p className="text-xs text-slate-500">
+                Pencatatan lokasi fisik berkas &amp; generator QR Code filter boks arsip
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800"
+            className="text-slate-400 hover:text-slate-600 transition p-1.5 rounded-lg hover:bg-slate-100"
             title="Tutup"
           >
             <X className="w-5 h-5" />
@@ -149,8 +149,8 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
           <form onSubmit={handleGenerate} className="space-y-4">
             {/* Nama Pelatihan */}
             <div className="space-y-1.5">
-              <label htmlFor="pelatihan" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                Nama Pelatihan: <span className="text-emerald-400">*</span>
+              <label htmlFor="pelatihan" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                Nama Pelatihan: <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -158,7 +158,7 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                 value={pelatihan}
                 onChange={(e) => setPelatihan(e.target.value)}
                 placeholder="Contoh: Data Analyst"
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 required
               />
 
@@ -171,7 +171,7 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                       key={idx}
                       type="button"
                       onClick={() => setPelatihan(item)}
-                      className="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:text-emerald-300 transition"
+                      className="text-[11px] px-2.5 py-1 rounded-md bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 transition font-medium"
                     >
                       {item}
                     </button>
@@ -184,14 +184,14 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Pilih Lemari */}
               <div className="space-y-1.5">
-                <label htmlFor="lemari" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                <label htmlFor="lemari" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Pilih Lemari:
                 </label>
                 <select
                   id="lemari"
                   value={lemari}
                   onChange={(e) => setLemari(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 >
                   <option value="Lemari-A">Lemari A</option>
                   <option value="Lemari-B">Lemari B</option>
@@ -204,14 +204,14 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
 
               {/* Pilih Rak */}
               <div className="space-y-1.5">
-                <label htmlFor="rak" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                <label htmlFor="rak" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Pilih Rak:
                 </label>
                 <select
                   id="rak"
                   value={rak}
                   onChange={(e) => setRak(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 >
                   <option value="Rak-1">Rak 1 (Atas)</option>
                   <option value="Rak-2">Rak 2 (Tengah-Atas)</option>
@@ -225,25 +225,25 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
             </div>
 
             {/* Opsi Tambahkan ke Database Boks */}
-            <div className="bg-slate-950/60 border border-slate-800 rounded-lg p-3 space-y-2">
-              <label className="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+              <label className="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={saveToArchiveList}
                   onChange={(e) => setSaveToArchiveList(e.target.checked)}
-                  className="rounded bg-slate-900 border-slate-700 text-emerald-500 focus:ring-emerald-500 w-4 h-4"
+                  className="rounded bg-white border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
                 />
-                <span className="font-medium">Daftarkan juga sebagai boks arsip baru ke daftar arsip</span>
+                <span className="font-semibold">Daftarkan juga sebagai boks arsip baru ke daftar arsip</span>
               </label>
 
               {saveToArchiveList && (
                 <div className="pt-1 flex items-center space-x-2">
-                  <span className="text-xs text-slate-400">Tahun Pelaksanaan:</span>
+                  <span className="text-xs text-slate-600">Tahun Pelaksanaan:</span>
                   <input
                     type="number"
                     value={tahun}
                     onChange={(e) => setTahun(e.target.value)}
-                    className="w-24 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white"
+                    className="w-24 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
               )}
@@ -252,33 +252,33 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
             {/* Tombol Simpan & Generate */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-md hover:shadow-emerald-900/30 transition active:scale-[0.99]"
+              className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-xs transition active:scale-[0.99]"
             >
               <QrCode className="w-4 h-4" />
-              <span>Simpan & Generate QR Code</span>
+              <span>Simpan &amp; Generate QR Code</span>
             </button>
           </form>
 
           {/* Section Hasil Filter / QR Code */}
           {isGenerated && (
-            <div id="result" className="pt-4 border-t border-slate-800 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div id="result" className="pt-4 border-t border-slate-200 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-200 flex items-center space-x-1.5">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
+                  <Sparkles className="w-4 h-4 text-blue-600" />
                   <span>Hasil Filter / QR Code:</span>
                 </h3>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
-                  Aktif & Siap Discan
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Aktif &amp; Siap Discan
                 </span>
               </div>
 
               {/* URL Target Card */}
-              <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-1.5">
-                <div className="flex items-center justify-between text-xs text-slate-400">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+                <div className="flex items-center justify-between text-xs text-slate-600">
                   <span className="font-semibold">URL Target:</span>
                   <button
                     onClick={handleCopyUrl}
-                    className="inline-flex items-center space-x-1 text-emerald-400 hover:text-emerald-300 font-medium transition"
+                    className="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 font-semibold transition"
                   >
                     {copied ? (
                       <>
@@ -295,15 +295,15 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                 </div>
                 <div
                   id="urlText"
-                  className="font-mono text-xs text-emerald-300/90 break-all bg-slate-900/90 p-2 rounded border border-slate-800 select-all"
+                  className="font-mono text-xs text-blue-700 break-all bg-white p-2.5 rounded-lg border border-slate-200 select-all font-medium"
                 >
                   {targetUrl}
                 </div>
               </div>
 
               {/* QR Code Container */}
-              <div className="flex flex-col items-center justify-center p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
-                <div id="qrcode" className="bg-white p-3 rounded-lg shadow-lg">
+              <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <div id="qrcode" className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                   <img
                     src={qrImageUrl}
                     alt={`QR Code Lokasi ${pelatihan}`}
@@ -311,10 +311,10 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-xs font-semibold text-white">
+                  <p className="text-xs font-bold text-slate-900">
                     {pelatihan}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500 font-medium">
                     {lemari.replace('-', ' ')} • {rak.replace('-', ' ')}
                   </p>
                 </div>
@@ -325,27 +325,27 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg border border-slate-700 transition"
+                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition shadow-2xs"
                   title="Cetak Label QR Code ke Kertas/Stiker"
                 >
-                  <Printer className="w-3.5 h-3.5 text-slate-300" />
+                  <Printer className="w-3.5 h-3.5 text-slate-500" />
                   <span>Cetak</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadQr}
-                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg border border-slate-700 transition"
+                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition shadow-2xs"
                   title="Unduh file gambar QR Code (PNG)"
                 >
-                  <Download className="w-3.5 h-3.5 text-emerald-400" />
+                  <Download className="w-3.5 h-3.5 text-blue-600" />
                   <span>Unduh</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleApplyNow}
-                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg shadow transition"
+                  className="flex items-center justify-center space-x-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs transition"
                   title="Terapkan filter ke dashboard boks"
                 >
                   <Filter className="w-3.5 h-3.5" />
@@ -357,12 +357,12 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-5 py-3 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
+        <div className="px-5 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
           <span>Format URL HashRouter terverifikasi GitHub Pages</span>
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs transition"
+            className="px-3.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-300 rounded-lg text-xs transition shadow-2xs"
           >
             Tutup
           </button>

@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="top-bar-clean">
       <div className="header-left">
         <div className="header-icon">
-          <Archive className="w-6 h-6 text-emerald-600" />
+          <Archive className="w-6 h-6 text-blue-600" />
         </div>
         <div className="header-title">
           <h1>Sistem Manajemen Boks Arsip LSP</h1>

@@ -9,25 +9,13 @@ interface CabinetGridViewProps {
   onOpenInputLokasi?: () => void;
 }
 
-const COLOR_PALETTES = [
-  { badge: '#10b981', btn: '#10b981', cls: 'lemari-1' },
-  { badge: '#10b981', btn: '#10b981', cls: 'lemari-2' },
-  { badge: '#3b82f6', btn: '#3b82f6', cls: 'lemari-3' },
-  { badge: '#a855f7', btn: '#a855f7', cls: 'lemari-4' },
-  { badge: '#f59e0b', btn: '#f59e0b', cls: 'lemari-1' },
-  { badge: '#06b6d4', btn: '#06b6d4', cls: 'lemari-3' },
-  { badge: '#ec4899', btn: '#ec4899', cls: 'lemari-4' },
-];
-
 export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   boxes,
   availableLemari,
   onSelectCabinet,
   onOpenInputLokasi
 }) => {
-  // 1. Sembunyikan Lemari yang jumlah Boks Arsipnya bernilai 0 atau invalid (seperti Lemari 0).
-  // 2. Tampilkan HANYA Lemari yang memiliki data Boks Arsip terdaftar di dalamnya (minimal 1 boks arsip).
-  // 3. Batasi tampilan maksimum hanya untuk 4 Lemari teratas yang aktif dan berisi data.
+  // Saring lemari yang memiliki data Boks Arsip minimal 1 boks
   const activeCabinetList = React.useMemo(() => {
     const lemariMap = new Map<string, BoksArsip[]>();
 
@@ -36,7 +24,6 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
 
       const raw = b.lokasi.lemari.toString().replace(/lemari[-_\s]*/i, '').trim();
 
-      // Saring keluar jika kosong, bernilai 0, invalid, atau undefined
       if (
         !raw ||
         raw === '0' ||
@@ -56,12 +43,10 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
       lemariMap.get(raw)!.push(b);
     });
 
-    // Ambil HANYA Lemari yang memiliki minimal 1 data boks arsip (jumlah > 0)
     const validEntries = Array.from(lemariMap.entries()).filter(
       ([_, boxList]) => boxList && boxList.length > 0
     );
 
-    // Urutkan lemari teratas (angka 1, 2, 3... lalu huruf A, B, C...)
     validEntries.sort(([keyA], [keyB]) => {
       const numA = parseInt(keyA, 10);
       const numB = parseInt(keyB, 10);
@@ -69,27 +54,26 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
       return keyA.localeCompare(keyB, undefined, { numeric: true, sensitivity: 'base' });
     });
 
-    // Tampilkan seluruh Lemari aktif secara dinamis dari Google Sheets (tanpa batasan 4 lemari)
     return validEntries;
   }, [boxes]);
 
   return (
     <div className="space-y-4 mb-8">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-xs">
+      {/* Section Header (Light Enterprise) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
             <Archive className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-wide flex items-center gap-2">
-              <span>TAMPILAN LEMARI ARSIP FISIK</span>
-              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Tampilan Lemari Arsip Fisik</span>
+              <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                 {activeCabinetList.length} Lemari Aktif
               </span>
             </h2>
             <p className="text-xs text-slate-500">
-              Pilih lemari arsip untuk menjelajahi boks arsip dan dokumen pelatihan di dalamnya
+              Pilih lemari arsip untuk memeriksa boks arsip dan dokumen sertifikasi di dalamnya
             </p>
           </div>
         </div>
@@ -97,21 +81,20 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         {onOpenInputLokasi && (
           <button
             onClick={onOpenInputLokasi}
-            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition shadow-xs"
+            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition shadow-2xs"
             title="Input Lokasi Berkas LSP &amp; Generate QR Code"
           >
-            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+            <MapPin className="w-3.5 h-3.5 text-blue-600" />
             <span>+ Input Lokasi &amp; QR</span>
           </button>
         )}
       </div>
 
-      {/* Grid of Dynamic Cabinet Cards (Hanya menampilkan Lemari dengan minimal 1 Boks Arsip) */}
+      {/* Grid of Dynamic Cabinet Cards */}
       <div className="grid-container">
         {activeCabinetList.length > 0 ? (
-          activeCabinetList.map(([lemariKey, cabinetBoxes], index) => {
+          activeCabinetList.map(([lemariKey, cabinetBoxes]) => {
             const lemariNum = parseInt(lemariKey, 10);
-            const palette = COLOR_PALETTES[index % COLOR_PALETTES.length];
 
             const totalPeserta = cabinetBoxes.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
             const tersediaCount = cabinetBoxes.filter(
@@ -138,7 +121,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             return (
               <div
                 key={`lemari-card-${lemariKey}`}
-                className={`card-lemari ${palette.cls}`}
+                className="card-lemari"
                 onClick={() => onSelectCabinet(selectValue)}
               >
                 <div className="card-header">
@@ -147,56 +130,56 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
                       <Folder className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 style={{ margin: 0, fontSize: '17px' }}>Lemari {lemariKey}</h4>
-                      <span style={{ fontSize: '12px', color: '#64748b' }}>Gedung Arsip LSP</span>
+                      <h4 className="m-0 font-bold text-slate-900 text-[17px]">Lemari {lemariKey}</h4>
+                      <span className="text-xs text-slate-500">Gedung Arsip LSP</span>
                     </div>
                   </div>
-                  <span className="badge-boks" style={{ color: palette.badge }}>
+                  <span className="badge-boks">
                     {cabinetBoxes.length} Boks Arsip
                   </span>
                 </div>
 
                 <div className="card-info-list">
                   <div className="info-item">
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
                       <Users className="w-3.5 h-3.5 text-slate-400" />
                       <span>Jumlah Peserta</span>
                     </span>
-                    <strong>{totalPeserta > 0 ? `${totalPeserta} Peserta` : '0 Peserta'}</strong>
+                    <strong className="text-slate-900 font-semibold">{totalPeserta > 0 ? `${totalPeserta.toLocaleString('id-ID')} Peserta` : '0 Peserta'}</strong>
                   </div>
                   <div className="info-item">
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
                       <Archive className="w-3.5 h-3.5 text-slate-400" />
                       <span>Status Arsip</span>
                     </span>
-                    <strong style={{ color: '#10b981' }}>{tersediaCount}/{cabinetBoxes.length} Tersedia</strong>
+                    <strong className="text-emerald-700 font-semibold">{tersediaCount}/{cabinetBoxes.length} Tersedia</strong>
                   </div>
                   <div className="info-item">
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
                       <ClipboardCheck className="w-3.5 h-3.5 text-slate-400" />
                       <span>Kelengkapan</span>
                     </span>
-                    <strong>{lengkapCount} Lengkap</strong>
+                    <strong className="text-blue-700 font-semibold">{lengkapCount} Lengkap</strong>
                   </div>
                   <div className="info-item">
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
                       <Layers className="w-3.5 h-3.5 text-slate-400" />
                       <span>Rak Tersedia</span>
                     </span>
-                    <strong className="truncate max-w-[170px]" title={rakText}>{rakText}</strong>
+                    <strong className="truncate max-w-[170px] text-slate-900" title={rakText}>{rakText}</strong>
                   </div>
                   <div className="info-item">
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-600">
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       <span>Tahun</span>
                     </span>
-                    <strong>{tahunText}</strong>
+                    <strong className="text-slate-900">{tahunText}</strong>
                   </div>
                 </div>
 
                 <div className="card-footer">
-                  <span style={{ color: '#64748b' }}>Klik untuk membuka</span>
-                  <span className="btn-buka inline-flex items-center gap-1" style={{ color: palette.btn }}>
+                  <span className="text-xs text-slate-500">Klik untuk membuka rak</span>
+                  <span className="btn-buka inline-flex items-center gap-1">
                     <span>Buka Lemari {lemariKey}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>
@@ -207,11 +190,11 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         ) : (
           <div className="col-span-2 bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 shadow-xs">
             <Archive className="w-10 h-10 text-slate-400 mx-auto mb-2" />
-            <h3 className="text-sm font-bold text-slate-800">
+            <h3 className="text-sm font-bold text-slate-900">
               Belum Ada Lemari dengan Boks Arsip Aktif
             </h3>
             <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-              Silakan tambahkan data boks arsip baru ke dalam lemari melalui tombol &quot;+ Tambah Boks Arsip&quot;.
+              Silakan daftarkan boks arsip baru ke dalam lemari melalui tombol &quot;+ Tambah Boks Arsip&quot;.
             </p>
           </div>
         )}

@@ -55,19 +55,19 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-700/90 rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-xl overflow-hidden text-slate-800">
         {/* Top Floating Close Bar */}
-        <div className="px-5 py-3 border-b border-slate-800 bg-slate-950/90 flex items-center justify-between">
+        <div className="px-5 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/80 flex items-center justify-center text-emerald-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
               <FolderArchive className="w-4 h-4" />
             </div>
             <div>
-              <span className="font-bold text-xs sm:text-sm text-slate-100">
+              <span className="font-bold text-xs sm:text-sm text-slate-900">
                 {isBoxData && !viewJson ? 'PORTAL ARSIP LSP BDI' : title}
               </span>
-              <span className="hidden sm:inline-block ml-2 text-[11px] text-slate-400">
+              <span className="hidden sm:inline-block ml-2 text-[11px] text-slate-500">
                 {isBoxData && !viewJson ? '• Kartu Detail Digital' : '• Format Data JSON'}
               </span>
             </div>
@@ -77,7 +77,7 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
             {isBoxData && viewJson && (
               <button
                 onClick={() => setViewJson(false)}
-                className="inline-flex items-center space-x-1 text-xs text-emerald-400 hover:text-emerald-300 px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800/60 transition"
+                className="inline-flex items-center space-x-1 text-xs text-blue-700 hover:text-blue-800 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 font-semibold transition shadow-2xs"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Kartu Portal</span>
@@ -86,7 +86,7 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
 
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800"
+              className="text-slate-400 hover:text-slate-600 transition p-1.5 rounded-lg hover:bg-slate-100"
               title="Tutup Modal"
             >
               <X className="w-5 h-5" />
@@ -95,7 +95,7 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
         </div>
 
         {/* Modal Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-950/50">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-slate-50/60">
           {isBoxData && !viewJson ? (
             /* Render Portal Card */
             <PortalBoxCard
@@ -106,19 +106,19 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
           ) : (
             /* Render Syntax Highlighted JSON */
             <div className="space-y-3">
-              <div className="flex items-center justify-between px-2 text-xs text-slate-400">
-                <span className="font-mono">Payload JSON Valid (HTTP {statusCode})</span>
+              <div className="flex items-center justify-between px-2 text-xs text-slate-600">
+                <span className="font-mono font-semibold">Payload JSON Valid (HTTP {statusCode})</span>
                 {isBoxData && (
                   <button
                     onClick={() => setViewJson(false)}
-                    className="text-emerald-400 hover:underline inline-flex items-center space-x-1"
+                    className="text-blue-600 hover:underline font-semibold inline-flex items-center space-x-1"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Kembali ke Tampilan Kartu Portal</span>
                   </button>
                 )}
               </div>
-              <pre className="font-mono text-xs text-emerald-300 leading-relaxed overflow-x-auto whitespace-pre p-4 bg-slate-950 rounded-xl border border-slate-800 max-h-[60vh]">
+              <pre className="font-mono text-xs text-emerald-400 leading-relaxed overflow-x-auto whitespace-pre p-4 bg-slate-900 rounded-xl border border-slate-800 max-h-[60vh]">
                 {jsonString}
               </pre>
             </div>
@@ -127,21 +127,21 @@ export const JsonViewerModal: React.FC<JsonViewerModalProps> = ({
 
         {/* Footer (Only for JSON view or fallback) */}
         {viewJson && (
-          <div className="px-5 py-3 border-t border-slate-800 bg-slate-950/90 flex items-center justify-between text-xs">
+          <div className="px-5 py-3 border-t border-slate-100 bg-white flex items-center justify-between text-xs">
             <span className="text-slate-500 font-mono text-[11px]">
               {new Blob([jsonString]).size} bytes • JSON Output
             </span>
             <div className="flex items-center space-x-2">
               <button
                 onClick={handleDownload}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold transition shadow-2xs"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Unduh .json</span>
               </button>
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-sm transition"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-xs transition"
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? 'Tersalin!' : 'Salin JSON'}</span>

@@ -61,17 +61,17 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
   };
 
   return (
-    <div className="mb-6 rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm overflow-hidden text-xs">
+    <div className="mb-6 rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden text-xs">
       {/* Top Banner Row */}
-      <div className="px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800/80">
+      <div className="px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100">
         <div className="flex items-start sm:items-center space-x-3">
           <div
             className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
               isConnected
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                 : isWarning
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                : 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                ? 'bg-amber-50 text-amber-600 border border-amber-200'
+                : 'bg-blue-50 text-blue-600 border border-blue-200'
             }`}
           >
             <FileSpreadsheet className="w-5 h-5" />
@@ -79,39 +79,39 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
 
           <div>
             <div className="flex items-center flex-wrap gap-2">
-              <span className="font-semibold text-slate-100">
+              <span className="font-bold text-slate-900 text-sm">
                 Google Sheets Live Sync
               </span>
 
               {isConnected && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-950 text-emerald-300 border border-emerald-800">
-                  <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-400" />
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" />
                   Tersinkron ({syncState.totalParsed} Boks Arsip)
                 </span>
               )}
 
               {isWarning && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-amber-950 text-amber-300 border border-amber-800">
-                  <AlertTriangle className="w-3 h-3 mr-1 text-amber-400" />
-                  Menunggu Akses Publik / 404
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                  <AlertTriangle className="w-3 h-3 mr-1 text-amber-600" />
+                  Periksa Izin Akses Publik Spreadsheet
                 </span>
               )}
 
               {isSyncing && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-cyan-950 text-cyan-300 border border-cyan-800">
-                  <RefreshCw className="w-3 h-3 mr-1 text-cyan-400 animate-spin" />
-                  Mengambil CSV...
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  <RefreshCw className="w-3 h-3 mr-1 text-blue-600 animate-spin" />
+                  Mengambil Data...
                 </span>
               )}
 
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-400 bg-slate-950 border border-slate-800">
-                Polling: tiap 15 detik ({nextPollCountdown}s)
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium text-slate-500 bg-slate-100 border border-slate-200">
+                Auto-Refresh: {nextPollCountdown}s
               </span>
             </div>
 
-            <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+            <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
               {syncState.message ||
-                'Sinkronisasi berkas boks arsip secara otomatis dari spreadsheet Google Sheets format CSV.'}
+                'Sinkronisasi berkas boks arsip secara otomatis dari spreadsheet Google Sheets.'}
             </p>
           </div>
         </div>
@@ -121,8 +121,8 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
           {onOpenAppsScriptConfig && (
             <button
               onClick={onOpenAppsScriptConfig}
-              className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 transition text-[11px] font-medium"
-              title="Pengaturan Google Apps Script Web App (Simpan Otomatis ke Google Sheets)"
+              className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 transition text-[11px] font-semibold shadow-2xs"
+              title="Pengaturan Google Apps Script Web App"
             >
               <span>⚡ API Apps Script</span>
             </button>
@@ -136,10 +136,10 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
             }
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 transition text-[11px]"
+            className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 transition text-[11px] font-medium shadow-2xs"
             title="Buka Google Sheets di Tab Baru"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-emerald-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
             <span className="hidden sm:inline">Buka Sheets</span>
           </a>
 
@@ -147,7 +147,7 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
             id="btn-manual-sync-sheets"
             onClick={onManualSync}
             disabled={isSyncing}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium shadow-sm transition text-[11px]"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold shadow-xs transition text-[11px]"
             title="Tarik data terbaru dari Google Sheets sekarang"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
@@ -156,7 +156,7 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-slate-200 transition"
+            className="p-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-500 hover:text-slate-700 transition shadow-2xs"
             title={isExpanded ? 'Tutup Pengaturan Sinkronisasi' : 'Buka Pengaturan Sinkronisasi'}
           >
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -166,29 +166,28 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
 
       {/* Expanded Details / Troubleshooting */}
       {isExpanded && (
-        <div className="p-4 bg-slate-950/60 border-t border-slate-800/60 space-y-4">
+        <div className="p-4 bg-slate-50/70 border-t border-slate-100 space-y-4">
           {/* Status Note */}
-          <div className="flex items-start space-x-2 text-slate-300 text-xs bg-slate-900/80 p-3 rounded-lg border border-slate-800">
-            <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+          <div className="flex items-start space-x-2.5 text-slate-700 text-xs bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs">
+            <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="font-medium text-slate-200">
-                Cara memastikan Google Sheets dapat dibaca otomatis oleh aplikasi:
+              <p className="font-semibold text-slate-900">
+                Panduan Memastikan Google Sheets Terhubung:
               </p>
-              <ol className="list-decimal list-inside text-slate-400 space-y-0.5">
-                <li>Buka Google Sheets Anda.</li>
+              <ol className="list-decimal list-inside text-slate-600 space-y-0.5 text-xs">
+                <li>Buka dokumen Google Sheets Anda.</li>
                 <li>
                   Klik tombol <strong>Bagikan (Share)</strong> di pojok kanan atas.
                 </li>
                 <li>
                   Ubah <em>Akses Umum</em> menjadi{' '}
-                  <span className="text-emerald-300 font-semibold">
-                    "Siapa saja yang memiliki link" (Anyone with the link)
+                  <span className="text-blue-700 font-semibold">
+                    &quot;Siapa saja yang memiliki link&quot; (Anyone with the link)
                   </span>{' '}
-                  sebagai <em>Pelihat (Viewer)</em>.
+                  dengan peran <em>Pelihat (Viewer)</em>.
                 </li>
                 <li>
-                  Sistem melakukan polling otomatis setiap <strong>15 detik</strong>{' '}
-                  dan akan langsung memuat data terbaru begitu izin aktif.
+                  Aplikasi memuat ulang data otomatis tiap <strong>15 detik</strong>.
                 </li>
               </ol>
             </div>
@@ -196,7 +195,7 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
 
           {/* Form to change URL */}
           <form onSubmit={handleApplyUrl} className="space-y-2">
-            <label className="block text-slate-300 font-medium">
+            <label className="block text-slate-700 font-semibold">
               URL Sumber CSV Google Sheets:
             </label>
             <div className="flex gap-2">
@@ -205,43 +204,43 @@ export const GoogleSheetsSyncBanner: React.FC<GoogleSheetsSyncBannerProps> = ({
                 value={customUrl}
                 onChange={(e) => setCustomUrl(e.target.value)}
                 placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv"
-                className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono"
+                className="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-mono shadow-2xs"
               />
               <button
                 type="submit"
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition font-medium"
+                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg transition font-semibold text-xs shadow-2xs"
               >
                 Terapkan URL
               </button>
             </div>
           </form>
 
-          {/* Direct CSV Paste / Fallback for quick preview */}
-          <form onSubmit={handleApplyRawCsv} className="space-y-2 pt-2 border-t border-slate-800/80">
+          {/* Direct CSV Paste */}
+          <form onSubmit={handleApplyRawCsv} className="space-y-2 pt-2 border-t border-slate-200">
             <div className="flex items-center justify-between">
-              <label className="block text-slate-300 font-medium flex items-center space-x-1.5">
-                <FileText className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Atau Tempel / Unggah Raw CSV Langsung (Manual Override):</span>
+              <label className="block text-slate-700 font-semibold flex items-center space-x-1.5">
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
+                <span>Atau Tempel / Unggah Raw CSV Manual:</span>
               </label>
               <span className="text-[10px] text-slate-500 font-mono">
-                Kolom: ID_Boks, Nama Pelatihan, Tahun Pelaksanaa, ...
+                Kolom: ID_Boks, Nama Pelatihan, Tahun Pelaksanaan, ...
               </span>
             </div>
             <textarea
               rows={3}
               value={rawCsvInput}
               onChange={(e) => setRawCsvInput(e.target.value)}
-              placeholder='ID_Boks,Nama Pelatihan,Tahun Pelaksanaa,Jumlah Peserta,Jumlah Peserta BK,Kode Lemari,Nomor Rak,Nomor Baris,Status Arsip,Status Barang,Link Google Drive&#10;BOX-L1-R1-001,"Pelatihan Digital Marketing",2024,25,2,1,R1,B1,Aktif,Lengkap,https://drive.google.com'
-              className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono"
+              placeholder='ID_Boks,Nama Pelatihan,Tahun Pelaksanaan,Jumlah Peserta,Jumlah Peserta BK,Kode Lemari,Nomor Rak,Nomor Baris,Status Arsip,Status Barang,Link Google Drive&#10;BOX-L1-R1-001,"Pelatihan Digital Marketing",2024,25,2,1,R1,B1,Aktif,Lengkap,https://drive.google.com'
+              className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-mono shadow-2xs"
             />
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={!rawCsvInput.trim()}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg transition font-medium text-xs shadow-sm"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg transition font-semibold text-xs shadow-xs"
               >
                 <UploadCloud className="w-3.5 h-3.5" />
-                <span>Proses & Muat Data CSV Ini</span>
+                <span>Proses & Muat Data CSV</span>
               </button>
             </div>
           </form>

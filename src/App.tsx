@@ -765,21 +765,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-5 right-5 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div
-            className={`px-4 py-2.5 rounded-lg border shadow-lg text-xs font-medium flex items-center space-x-2 ${
+            className={`px-4 py-2.5 rounded-xl border shadow-lg text-xs font-semibold flex items-center space-x-2 ${
               toastMessage.type === 'success'
-                ? 'bg-emerald-950/90 text-emerald-300 border-emerald-800'
-                : 'bg-rose-950/90 text-rose-300 border-rose-800'
+                ? 'bg-white text-emerald-700 border-emerald-200'
+                : 'bg-white text-rose-700 border-rose-200'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-rose-400" />
+              <AlertCircle className="w-4 h-4 text-rose-600" />
             )}
             <span>{toastMessage.text}</span>
           </div>
@@ -879,17 +879,17 @@ export default function App() {
           <div id="content-area" className="w-full">
             {isLoading ? (
               <div className="py-20 flex flex-col items-center justify-center text-slate-500">
-                <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3" />
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mb-3" />
                 <p className="text-xs">Memuat data boks arsip dari engine...</p>
               </div>
             ) : searchQuery.trim() ? (
               /* PENCARIAN GLOBAL EXCEPTION BANNER & LISTING */
               <div className="space-y-4">
-                <div className="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-sm animate-in fade-in duration-200">
-                  <div className="flex items-center space-x-2 text-slate-200">
-                    <Search className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs animate-in fade-in duration-200">
+                  <div className="flex items-center space-x-2.5 text-slate-800">
+                    <Search className="w-4 h-4 text-blue-600 flex-shrink-0" />
                     <span>
-                      Hasil Pencarian Global: &quot;<strong className="text-emerald-300">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-white">{filteredBoxes.length}</strong> boks arsip di semua lemari.
+                      Hasil Pencarian: &quot;<strong className="text-blue-700">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-slate-900">{filteredBoxes.length}</strong> boks arsip.
                     </span>
                   </div>
                   <button
@@ -900,18 +900,18 @@ export default function App() {
                       setSelectedLemari(null);
                       setSelectedRak(null);
                     }}
-                    className="inline-flex items-center space-x-1 text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg transition w-fit text-xs"
+                    className="inline-flex items-center space-x-1.5 text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg transition w-fit text-xs font-semibold shadow-2xs"
                   >
-                    <X className="w-3.5 h-3.5 text-rose-400" />
+                    <X className="w-3.5 h-3.5 text-rose-500" />
                     <span>Hapus Pencarian &amp; Kembali ke Lemari</span>
                   </button>
                 </div>
 
                 {filteredBoxes.length > 0 ? (
                   <div>
-                    <div className="flex items-center justify-between mb-3 text-xs text-slate-400">
+                    <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
                       <span>
-                        Menampilkan <strong className="text-slate-200">{filteredBoxes.length}</strong> boks arsip berkas
+                        Menampilkan <strong className="text-slate-800">{filteredBoxes.length}</strong> boks arsip berkas
                         {isFiltered && ` (difilter dari total ${boxes.length})`}
                       </span>
                       <button
@@ -923,10 +923,10 @@ export default function App() {
                             statusCode: 200
                           })
                         }
-                        className="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] flex items-center space-x-1"
+                        className="text-blue-600 hover:text-blue-800 font-mono text-[11px] font-semibold flex items-center space-x-1"
                       >
                         <Database className="w-3.5 h-3.5" />
-                        <span>Lihat Format JSON Hasil Filter</span>
+                        <span>Format JSON Hasil Filter</span>
                       </button>
                     </div>
 
@@ -969,19 +969,19 @@ export default function App() {
                   </div>
                 ) : (
                   /* Empty State 404 */
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-rose-950/60 border border-rose-900/80 flex items-center justify-center text-rose-400 mb-3">
+                  <div className="bg-white border border-slate-200 rounded-xl p-12 text-center flex flex-col items-center justify-center shadow-xs">
+                    <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mb-3 shadow-2xs">
                       <FolderSearch className="w-6 h-6" />
                     </div>
-                    <h3 className="text-sm font-bold text-slate-200 mb-1">
+                    <h3 className="text-sm font-bold text-slate-900 mb-1">
                       Data Boks Arsip Tidak Ditemukan
                     </h3>
-                    <p className="text-xs text-slate-400 max-w-md mb-4 leading-relaxed">
+                    <p className="text-xs text-slate-500 max-w-md mb-4 leading-relaxed">
                       Tidak ada boks arsip yang cocok dengan kriteria pencarian &quot;{searchQuery}&quot;.
                     </p>
                     <button
                       onClick={handleResetFilters}
-                      className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition"
+                      className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition shadow-xs"
                     >
                       Reset Filter &amp; Kembali ke Daftar Lemari
                     </button>
@@ -1005,18 +1005,18 @@ export default function App() {
               /* 2. TAMPILAN KEDUA: DAFTAR RAK DI DALAM LEMARI */
               showAllSekat ? (
                 <div className="space-y-4">
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                  <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                     <div className="flex items-center space-x-3">
                       <button
                         onClick={() => setShowAllSekat(false)}
-                        className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-700 hover:text-emerald-300 text-slate-200 text-xs font-semibold border border-slate-700 transition"
+                        className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-300 transition shadow-2xs"
                       >
-                        <ArrowLeft className="w-4 h-4 text-emerald-400" />
+                        <ArrowLeft className="w-4 h-4 text-blue-600" />
                         <span>Tampilan Kartu Rak</span>
                       </button>
                       <div>
-                        <h3 className="text-sm font-bold text-white">Lemari {selectedCabinet} - Semua Sekat Rak</h3>
-                        <p className="text-xs text-slate-400">Menampilkan seluruh rak arsip fisik sekaligus</p>
+                        <h3 className="text-sm font-bold text-slate-900">Lemari {selectedCabinet} - Semua Sekat Rak</h3>
+                        <p className="text-xs text-slate-500">Menampilkan seluruh rak arsip fisik sekaligus</p>
                       </div>
                     </div>
                   </div>

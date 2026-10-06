@@ -85,7 +85,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
   return (
     <div className="space-y-3 mb-6">
-      {/* KOTAK PENCARIAN TERPADU */}
+      {/* 1. KOTAK PENCARIAN TERPADU (LIGHT ENTERPRISE) */}
       <div className="search-box-container">
         {/* Input Teks Pencarian */}
         <div className="search-input-wrapper">
@@ -106,7 +106,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <button
               type="button"
               onClick={() => onSearchChange('')}
-              className="text-slate-400 hover:text-white px-1 text-sm cursor-pointer"
+              className="text-slate-400 hover:text-slate-600 p-1 text-sm cursor-pointer transition-colors"
               title="Hapus teks"
             >
               <X className="w-4 h-4" />
@@ -114,10 +114,10 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           )}
         </div>
 
-        {/* Aksi Tombol (Scan QR & Tombol Cari Utama) */}
+        {/* Aksi Tombol (Scan QR & Tombol Cari Utama Biru Modern) */}
         <div className="search-actions">
           <button type="button" className="btn-scan-qr inline-flex items-center gap-1.5" onClick={bukaScannerQR}>
-            <QrCode className="w-4 h-4 text-emerald-400" />
+            <QrCode className="w-4 h-4 text-slate-600" />
             <span>Scan QR</span>
           </button>
           <button type="button" className="btn-cari-utama inline-flex items-center gap-1.5" onClick={eksekusiPencarian}>
@@ -127,28 +127,29 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         </div>
       </div>
 
-      {/* Baris Filter Pendukung & Tampilan */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-semibold text-slate-300">Filter Pencarian Cepat</span>
+      {/* 2. BARIS FILTER PENDUKUNG & TAMPILAN (BACKGROUND PUTIH, BORDER SLATE-200) */}
+      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3.5">
+          <div className="flex items-center space-x-2.5">
+            <span className="text-xs font-bold text-slate-800 tracking-wide">Filter Pencarian Data</span>
             {isFiltered && (
               <button
                 onClick={onResetFilters}
-                className="text-[11px] text-rose-400 hover:text-rose-300 font-medium px-2 py-0.5 rounded bg-rose-950/40 border border-rose-900/60 transition"
+                className="text-[11px] text-rose-600 hover:text-rose-700 font-semibold px-2.5 py-0.5 rounded-md bg-rose-50 border border-rose-200 transition-colors shadow-2xs"
               >
                 Reset Filter
               </button>
             )}
           </div>
 
-          <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 self-end sm:self-auto">
+          {/* Toggle View Mode (Grid vs Table) */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 self-end sm:self-auto">
             <button
               onClick={() => onToggleViewMode('grid')}
-              className={`p-1.5 rounded text-xs transition ${
+              className={`p-1.5 rounded-md text-xs font-semibold transition-all ${
                 viewMode === 'grid'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-blue-600 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
               title="Tampilan Grid Kartu"
             >
@@ -156,10 +157,10 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </button>
             <button
               onClick={() => onToggleViewMode('table')}
-              className={`p-1.5 rounded text-xs transition ${
+              className={`p-1.5 rounded-md text-xs font-semibold transition-all ${
                 viewMode === 'table'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-blue-600 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
               title="Tampilan Tabel Berkas"
             >
@@ -168,14 +169,16 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           </div>
         </div>
 
-        {/* Filter Row - Dropdown Lemari & Rak Dinamis Otomatis dari Google Sheets */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-3 border-t border-slate-800/80 text-xs">
-          {/* 1. Dropdown Lokasi Lemari (Dinamis dari Google Sheets) */}
+        {/* Dropdown Filters (Latar Putih, Border Slate-300, Fokus Biru) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-3 border-t border-slate-100 text-xs">
+          {/* 1. Dropdown Lokasi Lemari */}
           <div>
-            <label className="block text-slate-400 font-medium mb-1.5 flex items-center justify-between">
+            <label className="block text-slate-600 font-semibold mb-1.5 flex items-center justify-between">
               <span>Lokasi Lemari</span>
               {selectedLemari && (
-                <span className="text-[10px] text-emerald-400 font-semibold">Lemari {selectedLemari}</span>
+                <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                  Lemari {selectedLemari}
+                </span>
               )}
             </label>
             <select
@@ -189,7 +192,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   onSelectLemari(!isNaN(numVal) ? numVal : val);
                 }
               }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs cursor-pointer"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs cursor-pointer shadow-2xs transition-all"
             >
               <option value="Semua">Semua Lemari ({lemariList.length} Lemari)</option>
               {lemariList.map((num) => (
@@ -200,12 +203,14 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </select>
           </div>
 
-          {/* 2. Dropdown Sekat / Rak (Dinamis dari Google Sheets) */}
+          {/* 2. Dropdown Sekat / Rak */}
           <div>
-            <label className="block text-slate-400 font-medium mb-1.5 flex items-center justify-between">
+            <label className="block text-slate-600 font-semibold mb-1.5 flex items-center justify-between">
               <span>Sekat / Rak</span>
               {selectedRak && (
-                <span className="text-[10px] text-emerald-400 font-semibold">{selectedRak}</span>
+                <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                  {selectedRak}
+                </span>
               )}
             </label>
             <select
@@ -216,7 +221,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   onSelectRak(val === 'Semua' ? null : val);
                 }
               }}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs cursor-pointer"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs cursor-pointer shadow-2xs transition-all"
             >
               <option value="Semua">Semua Rak ({rakList.length} Rak)</option>
               {rakList.map((rak) => (
@@ -229,11 +234,11 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
           {/* 3. Status Arsip Filter */}
           <div>
-            <label className="block text-slate-400 font-medium mb-1.5">Status Arsip</label>
+            <label className="block text-slate-600 font-semibold mb-1.5">Status Arsip</label>
             <select
               value={selectedStatusArsip}
               onChange={(e) => onSelectStatusArsip(e.target.value as StatusArsip | 'Semua')}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs cursor-pointer shadow-2xs transition-all"
             >
               <option value="Semua">Semua Status Arsip</option>
               <option value="Tersedia">Tersedia</option>
@@ -247,11 +252,11 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
           {/* 4. Status Barang Filter */}
           <div>
-            <label className="block text-slate-400 font-medium mb-1.5">Status Fisik Boks</label>
+            <label className="block text-slate-600 font-semibold mb-1.5">Status Fisik Boks</label>
             <select
               value={selectedStatusBarang}
               onChange={(e) => onSelectStatusBarang(e.target.value as StatusBarang | 'Semua')}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs cursor-pointer shadow-2xs transition-all"
             >
               <option value="Semua">Semua Status Fisik</option>
               <option value="Lengkap">Lengkap</option>
@@ -264,11 +269,11 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
           {/* 5. Tahun Pelaksanaan */}
           <div>
-            <label className="block text-slate-400 font-medium mb-1.5">Tahun Pelaksanaan</label>
+            <label className="block text-slate-600 font-semibold mb-1.5">Tahun Pelaksanaan</label>
             <select
               value={selectedTahun}
               onChange={(e) => onSelectTahun(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-800 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs cursor-pointer shadow-2xs transition-all"
             >
               <option value="Semua">Semua Tahun</option>
               {availableYears.map((year) => (
