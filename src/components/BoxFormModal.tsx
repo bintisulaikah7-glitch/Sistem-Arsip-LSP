@@ -189,48 +189,8 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
       setErrorMsg('6. Lemari wajib diisi / dipilih');
       return;
     }
-
-    setIsSubmitting(true);
-
-    const payload = {
-      action: 'add',
-      'Kode Lemari': typeof effectiveLemariStr === 'number' ? `Lemari ${effectiveLemariStr}` : effectiveLemariStr,
-      'Nomor Rak': selectedRak || 'Rak A',
-      'Nomor Box': selectedBox || 'Box 1',
-      'ID_Box': idBox,
-      'Nama Pelatihan': namaPelatihan,
-      'Tahun Pelaksanaan': Number(tahunPelaksanaan) || new Date().getFullYear(),
-      'Jumlah Peserta': Number(jumlahPeserta) || 0,
-      'Jumlah Peserta BK': Number(jumlahPesertaBk) || 0,
-      'Status Arsip': statusArsip || 'Tersedia',
-      'Status Barang': statusBarang || 'Lengkap',
-      'Hasil Uji Kompetensi': hasilUjiKompetensi || '',
-      'Link Google Drive': linkGoogleDrive || ''
-    };
-
-    try {
-      const res = await fetch('https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-
-      if (result.status === 'success' || result.success) {
-        alert('Berhasil menyimpan data boks ke Google Sheets!');
-        if (typeof onClose === 'function') onClose();
-        window.location.reload();
-      } else {
-        setErrorMsg('Gagal menyimpan: ' + (result.message || 'Terjadi kesalahan pada server.'));
-      }
-    } catch (error) {
-      console.error('Error saving box:', error);
-      setErrorMsg('Terjadi kesalahan koneksi saat mengirim data ke Google Sheets.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    const parsedLemariNum = parseInt(effectiveLemariStr.replace(/\D/g, ''), 10);
+    const finalLemari = !isNaN(parsedLemariNum) && parsedLemariNum > 0 ? parsedLemariNum : effectiveLemariStr;
 
     // Resolve dynamic Rak
     const effectiveRak = isCustomRak ? customRakName.trim() : selectedRak;
@@ -243,29 +203,29 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
       setErrorMsg('6. Posisi / Baris wajib diisi');
       return;
     }
-    if (!linkDokumentasi.trim()) {
-      setErrorMsg('9. Link Google Drive / Dokumentasi wajib diisi berupa URL yang valid');
-      return;
-    }
+
+    const effectiveNomorBox = nomorBox.trim() || '1';
+    const effectiveBaris = baris.trim() || 'B1';
+    const effectiveLink = linkDokumentasi.trim();
 
     const newBoxPayload: BoksArsip = {
       id_box: idBox.trim().toUpperCase(),
-      nomor_box: nomorBox.trim() || '1',
+      nomor_box: effectiveNomorBox,
       nama_pelatihan: namaPelatihan.trim(),
-      tahun_pelaksanaan: Number(tahunPelaksanaan),
-      jumlah_peserta: Number(jumlahPeserta),
-      jumlah_peserta_bk: Number(jumlahPesertaBk),
+      tahun_pelaksanaan: Number(tahunPelaksanaan) || new Date().getFullYear(),
+      jumlah_peserta: Number(jumlahPeserta) || 0,
+      jumlah_peserta_bk: Number(jumlahPesertaBk) || 0,
       lokasi: {
         lemari: finalLemari,
         rak: effectiveRak,
-        baris: baris.trim()
+        baris: effectiveBaris
       },
       status_arsip: statusArsip,
       status_barang: statusBarang,
       hasilUjiKompetensi: hasilUjiKompetensi.trim() || '-',
       hasil_uji_kompetensi: hasilUjiKompetensi.trim() || '-',
       'Hasil Uji Kompetensi': hasilUjiKompetensi.trim() || '-',
-      link_dokumentasi: linkDokumentasi.trim()
+      link_dokumentasi: effectiveLink
     };
 
     setIsSubmitting(true);
@@ -276,9 +236,11 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
 
       // 2. If autoSyncGoogleSheets is checked, push to Google Apps Script Web App
       if (success && autoSyncGoogleSheets) {
-        sendBoxToGoogleSheets(newBoxPayload, editingBox ? 'update' : 'add').catch(err => {
-          console.warn('Gagal kirim ke Google Apps Script:', err);
-        });
+        try {
+          await sendBoxToGoogleSheets(newBoxPayload, editingBox ? 'update' : 'add');
+        } catch (scriptErr) {
+          console.warn('Gagal kirim ke Google Apps Script:', scriptErr);
+        }
       }
 
       setIsSubmitting(false);
