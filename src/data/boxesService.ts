@@ -210,8 +210,9 @@ export async function fetchBoxesFromAppsScript(
   try {
     let rawData: any = null;
 
+    // Timeout diperpanjang menjadi 15 detik agar koneksi stabil saat data banyak
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const response = await fetch(webAppUrl, {
       method: 'GET',
@@ -255,8 +256,10 @@ export async function fetchBoxesFromAppsScript(
         }
       }
     }
-  } catch (err) {
-    console.warn('[fetchBoxesFromAppsScript] Direct Apps Script fetch failed:', err);
+  } catch (err: any) {
+    if (err.name !== 'AbortError') {
+      console.warn('[fetchBoxesFromAppsScript] Direct Apps Script fetch failed:', err);
+    }
   }
 
   return [];
@@ -283,7 +286,6 @@ function findColumnIndex(headers: string[], fallbackIndex: number, ...candidates
   }
   return fallbackIndex;
 }
-
 export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
   if (!csvText || typeof csvText !== 'string') return [];
 
