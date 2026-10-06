@@ -189,8 +189,48 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
       setErrorMsg('6. Lemari wajib diisi / dipilih');
       return;
     }
-    const parsedLemariNum = parseInt(effectiveLemariStr.replace(/\D/g, ''), 10);
-    const finalLemari = !isNaN(parsedLemariNum) && parsedLemariNum > 0 ? parsedLemariNum : effectiveLemariStr;
+
+    setIsSubmitting(true);
+
+    const payload = {
+      action: 'add',
+      'Kode Lemari': typeof effectiveLemariStr === 'number' ? `Lemari ${effectiveLemariStr}` : effectiveLemariStr,
+      'Nomor Rak': selectedRak || 'Rak A',
+      'Nomor Box': selectedBox || 'Box 1',
+      'ID_Box': idBox,
+      'Nama Pelatihan': namaPelatihan,
+      'Tahun Pelaksanaan': Number(tahunPelaksanaan) || new Date().getFullYear(),
+      'Jumlah Peserta': Number(jumlahPeserta) || 0,
+      'Jumlah Peserta BK': Number(jumlahPesertaBk) || 0,
+      'Status Arsip': statusArsip || 'Tersedia',
+      'Status Barang': statusBarang || 'Lengkap',
+      'Hasil Uji Kompetensi': hasilUjiKompetensi || '',
+      'Link Google Drive': linkGoogleDrive || ''
+    };
+
+    try {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+
+      if (result.status === 'success' || result.success) {
+        alert('Berhasil menyimpan data boks ke Google Sheets!');
+        if (typeof onClose === 'function') onClose();
+        window.location.reload();
+      } else {
+        setErrorMsg('Gagal menyimpan: ' + (result.message || 'Terjadi kesalahan pada server.'));
+      }
+    } catch (error) {
+      console.error('Error saving box:', error);
+      setErrorMsg('Terjadi kesalahan koneksi saat mengirim data ke Google Sheets.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
     // Resolve dynamic Rak
     const effectiveRak = isCustomRak ? customRakName.trim() : selectedRak;
