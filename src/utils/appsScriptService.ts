@@ -70,8 +70,6 @@ export function formatBoxToSheetRow(box: BoksArsip): (string | number)[] {
 
 /**
  * Kirim data boks arsip ke Google Sheets melalui Google Apps Script Web App API
- * Mengirimkan data via POST ke Web App URL:
- * https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec
  */
 export async function sendBoxToGoogleSheets(
   box: BoksArsip,
@@ -88,7 +86,6 @@ export async function sendBoxToGoogleSheets(
   const boxVal = box.nomor_box || box.lokasi?.baris || 'Box 1';
   const hasilUjiVal = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '-';
 
-  // Susun payload yang ramah bagi berbagai struktur Apps Script (baik flat map kolom maupun nested box/rowValues)
   const payload = {
     action,
     box,
@@ -96,7 +93,6 @@ export async function sendBoxToGoogleSheets(
     'Kode Lemari': lemariVal,
     'kode_lemari': lemariVal,
     'Nomor Rak': rakVal,
-    'Nomor Rak ': rakVal,
     'nomor_rak': rakVal,
     'Nomor Box': boxVal,
     'nomor_box': boxVal,
@@ -107,49 +103,22 @@ export async function sendBoxToGoogleSheets(
     'Tahun Pelaksanaan': box.tahun_pelaksanaan,
     'tahun_pelaksanaan': box.tahun_pelaksanaan,
     'Jumlah Peserta': box.jumlah_peserta,
-    'Jumlah Peserta ': box.jumlah_peserta,
     'jumlah_peserta': box.jumlah_peserta,
     'Jumlah Peserta BK': box.jumlah_peserta_bk,
     'jumlah_peserta_bk': box.jumlah_peserta_bk,
     'Status Arsip': box.status_arsip,
-    'Status Arsip ': box.status_arsip,
     'status_arsip': box.status_arsip,
     'Status Barang': box.status_barang,
-    'Status Barang ': box.status_barang,
     'status_barang': box.status_barang,
     'Hasil Uji Kompetensi': hasilUjiVal,
     'hasil_uji_kompetensi': hasilUjiVal,
     'Link Google Drive': box.link_dokumentasi,
-    'Link Google Drive ': box.link_dokumentasi,
     'link_dokumentasi': box.link_dokumentasi
   };
 
-  // 1. Coba kirim melalui Backend Proxy (mengatasi limitasi CORS & 302 redirect Google Apps Script)
+  // Langsung kirim via POST ke Google Apps Script tanpa melewati backend proxy
   try {
-    const proxyResponse = await fetch('/api/apps-script/post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        webAppUrl: effectiveUrl,
-        ...payload
-      })
-    });
-
-    if (proxyResponse.ok) {
-      const data = await proxyResponse.json();
-      return {
-        success: true,
-        message: data.message || `Data boks arsip ${box.id_box} berhasil tersimpan ke Google Sheets.`,
-        isProxy: true
-      };
-    }
-  } catch (err) {
-    console.warn('[AppsScript] Backend proxy tidak merespon, beralih ke direct fetch...', err);
-  }
-
-  // 2. Direct fetch ke Web App URL (untuk static hosting seperti GitHub Pages)
-  try {
-    const response = await fetch(effectiveUrl, {
+    await fetch(effectiveUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'
@@ -158,26 +127,23 @@ export async function sendBoxToGoogleSheets(
       redirect: 'follow'
     });
 
-    if (response.ok) {
-      return {
-        success: true,
-        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets.`
-      };
-    }
+    return {
+      success: true,
+      message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets.`
+    };
   } catch (err: any) {
-    console.warn('[AppsScript] Direct fetch with text/plain failed, attempting no-cors fallback:', err);
+    console.warn('[AppsScript] Direct fetch gagal, menggunakan no-cors fallback:', err);
     try {
-      // Fallback no-cors memastikan payload tetap terkirim ke server Google Apps Script
       await fetch(effectiveUrl, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
 
       return {
         success: true,
-        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets via no-cors mode.`
+        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets (no-cors).`
       };
     } catch (noCorsErr: any) {
       return {
@@ -186,11 +152,6 @@ export async function sendBoxToGoogleSheets(
       };
     }
   }
-
-  return {
-    success: true,
-    message: `Data boks arsip ${box.id_box} berhasil diproses.`
-  };
 }
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
@@ -208,29 +169,29 @@ function doPost(e) {
     var action = payload.action || 'add';
     var box = payload.box || payload;
     
-    var lemariStr = box.lokasi ? (box.lokasi.lemari ? 'Lemari ' + box.lokasi.lemari : '') : (box.kode_lemari || '');
-    var rakStr = box.lokasi ? box.lokasi.rak : (box.nomor_rak || '');
+    var lemariStr = box.lokasi ? (box.lokasi.lemari ? 'Lemari ' + box.lokasi.lemari : '') : (box.kode_lemari || payload['Kode Lemari'] || '');
+    var rakStr = box.lokasi ? box.lokasi.rak : (box.nomor_rak || payload['Nomor Rak'] || '');
     var nomorBox = box.nomor_box || (box.lokasi ? box.lokasi.baris : 'Box 1');
-    var hasilUji = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '-';
+    var hasilUji = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || payload['Hasil Uji Kompetensi'] || '-';
     
     var rowData = [
       lemariStr,
       rakStr,
       nomorBox,
-      box.id_box || '',
-      box.nama_pelatihan || '',
-      box.tahun_pelaksanaan || new Date().getFullYear(),
-      box.jumlah_peserta || 0,
-      box.jumlah_peserta_bk || 0,
-      box.status_arsip || 'Aktif',
-      box.status_barang || 'Lengkap',
+      box.id_box || payload['ID_Box'] || '',
+      box.nama_pelatihan || payload['Nama Pelatihan'] || '',
+      box.tahun_pelaksanaan || payload['Tahun Pelaksanaan'] || new Date().getFullYear(),
+      box.jumlah_peserta || payload['Jumlah Peserta'] || 0,
+      box.jumlah_peserta_bk || payload['Jumlah Peserta BK'] || 0,
+      box.status_arsip || payload['Status Arsip'] || 'Tersedia',
+      box.status_barang || payload['Status Barang'] || 'Lengkap',
       hasilUji,
-      box.link_dokumentasi || ''
+      box.link_dokumentasi || payload['Link Google Drive'] || ''
     ];
     
     if (action === 'move' || action === 'update') {
       var data = sheet.getDataRange().getValues();
-      var targetId = (box.id_box || '').toString().trim().toUpperCase();
+      var targetId = (box.id_box || payload['ID_Box'] || '').toString().trim().toUpperCase();
       var foundRow = -1;
       
       for (var i = 1; i < data.length; i++) {
