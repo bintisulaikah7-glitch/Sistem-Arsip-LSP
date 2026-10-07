@@ -1,8 +1,8 @@
 import { BoksArsip } from '../types.ts';
 
-// Default Web App URL resmi yang terhubung langsung ke Google Sheets LSP
+// Web App URL resmi Version 6 yang terhubung ke Google Sheets LSP
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec';
+  'https://script.google.com/macros/s/AKfycbwATEyjdi22Ny5HY7bliYp1pLarlPsGIfTnDQrZQyGIpg_IMzPABmHLIflleNH0sFg-/exec';
 
 /**
  * Selalu mengembalikan DEFAULT_APPS_SCRIPT_URL agar sistem bebas dari bug cache Local Storage
@@ -154,44 +154,69 @@ export async function sendBoxToGoogleSheets(
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
  * GOOGLE APPS SCRIPT WEB APP UNTUK SISTEM ARSIP BOKS LSP
- * Web App URL: https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec
+ * Web App URL: https://script.google.com/macros/s/AKfycbwATEyjdi22Ny5HY7bliYp1pLarlPsGIfTnDQrZQyGIpg_IMzPABmHLIflleNH0sFg-/exec
  */
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
-  lock.tryLock(10000);
+  var success = lock.tryLock(10000);
+  if (!success) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: 'Server sedang sibuk, silakan coba lagi.'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
   
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var payload = JSON.parse(e.postData.contents);
+    var payload = {};
+    
+    if (e && e.postData && e.postData.contents) {
+      payload = JSON.parse(e.postData.contents);
+    }
+    
     var action = payload.action || 'add';
     var box = payload.box || payload;
     
-    var lemariStr = box.lokasi ? (box.lokasi.lemari ? 'Lemari ' + box.lokasi.lemari : '') : (box.kode_lemari || payload['Kode Lemari'] || '');
-    var rakStr = box.lokasi ? box.lokasi.rak : (box.nomor_rak || payload['Nomor Rak'] || '');
-    var nomorBox = box.nomor_box || (box.lokasi ? box.lokasi.baris : 'Box 1');
-    var hasilUji = box.hasilUjiKompetensi || box.hasil_uji_kompetensi || payload['Hasil Uji Kompetensi'] || '-';
+    var rawLemari = payload['Kode Lemari'] || payload['kode_lemari'] || (box.lokasi ? box.lokasi.lemari : '') || payload.lemari || 'Lemari 1';
+    var lemariStr = String(rawLemari).trim();
+    if (!lemariStr.toLowerCase().startsWith('lemari')) {
+      lemariStr = 'Lemari ' + lemariStr;
+    }
+    
+    var rakStr = payload['Nomor Rak'] || payload['nomor_rak'] || (box.lokasi ? box.lokasi.rak : '') || payload.rak || 'Rak A';
+    var nomorBox = payload['Nomor Box'] || payload['nomor_box'] || (box.lokasi ? box.lokasi.baris : '') || payload.nomor_box || 'Box 1';
+    
+    var idBox = payload['ID_Box'] || payload['id_box'] || box.id_box || payload.idBoks || '';
+    var namaPelatihan = payload['Nama Pelatihan'] || payload['nama_pelatihan'] || box.nama_pelatihan || payload.namaPelatihan || '';
+    var tahun = payload['Tahun Pelaksanaan'] || payload['tahun_pelaksanaan'] || box.tahun_pelaksanaan || payload.tahun || new Date().getFullYear();
+    var jmlPeserta = Number(payload['Jumlah Peserta'] || payload['jumlah_peserta'] || box.jumlah_peserta || payload.jumlahPeserta || 0);
+    var jmlBK = Number(payload['Jumlah Peserta BK'] || payload['jumlah_peserta_bk'] || box.jumlah_peserta_bk || payload.belumKompeten || 0);
+    var statusArsip = payload['Status Arsip'] || payload['status_arsip'] || box.status_arsip || payload.statusArsip || 'Tersedia';
+    var statusBarang = payload['Status Barang'] || payload['status_barang'] || box.status_barang || payload.statusFisik || 'Lengkap';
+    var hasilUji = payload['Hasil Uji Kompetensi'] || payload['hasil_uji_kompetensi'] || box.hasilUjiKompetensi || payload.hasilUjiKompetensi || '-';
+    var linkDrive = payload['Link Google Drive'] || payload['link_dokumentasi'] || box.link_dokumentasi || payload.linkDrive || '';
     
     var rowData = [
       lemariStr,
       rakStr,
       nomorBox,
-      box.id_box || payload['ID_Box'] || '',
-      box.nama_pelatihan || payload['Nama Pelatihan'] || '',
-      box.tahun_pelaksanaan || payload['Tahun Pelaksanaan'] || new Date().getFullYear(),
-      box.jumlah_peserta || payload['Jumlah Peserta'] || 0,
-      box.jumlah_peserta_bk || payload['Jumlah Peserta BK'] || 0,
-      box.status_arsip || payload['Status Arsip'] || 'Tersedia',
-      box.status_barang || payload['Status Barang'] || 'Lengkap',
+      idBox,
+      namaPelatihan,
+      tahun,
+      jmlPeserta,
+      jmlBK,
+      statusArsip,
+      statusBarang,
       hasilUji,
-      box.link_dokumentasi || payload['Link Google Drive'] || ''
+      linkDrive
     ];
     
-    if (action === 'move' || action === 'update') {
-      var data = sheet.getDataRange().getValues();
-      var targetId = (box.id_box || payload['ID_Box'] || '').toString().trim().toUpperCase();
-      var foundRow = -1;
-      
+    var data = sheet.getDataRange().getValues();
+    var targetId = idBox.toString().trim().toUpperCase();
+    var foundRow = -1;
+    
+    if (targetId !== '') {
       for (var i = 1; i < data.length; i++) {
         var sheetId = (data[i][3] || '').toString().trim().toUpperCase();
         if (sheetId === targetId) {
@@ -199,21 +224,18 @@ function doPost(e) {
           break;
         }
       }
-      
-      if (foundRow !== -1) {
-        sheet.getRange(foundRow, 1, 1, rowData.length).setValues([rowData]);
-      } else {
-        sheet.appendRow(rowData);
-      }
+    }
+    
+    if (foundRow !== -1) {
+      sheet.getRange(foundRow, 1, 1, rowData.length).setValues([rowData]);
     } else {
       sheet.appendRow(rowData);
     }
     
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
-      action: action,
-      id_box: box.id_box,
-      message: 'Data boks arsip berhasil disimpan permanen ke Google Sheets.'
+      message: 'Data berhasil disimpan ke Google Sheets.',
+      id_box: idBox
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (err) {
@@ -229,14 +251,21 @@ function doPost(e) {
 function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  }
+  
   var headers = data[0];
   var result = [];
   
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
+    if (!row[3] && !row[4] && !row[0]) continue;
+    
     var obj = {};
     for (var j = 0; j < headers.length; j++) {
-      obj[headers[j]] = row[j];
+      var key = headers[j] ? headers[j].toString().trim() : 'col_' + j;
+      obj[key] = row[j];
     }
     result.push(obj);
   }
