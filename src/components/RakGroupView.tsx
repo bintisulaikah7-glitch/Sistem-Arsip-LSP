@@ -5,13 +5,18 @@ import { Folder, Layers, QrCode, Sparkles, Plus, ExternalLink, Calendar, Users }
 
 interface RakGroupViewProps {
   boxes: BoksArsip[];
-  lemariYangDipilih: number | string;
+  lemariYangDipilih?: number | string | null;
   onViewJson: (box: BoksArsip) => void;
-  onEdit: (box: BoksArsip) => void;
-  onDelete: (id_box: string) => void;
-  onShowQr: (box: BoksArsip) => void;
+  onEdit?: (box: BoksArsip) => void;
+  onDelete?: (id_box: string) => void;
+  onShowQr?: (box: BoksArsip) => void;
   onViewDetail?: (box: BoksArsip) => void;
   onOpenInputLokasiWithRak?: (lemari: string, rak: string) => void;
+  onSelectBox?: (box: BoksArsip) => void;
+  onMoveBox?: (id_box: string, targetLemari: number | string, targetRak: string) => void;
+  onEditBox?: (box: BoksArsip) => void;
+  onDeleteBox?: (id_box: string) => void;
+  onOpenQrModal?: (box: BoksArsip) => void;
 }
 
 export const RakGroupView: React.FC<RakGroupViewProps> = ({
@@ -22,11 +27,23 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
   onDelete,
   onShowQr,
   onViewDetail,
-  onOpenInputLokasiWithRak
+  onOpenInputLokasiWithRak,
+  onSelectBox,
+  onEditBox,
+  onDeleteBox,
+  onOpenQrModal
 }) => {
-  // Helper to normalize Lemari value
-  const matchesLemari = (item: any, target: number | string) => {
+  const effectiveEdit = onEdit || onEditBox || (() => {});
+  const effectiveDelete = onDelete || onDeleteBox || (() => {});
+  const effectiveShowQr = onShowQr || onOpenQrModal || (() => {});
+  const effectiveDetail = onViewDetail || onSelectBox || (() => {});
+
+  // Helper to normalize Lemari value safely
+  const matchesLemari = (item: any, target?: number | string | null) => {
     if (!item) return false;
+    if (target === undefined || target === null || target === '' || target === 'Semua') {
+      return true;
+    }
     const l1 = item.lokasi?.lemari;
     const l2 = item.Kode_Lemari || item['Kode Lemari'] || item['Lemari'];
 
@@ -93,7 +110,7 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 tracking-tight">
-                    <span>Lemari {lemariYangDipilih} - {namaRak}</span>
+                    <span>{lemariYangDipilih ? `Lemari ${lemariYangDipilih} - ` : ''}{namaRak}</span>
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                       {boksDiRakIni.length} Boks Arsip
                     </span>
@@ -126,10 +143,10 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
                   key={`${boks.id_box || boks.Kode_boks || boksIdx}-${boksIdx}`}
                   box={boks}
                   onViewJson={onViewJson}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  onShowQr={onShowQr}
-                  onViewDetail={onViewDetail}
+                  onEdit={effectiveEdit}
+                  onDelete={effectiveDelete}
+                  onShowQr={effectiveShowQr}
+                  onViewDetail={effectiveDetail}
                 />
               ))}
             </div>
