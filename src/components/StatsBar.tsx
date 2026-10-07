@@ -15,26 +15,68 @@ export const StatsBar: React.FC<StatsBarProps> = ({
 }) => {
   const safeBoxes = Array.isArray(boxes) ? boxes : [];
   const totalBoks = safeBoxes.length;
-  const tersediaCount = safeBoxes.filter(
-    (b) => b && (b.status_arsip === 'Tersedia' || b.status_arsip === 'Aktif')
-  ).length;
-  const tidakLengkapCount = safeBoxes.filter(
-    (b) => b && (b.status_arsip === 'Tidak Lengkap' || b.status_arsip === 'Inaktif')
-  ).length;
-  const tidakTersediaCount = safeBoxes.filter(
-    (b) => b && (b.status_arsip === 'Tidak Tersedia' || b.status_arsip === 'Dimusnahkan')
-  ).length;
 
-  const totalPesertaCalc = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta || 0), 0);
-  const totalBKCalc = safeBoxes.reduce((acc, curr) => acc + (curr?.jumlah_peserta_bk || 0), 0);
+  // Hitung status dengan memotong spasi (trim) dan mengabaikan huruf kapital (toLowerCase)
+  let tersediaCount = 0;
+  let tidakLengkapCount = 0;
+  let tidakTersediaCount = 0;
 
-  // Variabel dari data spreadsheet / state
-  const totalPeserta = totalPesertaCalc > 0 ? totalPesertaCalc : 4156;
-  const totalBK = totalBKCalc > 0 ? totalBKCalc : 153;
+  safeBoxes.forEach((b) => {
+    if (!b) return;
 
-  // Hitung persentase
-  const persenK = Math.round(((totalPeserta - totalBK) / totalPeserta) * 100);
-  const persenBK = Math.round((totalBK / totalPeserta) * 100);
+    const statusArsip = String(
+      b.status_arsip || b['Status Arsip'] || ''
+    ).toLowerCase().trim();
+
+    const statusBarang = String(
+      b.status_barang || b['Status Barang'] || ''
+    ).toLowerCase().trim();
+
+    // 1. Cek Apakah Fisik Tidak Lengkap / Kurang
+    if (
+      statusBarang === 'tidak lengkap' ||
+      statusBarang === 'kurang' ||
+      statusArsip === 'tidak lengkap' ||
+      statusArsip === 'inaktif'
+    ) {
+      tidakLengkapCount++;
+    }
+    // 2. Cek Apakah Arsip Tidak Tersedia / Dimusnahkan / Kosong
+    else if (
+      statusArsip === 'tidak tersedia' ||
+      statusArsip === 'dimusnahkan' ||
+      statusArsip === 'kosong' ||
+      statusArsip === 'keluar'
+    ) {
+      tidakTersediaCount++;
+    }
+    // 3. Sisanya Masuk Ke Arsip Tersedia / Aktif
+    else {
+      tersediaCount++;
+    }
+  });
+
+  // Hitung total peserta & BK secara murni dari data spreadsheet
+  const totalPesertaCalc = safeBoxes.reduce((acc, curr) => {
+    const val = Number(curr?.jumlah_peserta || curr?.['Jumlah Peserta'] || 0);
+    return acc + (isNaN(val) ? 0 : val);
+  }, 0);
+
+  const totalBKCalc = safeBoxes.reduce((acc, curr) => {
+    const val = Number(curr?.jumlah_peserta_bk || curr?.['Jumlah Peserta BK'] || 0);
+    return acc + (isNaN(val) ? 0 : val);
+  }, 0);
+
+  const totalPeserta = totalPesertaCalc;
+  const totalBK = totalBKCalc;
+
+  // Hitung persentase aman dari pembagian nol (div by zero)
+  const persenK = totalPeserta > 0 
+    ? Math.round(((totalPeserta - totalBK) / totalPeserta) * 100) 
+    : 100;
+  const persenBK = totalPeserta > 0 
+    ? Math.round((totalBK / totalPeserta) * 100) 
+    : 0;
 
   return (
     <div className="mb-6 space-y-3">
@@ -81,7 +123,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         </div>
       </div>
 
-      {/* 2. RINGKASAN STATUS FISIK BOKS ARSIP (SERAGAM, BERSIH, MODERN) */}
+      {/* 2. RINGKASAN STATUS FISIK BOKS ARSIP */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Total Boks Arsip */}
         <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-slate-300 transition-all">
@@ -93,7 +135,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
           </div>
           <div className="mt-2.5 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight tabular-nums">
-              {totalBoks > 0 ? totalBoks : 91}
+              {totalBoks}
             </span>
             <span className="text-[11px] text-slate-500 font-medium">100% Terdata</span>
           </div>
@@ -109,7 +151,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
           </div>
           <div className="mt-2.5 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-emerald-600 tracking-tight tabular-nums">
-              {tersediaCount > 0 ? tersediaCount : 72}
+              {tersediaCount}
             </span>
             <span className="text-[11px] text-emerald-700 font-medium bg-emerald-50 px-1.5 py-0.5 rounded">
               Siap Akses
