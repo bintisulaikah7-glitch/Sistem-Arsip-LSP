@@ -278,7 +278,7 @@ export default function App() {
   // Background fetch on mount & recurring 15-second polling (tanpa memblokir tampilan awal)
   useEffect(() => {
     let isMounted = true;
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwATeyjdi22Ny5HY7bliYp1pLarlPsGIfTnDQrZQyGIpg_IMzPABmHLIflleNH0sFg-/exec';
 
     // Pengambilan Data Apps Script yang Safe & Sederhana
     fetch(appsScriptUrl, { redirect: 'follow' })
