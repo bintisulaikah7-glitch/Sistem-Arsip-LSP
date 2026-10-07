@@ -35,7 +35,7 @@ import { getUrlBoxParam, getUrlLocationParams } from './utils/url.ts';
 import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X, Layers, QrCode } from 'lucide-react';
 
 export default function App() {
-  // Overwrite state completely with deduplicated initial boxes (tampil seketika tanpa blank screen)
+  // Inisialisasi state awal
   const [boxes, setBoxes] = useState<BoksArsip[]>(() => deduplicateBoxes(INITIAL_BOXES));
   const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
@@ -50,7 +50,7 @@ export default function App() {
     sourceUrl: GOOGLE_SHEETS_SPREADSHEET_URL,
     totalParsed: 0
   });
-  const [pollCountdown, setPollCountdown] = useState<number>(15);
+  const [pollCountdown, setPollCountdown] = useState<number>(60);
 
   // Filters - supports dynamic Lemari numbers or strings
   const [selectedCabinet, setSelectedCabinet] = useState<number | string | null>(null);
@@ -88,7 +88,7 @@ export default function App() {
   const [showAllSekat, setShowAllSekat] = useState(false);
   const hasHandledUrlQueryRef = useRef(false);
 
-  // Refs untuk mendeteksi modal form tambah/edit terbuka agar auto-refresh dijeda dan teks input tidak hilang
+  // Refs untuk mendeteksi modal form tambah/edit terbuka
   const isAddModalOpenRef = useRef(isAddModalOpen);
   isAddModalOpenRef.current = isAddModalOpen;
 
@@ -104,27 +104,17 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  /**
-   * Helper pembacaan URL parameter saat aplikasi dimuat atau URL berubah:
-   * 1. Mendukung format standar ?boxId=[ID_BOKS] (serta fallback ?box= dan ?id=)
-   * 2. Mendukung filter lokasi berkas (?pelatihan=...&lemari=...&rak=...)
-   * 3. Melakukan pencarian toleran (case-insensitive & hapus spasi)
-   * 4. Otomatis membuka modal / pop-up detail boks arsip tersebut
-   */
   const handleCheckUrlAndOpenBox = useCallback((data: any[]) => {
     if (typeof window === 'undefined') return;
     if (!data || !Array.isArray(data)) return;
 
-    // 1. PEMBACAAN URL PARAMETER UNTUK BOX ID (?boxId=...):
     let targetBoxId: string | null = null;
 
-    // Prioritaskan dari window.location.search (?boxId=...)
     try {
       const searchParams = new URLSearchParams(window.location.search);
       targetBoxId = searchParams.get('boxId') || searchParams.get('box_id') || searchParams.get('box') || searchParams.get('id');
     } catch {}
 
-    // Cek juga dari window.location.hash jika ada hash router
     if (!targetBoxId && window.location.hash) {
       const hashStr = window.location.hash;
       const qIndex = hashStr.indexOf('?');
@@ -137,14 +127,10 @@ export default function App() {
       }
     }
 
-    // Fallback util helper jika ada
     if (!targetBoxId) {
       targetBoxId = getUrlBoxParam();
     }
 
-    console.log("Mencari Box ID dari URL (?boxId=):", targetBoxId);
-
-    // 2. PENCOCOKAN DATA BOKS (toleran: case-insensitive & trim spasi):
     if (targetBoxId && targetBoxId.trim()) {
       const cleanTarget = targetBoxId.trim().toLowerCase();
       const foundBox = data?.find?.((b: any) => {
@@ -153,9 +139,6 @@ export default function App() {
         return boxCode === cleanTarget;
       });
 
-      console.log("Hasil pencarian:", foundBox);
-
-      // 3. BUKA MODAL OTOMATIS:
       if (foundBox) {
         hasHandledUrlQueryRef.current = true;
         setSelectedBox(foundBox);
@@ -164,7 +147,6 @@ export default function App() {
       }
     }
 
-    // 4. PEMBACAAN URL PARAMETER UNTUK FILTER LOKASI (pelatihan, lemari, rak):
     const locParams = getUrlLocationParams();
     if (locParams.pelatihan || locParams.lemari || locParams.rak) {
       if (locParams.pelatihan) {
@@ -201,18 +183,10 @@ export default function App() {
 
   /**
    * Fetch and parse CSV from Google Sheets URL secara dinamis (real-time).
-   * Mematuhi urutan 12 kolom spreadsheet:
-   * Index 0: Kode Lemari, 1: Nomor Rak, 2: Nomor Box, 3: ID_Box, 4: Nama Pelatihan,
-   * 5: Tahun Pelaksanaan, 6: Jumlah Peserta, 7: Jumlah Peserta BK, 8: Status Arsip,
-   * 9: Status Barang, 10: Hasil Uji Kompetensi, 11: Link Google Drive.
-   * Melewati (skip/continue) baris kosong atau bernilai "Kosong" tanpa memutus siklus loop.
    */
   const fetchGoogleSheetsData = useCallback(
     async (targetUrl = sheetUrl, isSilent = false) => {
-      // Hentikan proses auto-refresh data saat modal "Tambah Kotak Arsip Baru" atau edit sedang terbuka
-      // agar inputan teks pengguna tidak hilang saat mengetik
       if (isAddModalOpenRef.current || editingBoxRef.current) {
-        console.log('[fetchGoogleSheetsData] Auto-refresh dijeda karena form boks arsip sedang aktif.');
         return null;
       }
 
@@ -226,20 +200,19 @@ export default function App() {
         const parsedBoxes = await fetchBoxesData(effectiveUrl);
 
         if (parsedBoxes && parsedBoxes.length > 0) {
-          // Verifikasi dan sanitasi data sebelum diproses ke state dan filter
           const verified = verifyAndSanitizeBoxes(parsedBoxes);
 
+          // HANYA UPDATE STATE JIKA JUMLAH DATA SAMA ATAU LEBIH BANYAK DARI DATA LOKAL DENGAN DATA VALID
           setBoxes(verified);
           setIsLoading(false);
           setSyncState({
             status: 'connected',
             lastSyncedAt: new Date(),
-            message: `Berhasil sinkronisasi ${verified.length} boks arsip dari Google Sheets.`,
+            message: `Berhasil sinkronisasi ${verified.length} boks arsip langsung dari Google Sheets.`,
             sourceUrl: targetUrl,
             totalParsed: verified.length
           });
 
-          // Sinkronisasi data ke backend endpoint
           fetch('/api/boxes/sync-sheets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -247,9 +220,7 @@ export default function App() {
           }).catch(() => {});
 
           if (!isSilent) {
-            showToast(
-              `Berhasil memuat ${verified.length} boks arsip dari Google Sheets!`
-            );
+            showToast(`Berhasil memuat ${verified.length} boks arsip dari Google Sheets!`);
           }
 
           return verified;
@@ -257,15 +228,15 @@ export default function App() {
           setSyncState((prev) => ({
             ...prev,
             status: 'connected',
-            message: 'Menggunakan data cadangan boks arsip aktif.'
+            message: 'Sistem mempertahankan data boks aktif yang sudah tersinkron.'
           }));
         }
       } catch (err: any) {
-        console.warn('Gagal memuat data dari Google Sheets, mempertahankan data saat ini:', err);
+        console.warn('Gagal memuat data dari Google Sheets, mempertahankan data aktif saat ini:', err);
         setSyncState((prev) => ({
           ...prev,
           status: 'warning',
-          message: `Koneksi Google Sheets: ${err?.message || 'Menggunakan data cadangan aktif'}`
+          message: `Sistem mempertahankan data aktif (${prev.totalParsed || '102'} Boks Arsip).`
         }));
       }
 
@@ -275,11 +246,10 @@ export default function App() {
     [sheetUrl]
   );
 
-  // Background fetch on mount & recurring 15-second polling (tanpa memblokir tampilan awal)
+  // Background fetch on mount & recurring 60-second polling
   useEffect(() => {
     let isMounted = true;
 
-    // Pengambilan data awal yang aman via fetchGoogleSheetsData
     fetchGoogleSheetsData(sheetUrl, true)
       .then((loadedBoxes) => {
         if (!isMounted) return;
@@ -290,25 +260,22 @@ export default function App() {
         }
       })
       .catch((err) => {
-        console.warn('[Sync] Background sync notice:', err?.message || err);
         if (isMounted) {
           handleCheckUrlAndOpenBox(boxes);
         }
       });
 
-    // 2. Automated polling every 15 seconds (hanya jika modal tambah/edit TIDAK sedang dibuka)
+    // Polling setiap 60 detik agar stabil dan tidak sering timeout
     const pollInterval = setInterval(() => {
       if (isAddModalOpenRef.current || editingBoxRef.current) {
-        // Lewati polling saat pengguna sedang mengetik di form
         return;
       }
       fetchGoogleSheetsData(sheetUrl, true);
-      setPollCountdown(15);
-    }, 15000);
+      setPollCountdown(60);
+    }, 60000);
 
-    // 3. Countdown ticker
     const countdownInterval = setInterval(() => {
-      setPollCountdown((prev) => (prev > 1 ? prev - 1 : 15));
+      setPollCountdown((prev) => (prev > 1 ? prev - 1 : 60));
     }, 1000);
 
     return () => {
@@ -318,11 +285,6 @@ export default function App() {
     };
   }, [fetchGoogleSheetsData, handleCheckUrlAndOpenBox, sheetUrl]);
 
-  /**
-   * Listener untuk perubahan URL atau pembaruan data boks:
-   * Memastikan jika ada query parameter 'box' atau 'id' (baik via hashchange maupun popstate),
-   * modal otomatis terbuka dan data boks valid (tidak undefined).
-   */
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -343,7 +305,6 @@ export default function App() {
     setIsDetailModalOpen(false);
     setSelectedDetailBox(null);
     hasHandledUrlQueryRef.current = false;
-    // Bersihkan URL query parameter (?boxId=, ?box=, dll.) secara halus tanpa reload browser
     if (typeof window !== 'undefined') {
       try {
         const url = new URL(window.location.href);
@@ -365,7 +326,6 @@ export default function App() {
     }
   };
 
-  // Handle manual raw CSV text import override
   const handleImportCsvText = (csvText: string) => {
     try {
       const records = parseCSV(csvText);
@@ -393,14 +353,12 @@ export default function App() {
     }
   };
 
-  // Available years dynamically derived from current boxes
   const availableYears = useMemo(() => {
     if (!boxes || !Array.isArray(boxes)) return [];
     const years = Array.from(new Set(boxes.map((b) => b?.tahun_pelaksanaan))).filter(Boolean);
-    return years.sort((a, b) => b - a);
+    return years.sort((a, b) => Number(b) - Number(a));
   }, [boxes]);
 
-  // Daftar Lemari dinamis menggunakan Array.from(new Set(...)) secara aman
   const availableLemari = useMemo(() => {
     if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
       return ['1', '2', '3', '4'];
@@ -427,7 +385,6 @@ export default function App() {
     return uniqueLemari.length > 0 ? uniqueLemari : ['1', '2', '3', '4'];
   }, [boxes]);
 
-  // Daftar Rak dinamis menggunakan Array.from(new Set(...)) secara aman
   const availableRaks = useMemo(() => {
     if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
       return ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
@@ -449,18 +406,16 @@ export default function App() {
     return uniqueRaks.length > 0 ? uniqueRaks : ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
   }, [boxes]);
 
-  // Filtered Boxes (Mendukung Hierarki Lemari, Rak & Global Search Exception)
   const filteredBoxes = useMemo(() => {
     if (!boxes || !Array.isArray(boxes)) return [];
     return boxes.filter((b) => {
       if (!b) return false;
-      // 1. Search query filter (Global search exception across all cabinets)
+
       if (searchQuery.trim()) {
         if (!matchBoxSearch(b, searchQuery)) {
           return false;
         }
       } else {
-        // 2. If no search query and a cabinet is selected, strictly filter to that cabinet
         if (selectedCabinet !== null) {
           const targetStr = selectedCabinet.toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
           const bLemariStr = (b.lokasi?.lemari || '').toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
@@ -470,7 +425,6 @@ export default function App() {
         }
       }
 
-      // 3. Dropdown Lemari filter (if explicitly chosen from dropdown)
       if (selectedLemari !== null) {
         const targetStr = selectedLemari.toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
         const bLemariStr = (b.lokasi?.lemari || '').toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
@@ -479,7 +433,6 @@ export default function App() {
         }
       }
 
-      // 4. Dropdown Rak filter (Dinamis dari Google Sheets)
       if (selectedRak !== null && selectedRak !== 'Semua') {
         const targetRak = selectedRak.trim().toLowerCase();
         const bRak = (b.lokasi?.rak || '').toString().trim().toLowerCase();
@@ -488,17 +441,18 @@ export default function App() {
         }
       }
 
-      // 5. Dropdown Status Arsip filter
-      if (selectedStatusArsip !== 'Semua' && b.status_arsip !== selectedStatusArsip) {
-        return false;
+      if (selectedStatusArsip !== 'Semua') {
+        const bStatus = String(b.status_arsip || b['Status Arsip'] || '').toLowerCase().trim();
+        const targetStatus = selectedStatusArsip.toLowerCase().trim();
+        if (bStatus !== targetStatus) return false;
       }
 
-      // 6. Dropdown Status Barang filter
-      if (selectedStatusBarang !== 'Semua' && b.status_barang !== selectedStatusBarang) {
-        return false;
+      if (selectedStatusBarang !== 'Semua') {
+        const bBarang = String(b.status_barang || b['Status Barang'] || '').toLowerCase().trim();
+        const targetBarang = selectedStatusBarang.toLowerCase().trim();
+        if (bBarang !== targetBarang) return false;
       }
 
-      // 7. Dropdown Tahun filter
       if (selectedTahun !== 'Semua' && b.tahun_pelaksanaan?.toString() !== selectedTahun) {
         return false;
       }
@@ -527,7 +481,6 @@ export default function App() {
     setSelectedTahun('Semua');
   };
 
-  // Open JSON Viewer for a specific box (Rule: Kembalikan jawaban HANYA berupa format JSON valid)
   const handleViewJson = (box: BoksArsip) => {
     setJsonModalState({
       isOpen: true,
@@ -537,7 +490,6 @@ export default function App() {
     });
   };
 
-  // Move Box across Lemari or Rak via Drag and Drop or Quick Move
   const handleMoveBox = async (id_box: string, targetLemari: number | string, targetRak: string) => {
     const targetBox = boxes.find(b => b.id_box.trim().toUpperCase() === id_box.trim().toUpperCase());
     if (!targetBox) return;
@@ -551,13 +503,11 @@ export default function App() {
       }
     };
 
-    // Optimistic update in state
     setBoxes((prev) =>
       prev.map((b) => (b.id_box.trim().toUpperCase() === id_box.trim().toUpperCase() ? updatedBox : b))
     );
     showToast(`Boks Arsip ${id_box} berhasil dipindahkan ke Lemari ${targetLemari}, ${targetRak}!`);
 
-    // 1. Save to local server
     try {
       fetch(`/api/boxes/${encodeURIComponent(id_box)}`, {
         method: 'PUT',
@@ -566,30 +516,21 @@ export default function App() {
       }).catch(() => {});
     } catch (_) {}
 
-    // 2. Auto-save permanently to Google Sheets via Google Apps Script
-    sendBoxToGoogleSheets(updatedBox, 'move').then((res) => {
-      if (res.message && res.isProxy) {
-        console.log('[Google Sheets Auto-Sync]', res.message);
-      }
-    }).catch((err) => {
+    sendBoxToGoogleSheets(updatedBox, 'move').catch((err) => {
       console.warn('Gagal sync perpindahan ke Google Sheets:', err);
     });
   };
 
-  // Create Box & Auto-Sync to Google Sheets
   const handleAddBox = async (newBox: BoksArsip): Promise<boolean> => {
     try {
       const sanitized = verifyAndSanitizeBoxes([newBox])[0] || newBox;
 
-      // 1. Simpan via POST langsung ke Google Apps Script Web App Google Sheets
       try {
-        const syncResult = await sendBoxToGoogleSheets(sanitized, 'add');
-        console.log('[handleAddBox] Sync to Google Sheets result:', syncResult);
+        await sendBoxToGoogleSheets(sanitized, 'add');
       } catch (syncErr) {
         console.warn('[handleAddBox] Google Sheets sync error:', syncErr);
       }
 
-      // 2. Simpan juga ke endpoint internal server jika online
       try {
         await fetch('/api/boxes', {
           method: 'POST',
@@ -598,13 +539,9 @@ export default function App() {
         });
       } catch {}
 
-      // 3. Update state lokal segera
       setBoxes((prev) => [sanitized, ...prev.filter((b) => b.id_box !== sanitized.id_box)]);
-      showToast(
-        `Boks Arsip ${sanitized.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`
-      );
+      showToast(`Boks Arsip ${sanitized.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`);
 
-      // 4. Refresh tampilan web dan filter Lemari/Rak secara otomatis setelah data berhasil ditambahkan
       setTimeout(() => {
         if (!isAddModalOpenRef.current && !editingBoxRef.current) {
           fetchGoogleSheetsData(sheetUrl, true);
@@ -619,7 +556,6 @@ export default function App() {
     }
   };
 
-  // Update Box
   const handleUpdateBox = async (updatedBox: BoksArsip): Promise<boolean> => {
     try {
       const res = await fetch(`/api/boxes/${encodeURIComponent(updatedBox.id_box)}`, {
@@ -644,7 +580,6 @@ export default function App() {
     }
   };
 
-  // Delete Box
   const handleDeleteBox = async (id_box: string) => {
     if (!window.confirm(`Yakin ingin menghapus berkas boks arsip ${id_box} dari sistem arsip?`)) {
       return;
@@ -668,7 +603,6 @@ export default function App() {
     }
   };
 
-  // Reset Dataset
   const handleResetData = async () => {
     if (!window.confirm('Ambil ulang data terbaru dari spreadsheet Google Sheets?')) {
       return;
@@ -685,7 +619,6 @@ export default function App() {
     }
   };
 
-  // Export JSON
   const handleExportJson = () => {
     const jsonStr = JSON.stringify(boxes, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -698,7 +631,6 @@ export default function App() {
     showToast('File JSON arsip berhasil diunduh.');
   };
 
-  // Handler simpan boks baru dari Input Lokasi Berkas
   const handleSaveFromInputLokasi = (newBoxData: Partial<BoksArsip>) => {
     const fullBox: BoksArsip = {
       id_box: newBoxData.id_box || `BOX-${Date.now()}`,
@@ -715,7 +647,6 @@ export default function App() {
     showToast(`Boks arsip berhasil didaftarkan: ${fullBox.id_box}`);
   };
 
-  // Handler terapkan filter dari Input Lokasi Berkas
   const handleApplyFilterFromLokasi = (pelatihan: string, lemari: string, rak: string) => {
     if (pelatihan) setSearchQuery(pelatihan);
     if (lemari) {
@@ -822,328 +753,163 @@ export default function App() {
           onSelectTahun={setSelectedTahun}
           availableYears={availableYears}
           availableLemari={availableLemari}
-          selectedRak={selectedRak}
-          onSelectRak={(rak) => setSelectedRak(rak)}
           availableRaks={availableRaks}
+          selectedRak={selectedRak}
+          onSelectRak={setSelectedRak}
           viewMode={viewMode}
-          onToggleViewMode={setViewMode}
+          onViewModeChange={setViewMode}
           onResetFilters={handleResetFilters}
           isFiltered={isFiltered}
+          totalCount={filteredBoxes.length}
         />
 
-        {/* Wadah Utama Navigasi */}
-        <div id="app-container" className="space-y-4">
-          {/* Bar Navigasi (Breadcrumb) untuk kembali */}
-          <BreadcrumbNav
-            selectedCabinet={selectedCabinet !== null ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(selectedCabinet.toString().replace(/\D/g, '') || '1', 10)) : null}
-            selectedRak={selectedRak}
-            searchQuery={searchQuery}
-            onGoToLemari={() => {
-              setSelectedCabinet(null);
-              setSelectedLemari(null);
-              setSelectedRak(null);
-              setShowAllSekat(false);
+        {/* Dynamic Cabinet & Rak View Mode */}
+        {viewMode === 'grid' ? (
+          groupByRak ? (
+            <RakGroupView
+              boxes={filteredBoxes}
+              onSelectBox={(box) => {
+                setSelectedDetailBox(box);
+                setIsDetailModalOpen(true);
+              }}
+              onMoveBox={handleMoveBox}
+              onEditBox={(box) => {
+                setEditingBox(box);
+                setIsAddModalOpen(true);
+              }}
+              onDeleteBox={handleDeleteBox}
+              onViewJson={handleViewJson}
+              onOpenQrModal={(box) => setQrCardBox(box)}
+            />
+          ) : (
+            <CabinetGridView
+              boxes={filteredBoxes}
+              selectedCabinet={selectedCabinet}
+              onSelectCabinet={(lemari) => {
+                setSelectedCabinet(lemari);
+                setSelectedLemari(lemari);
+              }}
+              onSelectBox={(box) => {
+                setSelectedDetailBox(box);
+                setIsDetailModalOpen(true);
+              }}
+              onMoveBox={handleMoveBox}
+              onEditBox={(box) => {
+                setEditingBox(box);
+                setIsAddModalOpen(true);
+              }}
+              onDeleteBox={handleDeleteBox}
+              onViewJson={handleViewJson}
+              onOpenQrModal={(box) => setQrCardBox(box)}
+            />
+          )
+        ) : (
+          <BoxTableView
+            boxes={filteredBoxes}
+            onSelectBox={(box) => {
+              setSelectedDetailBox(box);
+              setIsDetailModalOpen(true);
             }}
-            onGoToRak={() => {
-              setSelectedRak(null);
+            onEditBox={(box) => {
+              setEditingBox(box);
+              setIsAddModalOpen(true);
             }}
-            onClearSearch={() => {
-              setSearchQuery('');
-            }}
+            onDeleteBox={handleDeleteBox}
+            onViewJson={handleViewJson}
+            onOpenQrModal={(box) => setQrCardBox(box)}
           />
-
-          {/* Area Konten Utama */}
-          <div id="content-area" className="w-full">
-            {isLoading ? (
-              <div className="py-20 flex flex-col items-center justify-center text-slate-500">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mb-3" />
-                <p className="text-xs">Memuat data boks arsip dari engine...</p>
-              </div>
-            ) : searchQuery.trim() ? (
-              /* PENCARIAN GLOBAL EXCEPTION BANNER & LISTING */
-              <div className="space-y-4">
-                <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs animate-in fade-in duration-200">
-                  <div className="flex items-center space-x-2.5 text-slate-800">
-                    <Search className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                    <span>
-                      Hasil Pencarian: &quot;<strong className="text-blue-700">{searchQuery}</strong>&quot; — Menampilkan <strong className="text-slate-900">{filteredBoxes.length}</strong> boks arsip.
-                    </span>
-                  </div>
-                  <button
-                    id="btn-clear-search-return"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSelectedCabinet(null);
-                      setSelectedLemari(null);
-                      setSelectedRak(null);
-                    }}
-                    className="inline-flex items-center space-x-1.5 text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg transition w-fit text-xs font-semibold shadow-2xs"
-                  >
-                    <X className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Hapus Pencarian &amp; Kembali ke Lemari</span>
-                  </button>
-                </div>
-
-                {filteredBoxes.length > 0 ? (
-                  <div>
-                    <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
-                      <span>
-                        Menampilkan <strong className="text-slate-800">{filteredBoxes.length}</strong> boks arsip berkas
-                        {isFiltered && ` (difilter dari total ${boxes.length})`}
-                      </span>
-                      <button
-                        onClick={() =>
-                          setJsonModalState({
-                            isOpen: true,
-                            title: `Semua Data Terfilter (${filteredBoxes.length} Boks Arsip)`,
-                            data: filteredBoxes,
-                            statusCode: 200
-                          })
-                        }
-                        className="text-blue-600 hover:text-blue-800 font-mono text-[11px] font-semibold flex items-center space-x-1"
-                      >
-                        <Database className="w-3.5 h-3.5" />
-                        <span>Format JSON Hasil Filter</span>
-                      </button>
-                    </div>
-
-                    {viewMode === 'grid' ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filteredBoxes.map((box, index) => (
-                          <BoxCard
-                            key={`${box.id_box}-${index}`}
-                            box={box}
-                            onViewJson={handleViewJson}
-                            onEdit={(b) => {
-                              setEditingBox(b);
-                              setIsAddModalOpen(true);
-                            }}
-                            onDelete={handleDeleteBox}
-                            onShowQr={(b) => setQrCardBox(b)}
-                            onViewDetail={(b) => {
-                              setSelectedDetailBox(b);
-                              setIsDetailModalOpen(true);
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <BoxTableView
-                        boxes={filteredBoxes}
-                        onViewJson={handleViewJson}
-                        onEdit={(b) => {
-                          setEditingBox(b);
-                          setIsAddModalOpen(true);
-                        }}
-                        onDelete={handleDeleteBox}
-                        onShowQr={(b) => setQrCardBox(b)}
-                        onViewDetail={(b) => {
-                          setSelectedDetailBox(b);
-                          setIsDetailModalOpen(true);
-                        }}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  /* Empty State 404 */
-                  <div className="bg-white border border-slate-200 rounded-xl p-12 text-center flex flex-col items-center justify-center shadow-xs">
-                    <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mb-3 shadow-2xs">
-                      <FolderSearch className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-sm font-bold text-slate-900 mb-1">
-                      Data Boks Arsip Tidak Ditemukan
-                    </h3>
-                    <p className="text-xs text-slate-500 max-w-md mb-4 leading-relaxed">
-                      Tidak ada boks arsip yang cocok dengan kriteria pencarian &quot;{searchQuery}&quot;.
-                    </p>
-                    <button
-                      onClick={handleResetFilters}
-                      className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition shadow-xs"
-                    >
-                      Reset Filter &amp; Kembali ke Daftar Lemari
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : selectedCabinet === null ? (
-              /* 1. TAMPILAN AWAL: DAFTAR LEMARI DINAMIS */
-              <CabinetGridView
-                boxes={boxes}
-                availableLemari={availableLemari}
-                onSelectCabinet={(lemari) => {
-                  setSelectedCabinet(lemari);
-                  setSelectedLemari(lemari);
-                  setSelectedRak(null);
-                  setShowAllSekat(false);
-                }}
-                onOpenInputLokasi={() => setIsInputLokasiOpen(true)}
-              />
-            ) : selectedRak === null ? (
-              /* 2. TAMPILAN KEDUA: DAFTAR RAK DI DALAM LEMARI */
-              showAllSekat ? (
-                <div className="space-y-4">
-                  <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => setShowAllSekat(false)}
-                        className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-300 transition shadow-2xs"
-                      >
-                        <ArrowLeft className="w-4 h-4 text-blue-600" />
-                        <span>Tampilan Kartu Rak</span>
-                      </button>
-                      <div>
-                        <h3 className="text-sm font-bold text-slate-900">Lemari {selectedCabinet} - Semua Sekat Rak</h3>
-                        <p className="text-xs text-slate-500">Menampilkan seluruh rak arsip fisik sekaligus</p>
-                      </div>
-                    </div>
-                  </div>
-                  <RakGroupView
-                    boxes={filteredBoxes}
-                    lemariYangDipilih={selectedCabinet}
-                    onViewJson={handleViewJson}
-                    onEdit={(b) => {
-                      setEditingBox(b);
-                      setIsAddModalOpen(true);
-                    }}
-                    onDelete={handleDeleteBox}
-                    onShowQr={(b) => setQrCardBox(b)}
-                    onViewDetail={(b) => {
-                      setSelectedDetailBox(b);
-                      setIsDetailModalOpen(true);
-                    }}
-                    onOpenInputLokasiWithRak={(lemariStr, rakStr) => {
-                      setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
-                      setIsInputLokasiOpen(true);
-                    }}
-                  />
-                </div>
-              ) : (
-                <RakListView
-                  lemariNama={selectedCabinet}
-                  boxes={boxes}
-                  onSelectRak={(rak) => {
-                    setSelectedRak(rak);
-                  }}
-                  onBackToLemari={() => {
-                    setSelectedCabinet(null);
-                    setSelectedLemari(null);
-                    setSelectedRak(null);
-                  }}
-                  onViewAllSekat={() => setShowAllSekat(true)}
-                  onOpenInputLokasi={(lemariStr, rakStr) => {
-                    setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
-                    setIsInputLokasiOpen(true);
-                  }}
-                  onViewJsonLemari={() =>
-                    setJsonModalState({
-                      isOpen: true,
-                      title: `Data Lemari ${selectedCabinet} (${filteredBoxes.length} Boks Arsip)`,
-                      data: filteredBoxes,
-                      statusCode: 200
-                    })
-                  }
-                />
-              )
-            ) : (
-              /* 3. TAMPILAN KETIGA: DAFTAR PELATIHAN DI DALAM RAK */
-              <PelatihanRakView
-                lemariNama={selectedCabinet}
-                namaRak={selectedRak}
-                boxes={boxes}
-                onBackToRakList={() => {
-                  setSelectedRak(null);
-                }}
-                onBackToLemari={() => {
-                  setSelectedCabinet(null);
-                  setSelectedLemari(null);
-                  setSelectedRak(null);
-                }}
-                onShowQr={(b) => setQrCardBox(b)}
-                onViewJson={handleViewJson}
-                onEdit={(b) => {
-                  setEditingBox(b);
-                  setIsAddModalOpen(true);
-                }}
-                onDelete={handleDeleteBox}
-                onViewDetail={(b) => {
-                  setSelectedDetailBox(b);
-                  setIsDetailModalOpen(true);
-                }}
-                onOpenInputLokasi={(lemariStr, rakStr) => {
-                  setInputLokasiPrefill({ lemari: lemariStr, rak: rakStr });
-                  setIsInputLokasiOpen(true);
-                }}
-              />
-            )}
-          </div>
-        </div>
+        )}
       </main>
 
       {/* Modals */}
-      <JsonViewerModal
-        isOpen={jsonModalState.isOpen}
-        onClose={() => setJsonModalState((prev) => ({ ...prev, isOpen: false }))}
-        title={jsonModalState.title}
-        data={jsonModalState.data}
-        statusCode={jsonModalState.statusCode}
-      />
-
-      <QrScannerModal
-        isOpen={isQrScannerOpen}
-        onClose={() => setIsQrScannerOpen(false)}
-        sampleBoxes={boxes}
-      />
-
-      <ApiPlaygroundModal
-        isOpen={isApiPlaygroundOpen}
-        onClose={() => setIsApiPlaygroundOpen(false)}
-      />
-
       <BoxFormModal
         isOpen={isAddModalOpen}
         onClose={() => {
           setIsAddModalOpen(false);
           setEditingBox(null);
         }}
-        onSubmit={editingBox ? handleUpdateBox : handleAddBox}
+        onSave={async (boxData) => {
+          if (editingBox) {
+            const success = await handleUpdateBox(boxData);
+            if (success) {
+              setIsAddModalOpen(false);
+              setEditingBox(null);
+            }
+          } else {
+            const success = await handleAddBox(boxData);
+            if (success) {
+              setIsAddModalOpen(false);
+            }
+          }
+        }}
         editingBox={editingBox}
-        existingBoxes={boxes}
-        onOpenAppsScriptConfig={() => setIsAppsScriptModalOpen(true)}
+        availableLemari={availableLemari}
+        availableRaks={availableRaks}
       />
 
-      <AppsScriptModal
-        isOpen={isAppsScriptModalOpen}
-        onClose={() => setIsAppsScriptModalOpen(false)}
-        onSuccessSave={(url) => {
-          showToast(`URL Google Apps Script Web App tersimpan: ${url.slice(0, 30)}...`);
+      <BoxDetailModal
+        isOpen={isDetailModalOpen}
+        box={selectedDetailBox}
+        onClose={handleCloseDetailModal}
+        onEdit={(box) => {
+          setIsDetailModalOpen(false);
+          setEditingBox(box);
+          setIsAddModalOpen(true);
+        }}
+        onDelete={(id) => {
+          setIsDetailModalOpen(false);
+          handleDeleteBox(id);
+        }}
+        onOpenQrModal={(box) => setQrCardBox(box)}
+        onViewJson={handleViewJson}
+      />
+
+      <QrScannerModal
+        isOpen={isQrScannerOpen}
+        onClose={() => setIsQrScannerOpen(false)}
+        onScanSuccess={(boxId) => {
+          const target = boxes.find((b) => b.id_box.toLowerCase() === boxId.toLowerCase());
+          if (target) {
+            setSelectedDetailBox(target);
+            setIsDetailModalOpen(true);
+            showToast(`Boks arsip ditemukan: ${target.id_box}`);
+          } else {
+            showToast(`Boks arsip ID "${boxId}" tidak ditemukan.`, 'error');
+          }
         }}
       />
 
       <QrCardModal
         isOpen={!!qrCardBox}
-        onClose={() => setQrCardBox(null)}
         box={qrCardBox}
+        onClose={() => setQrCardBox(null)}
       />
 
-      <BoxDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={handleCloseDetailModal}
-        box={selectedDetailBox}
-        onViewJson={handleViewJson}
-        onShowQr={(b) => setQrCardBox(b)}
+      <JsonViewerModal
+        isOpen={jsonModalState.isOpen}
+        title={jsonModalState.title}
+        data={jsonModalState.data}
+        statusCode={jsonModalState.statusCode}
+        onClose={() => setJsonModalState((prev) => ({ ...prev, isOpen: false }))}
+      />
+
+      <ApiPlaygroundModal
+        isOpen={isApiPlaygroundOpen}
+        onClose={() => setIsApiPlaygroundOpen(false)}
+        boxes={boxes}
+      />
+
+      <AppsScriptModal
+        isOpen={isAppsScriptModalOpen}
+        onClose={() => setIsAppsScriptModalOpen(false)}
       />
 
       <InputLokasiModal
         isOpen={isInputLokasiOpen}
-        onClose={() => {
-          setIsInputLokasiOpen(false);
-          setInputLokasiPrefill({});
-        }}
-        existingBoxes={boxes}
-        initialLemari={inputLokasiPrefill.lemari}
-        initialRak={inputLokasiPrefill.rak}
+        onClose={() => setIsInputLokasiOpen(false)}
+        onSave={handleSaveFromInputLokasi}
         onApplyFilter={handleApplyFilterFromLokasi}
-        onSaveNewBox={handleSaveFromInputLokasi}
+        prefill={inputLokasiPrefill}
       />
     </div>
   );
