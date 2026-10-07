@@ -13,7 +13,7 @@ export const GOOGLE_SHEETS_CSV_URL =
  * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP (AKTIF & TERHUBUNG)
  */
 export const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-  'https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec';
+  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec';
 
 /**
  * Pemetaan baris objek dari Google Apps Script Web App JSON menjadi objek BoksArsip
