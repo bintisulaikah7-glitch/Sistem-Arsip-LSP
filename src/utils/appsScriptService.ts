@@ -2,7 +2,7 @@ import { BoksArsip } from '../types.ts';
 
 // Default Web App URL resmi yang terhubung langsung ke Google Sheets LSP
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec';
+  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec';
 
 /**
  * Selalu mengembalikan DEFAULT_APPS_SCRIPT_URL agar sistem bebas dari bug cache Local Storage
@@ -154,7 +154,7 @@ export async function sendBoxToGoogleSheets(
 
 export const APPS_SCRIPT_SAMPLE_CODE = `/**
  * GOOGLE APPS SCRIPT WEB APP UNTUK SISTEM ARSIP BOKS LSP
- * Web App URL: https://script.google.com/macros/s/AKfycbwmWRf4WzTnln9aXX82ET8czMC69HetwhNnOwiOVSQb-hrZ6AIf7REXwWNErMeEce5B/exec
+ * Web App URL: https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec
  */
 
 function doPost(e) {
