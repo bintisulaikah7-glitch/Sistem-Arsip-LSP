@@ -536,19 +536,24 @@ async function startServer() {
   });
 
   const OFFICIAL_WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycbwMXs3mGxDG1DS-wus_hBgtMHViHNslBJMSZ3eDGX3vvkRUdWwp9PeFXtfGzYRy08O5/exec";
+    "https://script.google.com/macros/s/AKfycby5-El1hSqVLgpYTLtfG9ICIWqLf_QW-67UKguYLUq8RglBJtFq3-hm3aIxcG6KIwCt/exec";
 
   // 11b. Google Apps Script Web App GET Proxy (Bypasses Browser CORS)
   app.get("/api/apps-script/get", async (req: Request, res: Response) => {
     const targetUrl = (req.query.url as string) || OFFICIAL_WEB_APP_URL;
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
       const response = await fetch(targetUrl, {
         headers: {
           Accept: "application/json, text/plain, */*",
           "User-Agent": "Mozilla/5.0 Sistem-Manajemen-Boks-Arsip-LSP"
         },
-        redirect: "follow"
+        redirect: "follow",
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
       const text = await response.text();
       try {
         const json = JSON.parse(text);

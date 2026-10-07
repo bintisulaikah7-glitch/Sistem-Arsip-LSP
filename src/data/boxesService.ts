@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
 import { INITIAL_BOXES } from './initialBoxes.ts';
 import { deduplicateBoxes } from '../utils/csvParser.ts';
+import { DEFAULT_APPS_SCRIPT_URL } from '../utils/appsScriptService.ts';
 
 /**
  * URL CSV Export Google Sheets (Boks Berkas Arsip LSP)
@@ -12,8 +13,7 @@ export const GOOGLE_SHEETS_CSV_URL =
 /**
  * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP (AKTIF & TERHUBUNG)
  */
-export const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-  'https://script.google.com/macros/s/AKfycbx4xL9qb9HM74PD8hEVOR_MhYTlUr6aeSzoGIlP4F8/exec';
+export const GOOGLE_APPS_SCRIPT_WEB_APP_URL = DEFAULT_APPS_SCRIPT_URL;
 
 /**
  * Pemetaan baris objek dari Google Apps Script Web App JSON menjadi objek BoksArsip
@@ -202,7 +202,7 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
 }
 
 /**
- * Tarik data boks dari Apps Script (Langsung dari URL tanpa Proxy Backend)
+ * Tarik data boks dari Apps Script (Mendukung Proxy Backend & Direct Fetch)
  */
 export async function fetchBoxesFromAppsScript(
   webAppUrl: string = GOOGLE_APPS_SCRIPT_WEB_APP_URL
@@ -210,19 +210,42 @@ export async function fetchBoxesFromAppsScript(
   try {
     let rawData: any = null;
 
-    // Timeout diperpanjang menjadi 15 detik agar koneksi stabil saat data banyak
+    // Timeout terukur 8 detik agar responsif
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const response = await fetch(webAppUrl, {
-      method: 'GET',
-      headers: { Accept: 'application/json, text/plain, */*' },
-      redirect: 'follow',
-      signal: controller.signal
-    });
+    let response: Response | null = null;
+
+    // 1. Coba via Proxy Backend terlebih dahulu untuk mencegah error CORS di browser
+    try {
+      const proxyRes = await fetch(`/api/apps-script/get?url=${encodeURIComponent(webAppUrl)}`, {
+        headers: { Accept: 'application/json, text/plain, */*' },
+        signal: controller.signal
+      });
+      if (proxyRes.ok) {
+        response = proxyRes;
+      }
+    } catch {
+      // Proxy backend tidak tersedia atau gagal, lanjutkan direct fetch
+    }
+
+    // 2. Fallback: Direct Fetch ke Google Apps Script
+    if (!response) {
+      try {
+        response = await fetch(webAppUrl, {
+          method: 'GET',
+          headers: { Accept: 'application/json, text/plain, */*' },
+          redirect: 'follow',
+          signal: controller.signal
+        });
+      } catch {
+        // Direct fetch gagal (misal CORS atau offline)
+      }
+    }
+
     clearTimeout(timeoutId);
 
-    if (response.ok) {
+    if (response && response.ok) {
       const text = await response.text();
       if (text && (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
         rawData = JSON.parse(text);
@@ -475,18 +498,47 @@ export async function fetchBoxesData(
       console.warn('[fetchBoxesData] Direct Apps Script fetch error:', appsScriptErr);
     }
 
-    // 2. Upaya Cadangan: Fetch langsung dari URL CSV Google Sheets (Timeout diperpanjang ke 15 detik)
+    // 2. Upaya Kedua: Ambil dari API internal backend /api/boxes jika data lokal tersedia
+    try {
+      const apiRes = await fetch('/api/boxes', { signal: AbortSignal.timeout(3000) });
+      if (apiRes.ok) {
+        const apiData = await apiRes.json();
+        if (Array.isArray(apiData) && apiData.length > 0) {
+          return verifyAndSanitizeBoxes(apiData);
+        }
+      }
+    } catch {
+      // Backend /api/boxes tidak tersedia, lanjutkan ke Google Sheets CSV
+    }
+
+    // 3. Upaya Ketiga: Fetch via Proxy Google Sheets / Direct URL CSV
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      const response = await fetch(sheetCsvUrl, {
-        headers: { Accept: 'text/csv,text/plain,*/*' },
-        signal: controller.signal
-      });
+      let response: Response | null = null;
+      try {
+        const proxyRes = await fetch(`/api/sheets-proxy?url=${encodeURIComponent(sheetCsvUrl)}`, {
+          headers: { Accept: 'text/csv,text/plain,*/*' },
+          signal: controller.signal
+        });
+        if (proxyRes.ok) {
+          response = proxyRes;
+        }
+      } catch {}
+
+      if (!response) {
+        try {
+          response = await fetch(sheetCsvUrl, {
+            headers: { Accept: 'text/csv,text/plain,*/*' },
+            signal: controller.signal
+          });
+        } catch {}
+      }
+
       clearTimeout(timeoutId);
 
-      if (response.ok) {
+      if (response && response.ok) {
         const text = await response.text();
         const trimmed = text.trim();
         if (
@@ -504,14 +556,14 @@ export async function fetchBoxesData(
       }
     } catch (directErr: any) {
       if (directErr.name !== 'AbortError') {
-        console.warn('[fetchBoxesData] Direct CSV fetch error:', directErr);
+        console.warn('[fetchBoxesData] CSV fetch warning:', directErr?.message || directErr);
       }
     }
 
     // Fallback jika jaringan gagal total
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
-  } catch (error) {
-    console.error('[fetchBoxesData] Unexpected error, using fallback:', error);
+  } catch (error: any) {
+    console.warn('[fetchBoxesData] Network sync notice, using initial boxes:', error?.message || error);
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   }
 }

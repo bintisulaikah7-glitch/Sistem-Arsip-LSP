@@ -278,42 +278,19 @@ export default function App() {
   // Background fetch on mount & recurring 15-second polling (tanpa memblokir tampilan awal)
   useEffect(() => {
     let isMounted = true;
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbwATeyjdi22Ny5HY7bliYp1pLarlPsGIfTnDQrZQyGIpg_IMzPABmHLIflleNH0sFg-/exec';
 
-    // Pengambilan Data Apps Script yang Safe & Sederhana
-    fetch(appsScriptUrl, { redirect: 'follow' })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
+    // Pengambilan data awal yang aman via fetchGoogleSheetsData
+    fetchGoogleSheetsData(sheetUrl, true)
+      .then((loadedBoxes) => {
         if (!isMounted) return;
-        if (Array.isArray(data) && data.length > 0) {
-          const verified = verifyAndSanitizeBoxes(data);
-          if (verified.length > 0) {
-            setBoxes(verified);
-            setSyncState({
-              status: 'connected',
-              lastSyncedAt: new Date(),
-              message: `Berhasil sinkronisasi ${verified.length} boks arsip langsung dari Google Sheets.`,
-              sourceUrl: appsScriptUrl,
-              totalParsed: verified.length
-            });
-
-            // Sinkronkan ke API backend
-            fetch('/api/boxes/sync-sheets', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(verified)
-            }).catch(() => {});
-
-            handleCheckUrlAndOpenBox(verified);
-          }
+        if (loadedBoxes && loadedBoxes.length > 0) {
+          handleCheckUrlAndOpenBox(loadedBoxes);
+        } else {
+          handleCheckUrlAndOpenBox(boxes);
         }
       })
       .catch((err) => {
-        console.error('Error fetching data:', err);
-        // Tetap menggunakan data bawaan awal tanpa memblokir tampilan web
+        console.warn('[Sync] Background sync notice:', err?.message || err);
         if (isMounted) {
           handleCheckUrlAndOpenBox(boxes);
         }
@@ -325,7 +302,7 @@ export default function App() {
         // Lewati polling saat pengguna sedang mengetik di form
         return;
       }
-      fetchGoogleSheetsData(appsScriptUrl, true);
+      fetchGoogleSheetsData(sheetUrl, true);
       setPollCountdown(15);
     }, 15000);
 
