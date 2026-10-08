@@ -21,7 +21,12 @@ import { CabinetGridView } from './components/CabinetGridView.tsx';
 import { AppsScriptModal } from './components/AppsScriptModal.tsx';
 import { sendBoxToGoogleSheets } from './utils/appsScriptService.ts';
 import { INITIAL_BOXES } from './data/initialBoxes.ts';
-import { fetchBoxesData, verifyAndSanitizeBoxes } from './data/boxesService.ts';
+import {
+  fetchBoxesData,
+  verifyAndSanitizeBoxes,
+  saveBoxesToLocalStorage,
+  loadBoxesFromLocalStorage
+} from './data/boxesService.ts';
 import {
   GOOGLE_SHEETS_CSV_URL,
   GOOGLE_SHEETS_SPREADSHEET_URL,
@@ -35,11 +40,24 @@ import { getUrlBoxParam, getUrlLocationParams } from './utils/url.ts';
 import { AlertCircle, FolderSearch, CheckCircle, Database, ArrowLeft, Folder, Search, X, Layers, QrCode } from 'lucide-react';
 
 export default function App() {
-  // Inisialisasi state awal
-  const [boxes, setBoxes] = useState<BoksArsip[]>(() => deduplicateBoxes(INITIAL_BOXES));
+  // Inisialisasi state awal: membaca dari LocalStorage jika ada, fallback ke INITIAL_BOXES
+  const [boxes, setBoxes] = useState<BoksArsip[]>(() => {
+    const cached = loadBoxesFromLocalStorage();
+    if (cached && cached.length > 0) {
+      return deduplicateBoxes(cached);
+    }
+    return deduplicateBoxes(INITIAL_BOXES);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Otomatis simpan setiap perubahan data boks & lemari baru ke LocalStorage secara instan
+  useEffect(() => {
+    if (boxes && boxes.length > 0) {
+      saveBoxesToLocalStorage(boxes);
+    }
+  }, [boxes]);
 
   // Google Sheets Auto-Fetch & Polling State
   const [sheetUrl, setSheetUrl] = useState<string>(GOOGLE_SHEETS_SPREADSHEET_URL);
@@ -360,19 +378,35 @@ export default function App() {
   }, [boxes]);
 
   const availableLemari = useMemo(() => {
-    if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
-      return ['1', '2', '3', '4'];
-    }
+    const rawLemariList: string[] = [];
 
-    const rawLemariList = boxes
-      .map((b) => {
-        const val = b?.lokasi?.lemari ?? (b as any)?.['Kode Lemari'] ?? (b as any)?.kode_lemari;
-        if (val === undefined || val === null) return '';
-        const str = String(val).replace(/lemari[-_\s]*/i, '').trim();
-        if (!str || str === '0' || str.toLowerCase() === 'kosong' || str === '-') return '';
-        return str;
-      })
-      .filter(Boolean);
+    // 1. Ambil dari seluruh data boks aktif saat ini (dinamis tanpa batas)
+    (boxes || []).forEach((b) => {
+      const val = b?.lokasi?.lemari ?? (b as any)?.['Kode Lemari'] ?? (b as any)?.kode_lemari;
+      if (val === undefined || val === null) return;
+      const str = String(val).replace(/lemari[-_\s]*/i, '').trim();
+      if (str && str !== '0' && str.toLowerCase() !== 'kosong' && str !== '-') {
+        rawLemariList.push(str);
+      }
+    });
+
+    // 2. Ambil dari riwayat lemari yang pernah disimpan di LocalStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('lsp_lemari_list');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((l) => {
+              const str = String(l).replace(/lemari[-_\s]*/i, '').trim();
+              if (str && str !== '0' && str.toLowerCase() !== 'kosong' && str !== '-') {
+                rawLemariList.push(str);
+              }
+            });
+          }
+        }
+      } catch {}
+    }
 
     const uniqueLemari = Array.from(new Set(rawLemariList));
     uniqueLemari.sort((a, b) => {
@@ -631,7 +665,7 @@ export default function App() {
     showToast('File JSON arsip berhasil diunduh.');
   };
 
-  const handleSaveFromInputLokasi = (newBoxData: Partial<BoksArsip>) => {
+  const handleSaveFromInputLokasi = async (newBoxData: Partial<BoksArsip>) => {
     const fullBox: BoksArsip = {
       id_box: newBoxData.id_box || `BOX-${Date.now()}`,
       nama_pelatihan: newBoxData.nama_pelatihan || 'Pelatihan Baru',
@@ -643,8 +677,7 @@ export default function App() {
       status_barang: (newBoxData.status_barang as StatusBarang) || 'Lengkap',
       link_dokumentasi: newBoxData.link_dokumentasi || 'https://drive.google.com'
     };
-    setBoxes((prev) => [fullBox, ...prev]);
-    showToast(`Boks arsip berhasil didaftarkan: ${fullBox.id_box}`);
+    await handleAddBox(fullBox);
   };
 
   const handleApplyFilterFromLokasi = (pelatihan: string, lemari: string, rak: string) => {
@@ -655,21 +688,16 @@ export default function App() {
         const lNum = parseInt(numMatch[0], 10);
         setSelectedCabinet(lNum);
         setSelectedLemari(lNum);
-      } else if (lemari.toLowerCase().includes('a')) {
-        setSelectedCabinet(1);
-        setSelectedLemari(1);
-      } else if (lemari.toLowerCase().includes('b')) {
-        setSelectedCabinet(2);
-        setSelectedLemari(2);
-      } else if (lemari.toLowerCase().includes('c')) {
-        setSelectedCabinet(3);
-        setSelectedLemari(3);
+      } else {
+        const cleanLemari = lemari.replace(/lemari[-_\s]*/i, '').trim() || lemari;
+        setSelectedCabinet(cleanLemari);
+        setSelectedLemari(cleanLemari);
       }
     }
     if (rak) {
       setSelectedRak(rak);
     }
-    showToast(`Filter Lokasi Berkas diterapkan: ${pelatihan} (${lemari}, ${rak})`);
+    showToast(`Filter Lokasi Berkas diterapkan: ${pelatihan || 'Semua'} (${lemari}, ${rak})`);
   };
 
   return (
@@ -728,7 +756,7 @@ export default function App() {
         {/* Statistics Bar */}
         <StatsBar
           boxes={boxes}
-          activeLemariFilter={selectedCabinet !== null && selectedCabinet !== undefined ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(String(selectedCabinet).replace(/\D/g, '') || '1', 10)) : (typeof selectedLemari === 'number' ? selectedLemari : null)}
+          activeLemariFilter={selectedCabinet !== null ? selectedCabinet : selectedLemari}
           onSelectLemari={(lemari) => {
             setSelectedCabinet(lemari);
             setSelectedLemari(lemari);
@@ -766,7 +794,7 @@ export default function App() {
         <div id="app-container" className="space-y-4">
           {/* Bar Navigasi (Breadcrumb) untuk kembali */}
           <BreadcrumbNav
-            selectedCabinet={selectedCabinet !== null && selectedCabinet !== undefined ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(String(selectedCabinet).replace(/\D/g, '') || '1', 10)) : null}
+            selectedCabinet={selectedCabinet}
             selectedRak={selectedRak}
             searchQuery={searchQuery}
             onGoToLemari={() => {
@@ -1071,6 +1099,7 @@ export default function App() {
           setInputLokasiPrefill({});
         }}
         existingBoxes={boxes}
+        availableLemari={availableLemari}
         initialLemari={inputLokasiPrefill.lemari}
         initialRak={inputLokasiPrefill.rak}
         onApplyFilter={handleApplyFilterFromLokasi}

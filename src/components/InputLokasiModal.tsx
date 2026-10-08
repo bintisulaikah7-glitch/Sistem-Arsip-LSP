@@ -7,6 +7,7 @@ interface InputLokasiModalProps {
   isOpen: boolean;
   onClose: () => void;
   existingBoxes?: BoksArsip[];
+  availableLemari?: (number | string)[];
   initialLemari?: string;
   initialRak?: string;
   onApplyFilter?: (pelatihan: string, lemari: string, rak: string) => void;
@@ -17,22 +18,55 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
   isOpen,
   onClose,
   existingBoxes = [],
+  availableLemari,
   initialLemari,
   initialRak,
   onApplyFilter,
   onSaveNewBox
 }) => {
   const [pelatihan, setPelatihan] = useState('');
-  const [lemari, setLemari] = useState(initialLemari || 'Lemari-A');
-  const [rak, setRak] = useState(initialRak || 'Rak-1');
+  const [lemari, setLemari] = useState(initialLemari || '1');
+  const [isCustomLemari, setIsCustomLemari] = useState(false);
+  const [customLemariName, setCustomLemariName] = useState('');
+  const [rak, setRak] = useState(initialRak || 'Rak 1');
   const [isGenerated, setIsGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [saveToArchiveList, setSaveToArchiveList] = useState(false);
   const [tahun, setTahun] = useState(new Date().getFullYear().toString());
 
+  // Kumpulan opsi lemari dinamis tanpa batas
+  const lemariOptions = useMemo(() => {
+    const set = new Set<string>();
+    ['1', '2', '3', '4'].forEach((l) => set.add(l));
+
+    (availableLemari || []).forEach((l) => {
+      const str = String(l).replace(/lemari[-_\s]*/i, '').trim();
+      if (str && str !== '0' && str.toLowerCase() !== 'kosong') set.add(str);
+    });
+
+    (existingBoxes || []).forEach((b) => {
+      const val = b?.lokasi?.lemari ?? (b as any)?.['Kode Lemari'] ?? (b as any)?.kode_lemari;
+      if (val !== undefined && val !== null) {
+        const str = String(val).replace(/lemari[-_\s]*/i, '').trim();
+        if (str && str !== '0' && str.toLowerCase() !== 'kosong') set.add(str);
+      }
+    });
+
+    return Array.from(set).sort((a, b) => {
+      const numA = parseInt(a, 10);
+      const numB = parseInt(b, 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+    });
+  }, [availableLemari, existingBoxes]);
+
   // Update lemari/rak if initial values change when opened
   React.useEffect(() => {
-    if (initialLemari) setLemari(initialLemari);
+    if (initialLemari) {
+      const clean = String(initialLemari).replace(/lemari[-_\s]*/i, '').trim();
+      setLemari(clean || initialLemari);
+      setIsCustomLemari(false);
+    }
     if (initialRak) setRak(initialRak);
   }, [initialLemari, initialRak, isOpen]);
 
@@ -44,9 +78,13 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
 
   if (!isOpen) return null;
 
+  const effectiveLemariStr = isCustomLemari ? (customLemariName.trim() || '1') : lemari;
+  const numLemariMatch = effectiveLemariStr.match(/^\d+$/);
+  const effectiveLemariVal: number | string = numLemariMatch ? parseInt(numLemariMatch[0], 10) : effectiveLemariStr;
+
   // Generate target URL
-  const targetUrl = getLocationPublicUrl(pelatihan, lemari, rak);
-  const qrImageUrl = getLocationQrImageUrl(pelatihan, lemari, rak, 260);
+  const targetUrl = getLocationPublicUrl(pelatihan, `Lemari ${effectiveLemariStr}`, rak);
+  const qrImageUrl = getLocationQrImageUrl(pelatihan, `Lemari ${effectiveLemariStr}`, rak, 260);
 
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,17 +92,16 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
       alert('Harap isi nama pelatihan!');
       return;
     }
+    if (isCustomLemari && !customLemariName.trim()) {
+      alert('Harap masukkan nama/nomor lemari baru!');
+      return;
+    }
     setIsGenerated(true);
 
     // If user opts to also save to archive list
     if (saveToArchiveList && onSaveNewBox) {
-      // Parse numeric lemari if possible (e.g. Lemari-1 -> 1, Lemari-A -> 1)
-      let numLemari = 1;
-      if (lemari.includes('B') || lemari.includes('2')) numLemari = 2;
-      if (lemari.includes('C') || lemari.includes('3')) numLemari = 3;
-
       const randomSuffix = Math.floor(10 + Math.random() * 90);
-      const cleanCode = `L${numLemari}-${rak.replace('Rak-', 'R')}-BOX${randomSuffix}-${tahun}`;
+      const cleanCode = `L${effectiveLemariStr}-${rak.replace(/[^a-zA-Z0-9]/g, '')}-BOX${randomSuffix}-${tahun}`;
 
       onSaveNewBox({
         id_box: cleanCode,
@@ -73,9 +110,9 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
         jumlah_peserta: 20,
         jumlah_peserta_bk: 0,
         lokasi: {
-          lemari: numLemari,
+          lemari: effectiveLemariVal,
           rak: rak.replace('-', ' '),
-          baris: 'Baris 1'
+          baris: 'Box 1'
         },
         status_arsip: 'Tersedia',
         status_barang: 'Lengkap',
@@ -182,24 +219,45 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
 
             {/* Grid Lemari & Rak */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* Pilih Lemari */}
+              {/* Pilih Lemari (Dinamis Tanpa Batas) */}
               <div className="space-y-1.5">
                 <label htmlFor="lemari" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Pilih Lemari:
                 </label>
                 <select
                   id="lemari"
-                  value={lemari}
-                  onChange={(e) => setLemari(e.target.value)}
+                  value={isCustomLemari ? '__custom__' : lemari}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '__custom__') {
+                      setIsCustomLemari(true);
+                    } else {
+                      setIsCustomLemari(false);
+                      setLemari(val);
+                    }
+                  }}
                   className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 >
-                  <option value="Lemari-A">Lemari A</option>
-                  <option value="Lemari-B">Lemari B</option>
-                  <option value="Lemari-C">Lemari C</option>
-                  <option value="Lemari-1">Lemari 1</option>
-                  <option value="Lemari-2">Lemari 2</option>
-                  <option value="Lemari-3">Lemari 3</option>
+                  {lemariOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      Lemari {opt}
+                    </option>
+                  ))}
+                  <option value="__custom__">+ Input Lemari Baru...</option>
                 </select>
+
+                {isCustomLemari && (
+                  <div className="mt-2 animate-in fade-in duration-150">
+                    <input
+                      type="text"
+                      value={customLemariName}
+                      onChange={(e) => setCustomLemariName(e.target.value)}
+                      placeholder="Ketik nomor/nama lemari baru (contoh: 5 atau Khusus)..."
+                      className="w-full bg-white border border-blue-400 rounded-lg px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-2xs"
+                      autoFocus
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Pilih Rak */}

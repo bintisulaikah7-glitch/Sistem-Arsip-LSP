@@ -45,12 +45,15 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     return null;
   }
 
-  // Parse Lemari
-  let lemariNum: number = 0;
+  // Parse Lemari secara dinamis tanpa batasan jumlah
+  let lemariVal: number | string = 1;
   const lemariStr = String(rawLemari || '').trim();
-  const lemariDigits = lemariStr.replace(/\D/g, '');
+  const lemariDigits = lemariStr.match(/\d+/);
   if (lemariDigits) {
-    lemariNum = parseInt(lemariDigits, 10);
+    lemariVal = parseInt(lemariDigits[0], 10);
+  } else if (lemariStr && lemariStr.toLowerCase() !== 'kosong') {
+    const cleanLemari = lemariStr.replace(/lemari[-_\s]*/i, '').trim();
+    lemariVal = cleanLemari || lemariStr;
   }
 
   // Parse Rak
@@ -68,8 +71,8 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
   // ID Box
   let idBoxClean = String(rawIdBox || '').trim();
   if (!idBoxClean || idBoxClean === '1' || idBoxClean.toLowerCase() === 'kosong') {
-    if (lemariNum > 0 && rakClean) {
-      idBoxClean = `L${lemariNum}-${rakClean.replace(/\s+/g, '')}-BOX${boxClean.replace(/\D/g, '') || String(index + 1).padStart(2, '0')}-${tahunNum}`;
+    if (lemariVal && rakClean) {
+      idBoxClean = `L${lemariVal}-${rakClean.replace(/\s+/g, '')}-BOX${boxClean.replace(/\D/g, '') || String(index + 1).padStart(2, '0')}-${tahunNum}`;
     } else {
       idBoxClean = `BOX-${tahunNum}-${String(index + 1).padStart(3, '0')}`;
     }
@@ -110,7 +113,7 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     jumlah_peserta: Number(rawPeserta) || 0,
     jumlah_peserta_bk: Number(rawPesertaBk) || 0,
     lokasi: {
-      lemari: lemariNum > 0 ? lemariNum : (lemariStr || 1),
+      lemari: lemariVal || 1,
       rak: rakClean || 'Rak A',
       baris: boxClean || 'Box 1'
     },
@@ -147,9 +150,14 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
       const matchDigits = lemariVal.match(/\d+/);
       if (matchDigits) {
         lemariVal = parseInt(matchDigits[0], 10);
+      } else {
+        const cleanStr = lemariVal.replace(/lemari[-_\s]*/i, '').trim();
+        if (cleanStr && cleanStr.toLowerCase() !== 'kosong') {
+          lemariVal = cleanStr;
+        }
       }
     }
-    if (!lemariVal || lemariVal === 0 || String(lemariVal).toLowerCase() === 'kosong') {
+    if (lemariVal === undefined || lemariVal === null || lemariVal === 0 || String(lemariVal).toLowerCase() === 'kosong') {
       lemariVal = 1;
     }
 
@@ -398,13 +406,19 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
 
     const isLemariKosong = !rawKodeLemari || rawKodeLemari.toLowerCase() === 'kosong';
     const lemariDigits = !isLemariKosong ? rawKodeLemari.match(/\d+/) : null;
-    const lemari = lemariDigits ? parseInt(lemariDigits[0], 10) : 0;
+    let lemari: number | string = 1;
+    if (lemariDigits) {
+      lemari = parseInt(lemariDigits[0], 10);
+    } else if (!isLemariKosong) {
+      const cleanLemari = rawKodeLemari.replace(/lemari[-_\s]*/i, '').trim();
+      lemari = cleanLemari || rawKodeLemari;
+    }
 
     const isRakKosong = !rawNomorRak || rawNomorRak.toLowerCase() === 'kosong';
-    const rak = isRakKosong ? (lemari > 0 ? 'Rak A' : '-') : rawNomorRak;
+    const rak = isRakKosong ? 'Rak A' : rawNomorRak;
 
     const isBoxKosong = !rawNomorBox || rawNomorBox.toLowerCase() === 'kosong';
-    const baris = isBoxKosong ? (lemari > 0 ? 'Box 1' : '-') : rawNomorBox;
+    const baris = isBoxKosong ? 'Box 1' : rawNomorBox;
 
     let status_arsip: StatusArsip = 'Tersedia';
     if (rawStatusArsip && rawStatusArsip.toLowerCase() !== 'kosong') {
@@ -431,8 +445,9 @@ export function parseGoogleSheetsCsv(csvText: string): BoksArsip[] {
       finalId === '1';
 
     if (isGenericOrEmpty) {
+      const hasLemari = typeof lemari === 'number' ? lemari > 0 : Boolean(lemari && lemari !== '0');
       finalId =
-        lemari > 0
+        hasLemari
           ? `L${lemari}-R${rak.replace(/\D/g, '') || '1'}-BOX${String(i).padStart(2, '0')}-${tahun_pelaksanaan}`
           : `BOX-${tahun_pelaksanaan}-${String(i).padStart(3, '0')}`;
     }
@@ -481,7 +496,61 @@ export function mapCsvRowsToBoxes(records: Record<string, string>[]): BoksArsip[
 }
 
 /**
- /**
+ * Simpan data boks arsip dan daftar lemari dinamis secara otomatis ke LocalStorage
+ */
+export function saveBoxesToLocalStorage(boxesData: BoksArsip[]): void {
+  if (typeof window === 'undefined' || !Array.isArray(boxesData) || boxesData.length === 0) return;
+  try {
+    localStorage.setItem('lsp_boxes_data', JSON.stringify(boxesData));
+
+    // Kumpulkan seluruh nomor/nama lemari dinamis tanpa batas
+    const lemariSet = new Set<string>();
+    boxesData.forEach((b) => {
+      const val = b?.lokasi?.lemari ?? (b as any)?.['Kode Lemari'] ?? (b as any)?.kode_lemari;
+      if (val !== undefined && val !== null) {
+        const str = String(val).replace(/lemari[-_\s]*/i, '').trim();
+        if (str && str !== '0' && str.toLowerCase() !== 'kosong' && str !== '-') {
+          lemariSet.add(str);
+        }
+      }
+    });
+
+    const lemariArray = Array.from(lemariSet).sort((a, b) => {
+      const numA = parseInt(a, 10);
+      const numB = parseInt(b, 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+    });
+
+    localStorage.setItem('lsp_lemari_list', JSON.stringify(lemariArray));
+    localStorage.setItem('lsp_total_lemari', String(lemariArray.length));
+    localStorage.setItem('lsp_total_boxes', String(boxesData.length));
+    localStorage.setItem('lsp_last_sync', new Date().toISOString());
+  } catch (err) {
+    console.warn('[saveBoxesToLocalStorage] Gagal memperbarui LocalStorage:', err);
+  }
+}
+
+/**
+ * Muat data boks arsip yang tersimpan di LocalStorage
+ */
+export function loadBoxesFromLocalStorage(): BoksArsip[] | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const cached = localStorage.getItem('lsp_boxes_data');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return verifyAndSanitizeBoxes(parsed);
+      }
+    }
+  } catch (err) {
+    console.warn('[loadBoxesFromLocalStorage] Error membaca LocalStorage:', err);
+  }
+  return null;
+}
+
+/**
  * Fungsi asynchronous utama untuk membaca data boks arsip langsung dari Apps Script & Google Sheets CSV.
  */
 export async function fetchBoxesData(
@@ -492,7 +561,9 @@ export async function fetchBoxesData(
     try {
       const appsScriptBoxes = await fetchBoxesFromAppsScript();
       if (appsScriptBoxes && appsScriptBoxes.length > 0) {
-        return verifyAndSanitizeBoxes(appsScriptBoxes);
+        const verified = verifyAndSanitizeBoxes(appsScriptBoxes);
+        saveBoxesToLocalStorage(verified);
+        return verified;
       }
     } catch (appsScriptErr) {
       console.warn('[fetchBoxesData] Direct Apps Script fetch error:', appsScriptErr);
@@ -504,7 +575,9 @@ export async function fetchBoxesData(
       if (apiRes.ok) {
         const apiData = await apiRes.json();
         if (Array.isArray(apiData) && apiData.length > 0) {
-          return verifyAndSanitizeBoxes(apiData);
+          const verified = verifyAndSanitizeBoxes(apiData);
+          saveBoxesToLocalStorage(verified);
+          return verified;
         }
       }
     } catch {
@@ -550,7 +623,9 @@ export async function fetchBoxesData(
           const mappedBoxes = parseGoogleSheetsCsv(trimmed);
           if (mappedBoxes.length > 0) {
             console.log(`[fetchBoxesData] Berhasil menarik ${mappedBoxes.length} boks via CSV Sheets.`);
-            return verifyAndSanitizeBoxes(mappedBoxes);
+            const verified = verifyAndSanitizeBoxes(mappedBoxes);
+            saveBoxesToLocalStorage(verified);
+            return verified;
           }
         }
       }
@@ -560,10 +635,21 @@ export async function fetchBoxesData(
       }
     }
 
-    // Fallback jika jaringan gagal total
+    // Fallback: Gunakan cache LocalStorage jika tersedia
+    const cachedBoxes = loadBoxesFromLocalStorage();
+    if (cachedBoxes && cachedBoxes.length > 0) {
+      console.log(`[fetchBoxesData] Menggunakan cache LocalStorage (${cachedBoxes.length} boks).`);
+      return cachedBoxes;
+    }
+
+    // Fallback jika jaringan dan storage kosong
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   } catch (error: any) {
-    console.warn('[fetchBoxesData] Network sync notice, using initial boxes:', error?.message || error);
+    console.warn('[fetchBoxesData] Network sync notice, using storage/initial boxes:', error?.message || error);
+    const cachedBoxes = loadBoxesFromLocalStorage();
+    if (cachedBoxes && cachedBoxes.length > 0) {
+      return cachedBoxes;
+    }
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   }
 }

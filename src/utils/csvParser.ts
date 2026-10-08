@@ -180,7 +180,7 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
     ).trim();
     const jumlah_peserta_bk = parseInt(rawPesertaBk.replace(/\D/g, ''), 10) || 0;
 
-    // 6. Kode Lemari -> lokasi.lemari (ambil angkanya saja)
+    // 6. Kode Lemari -> lokasi.lemari (mendukung seluruh lemari dinamis tanpa batas jumlah)
     const rawLemari = getRecordValue(
       rec,
       'Kode Lemari',
@@ -190,7 +190,13 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
       'lemari nomor'
     ).trim();
     const lemariDigits = rawLemari.match(/\d+/);
-    const lemari = lemariDigits ? parseInt(lemariDigits[0], 10) : 0;
+    let lemari: number | string = 0;
+    if (lemariDigits) {
+      lemari = parseInt(lemariDigits[0], 10);
+    } else if (rawLemari && rawLemari.toLowerCase() !== 'kosong') {
+      const cleanLemari = rawLemari.replace(/lemari[-_\s]*/i, '').trim();
+      lemari = cleanLemari || rawLemari;
+    }
 
     // 7. Nomor Rak -> lokasi.rak
     const rawRak = getRecordValue(
@@ -268,9 +274,10 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
     const link_dokumentasi = rawLink || 'https://drive.google.com';
 
     // Generate clean ID if missing
+    const hasLemari = typeof lemari === 'number' ? lemari > 0 : Boolean(lemari && lemari !== '0');
     const computedId = id_box
       ? id_box
-      : lemari > 0
+      : hasLemari
       ? `BOX-L${lemari}-${rak.replace(/\s+/g, '')}-${String(idx + 1).padStart(3, '0')}`
       : `BOX-${tahun_pelaksanaan}-${String(idx + 1).padStart(3, '0')}`;
 

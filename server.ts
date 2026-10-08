@@ -200,10 +200,11 @@ async function startServer() {
     }
 
     if (lemari) {
-      const lemariNum = parseInt(lemari as string, 10);
-      if (!isNaN(lemariNum)) {
-        result = result.filter((b) => b.lokasi.lemari === lemariNum);
-      }
+      const target = String(lemari).replace(/lemari[-_\s]*/i, "").trim().toLowerCase();
+      result = result.filter((b) => {
+        const bLemari = String(b.lokasi?.lemari ?? "").replace(/lemari[-_\s]*/i, "").trim().toLowerCase();
+        return bLemari === target;
+      });
     }
 
     if (status_arsip) {
@@ -295,10 +296,8 @@ async function startServer() {
     if (!payload.lokasi || typeof payload.lokasi !== "object") {
       errors.push("lokasi wajib berupa Object: { lemari: number|string, rak: string|number, baris: string|number }");
     } else {
-      let lemariNum = Number(payload.lokasi.lemari);
-      if (isNaN(lemariNum) || lemariNum < 1) {
-        const matched = String(payload.lokasi.lemari).match(/\d+/);
-        lemariNum = matched ? parseInt(matched[0], 10) : 1;
+      if (payload.lokasi.lemari === undefined || payload.lokasi.lemari === null || String(payload.lokasi.lemari).trim() === "") {
+        errors.push("lokasi.lemari wajib diisi");
       }
       if (!payload.lokasi.rak && payload.lokasi.rak !== 0) {
         errors.push("lokasi.rak wajib diisi");
@@ -332,10 +331,13 @@ async function startServer() {
       return;
     }
 
-    let resolvedLemari = Number(payload.lokasi!.lemari);
-    if (isNaN(resolvedLemari) || resolvedLemari < 1) {
-      const m = String(payload.lokasi!.lemari).match(/\d+/);
-      resolvedLemari = m ? parseInt(m[0], 10) : 1;
+    let resolvedLemari: number | string = 1;
+    const numDigits = String(payload.lokasi!.lemari).match(/\d+/);
+    if (numDigits) {
+      resolvedLemari = parseInt(numDigits[0], 10);
+    } else {
+      const clean = String(payload.lokasi!.lemari).replace(/lemari[-_\s]*/i, "").trim();
+      resolvedLemari = clean || 1;
     }
 
     const newBox: BoksArsip = {
@@ -383,12 +385,12 @@ async function startServer() {
 
     let updatedLemari = current.lokasi.lemari;
     if (payload.lokasi && payload.lokasi.lemari !== undefined) {
-      const num = Number(payload.lokasi.lemari);
-      if (!isNaN(num) && num >= 1) {
-        updatedLemari = num;
+      const numDigits = String(payload.lokasi.lemari).match(/\d+/);
+      if (numDigits) {
+        updatedLemari = parseInt(numDigits[0], 10);
       } else {
-        const m = String(payload.lokasi.lemari).match(/\d+/);
-        if (m) updatedLemari = parseInt(m[0], 10);
+        const clean = String(payload.lokasi.lemari).replace(/lemari[-_\s]*/i, "").trim();
+        updatedLemari = clean || payload.lokasi.lemari;
       }
     }
 

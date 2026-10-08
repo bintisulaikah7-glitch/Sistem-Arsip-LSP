@@ -15,14 +15,31 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   onSelectCabinet,
   onOpenInputLokasi
 }) => {
-  // Saring lemari yang memiliki data Boks Arsip minimal 1 boks
+  // Daftarkan seluruh lemari arsip secara dinamis (tanpa batasan jumlah lemari)
   const activeCabinetList = React.useMemo(() => {
     const lemariMap = new Map<string, BoksArsip[]>();
 
+    // 1. Masukkan seluruh lemari dari availableLemari agar lemari baru yang ditambahkan langsung memiliki kartu di grid
+    (availableLemari || []).forEach((item) => {
+      const raw = String(item).replace(/lemari[-_\s]*/i, '').trim();
+      if (
+        raw &&
+        raw !== '0' &&
+        parseInt(raw, 10) !== 0 &&
+        raw.toLowerCase() !== 'kosong' &&
+        raw !== '-'
+      ) {
+        if (!lemariMap.has(raw)) {
+          lemariMap.set(raw, []);
+        }
+      }
+    });
+
+    // 2. Masukkan seluruh boks arsip ke lemari masing-masing
     (boxes || []).forEach((b) => {
       if (!b || !b.lokasi?.lemari) return;
 
-      const raw = b.lokasi.lemari.toString().replace(/lemari[-_\s]*/i, '').trim();
+      const raw = String(b.lokasi.lemari).replace(/lemari[-_\s]*/i, '').trim();
 
       if (
         !raw ||
@@ -43,9 +60,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
       lemariMap.get(raw)!.push(b);
     });
 
-    const validEntries = Array.from(lemariMap.entries()).filter(
-      ([_, boxList]) => boxList && boxList.length > 0
-    );
+    const validEntries = Array.from(lemariMap.entries());
 
     validEntries.sort(([keyA], [keyB]) => {
       const numA = parseInt(keyA, 10);
@@ -55,7 +70,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
     });
 
     return validEntries;
-  }, [boxes]);
+  }, [boxes, availableLemari]);
 
   return (
     <div className="space-y-4 mb-8">
@@ -107,14 +122,14 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             ).sort();
             const rakText = raks.length > 0
               ? raks.map(r => r.toString().startsWith('Rak') ? r : `Rak ${r}`).join(', ')
-              : 'Rak 1, Rak 2';
+              : 'Belum Ada Rak';
 
             const years = Array.from(new Set(cabinetBoxes.map((b) => b.tahun_pelaksanaan).filter(Boolean))).sort();
             const tahunText = years.length > 1
               ? `${years[0]} - ${years[years.length - 1]}`
               : years.length === 1
               ? `${years[0]}`
-              : '2023 - 2024';
+              : '-';
 
             const selectValue = !isNaN(lemariNum) ? lemariNum : lemariKey;
 

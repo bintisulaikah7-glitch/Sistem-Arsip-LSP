@@ -4,8 +4,8 @@ import { Boxes, CheckCircle2, Clock, Trash2, Users, ShieldCheck } from 'lucide-r
 
 interface StatsBarProps {
   boxes: BoksArsip[];
-  activeLemariFilter: number | null;
-  onSelectLemari: (lemari: number | null) => void;
+  activeLemariFilter: number | string | null;
+  onSelectLemari: (lemari: number | string | null) => void;
 }
 
 export const StatsBar: React.FC<StatsBarProps> = ({
