@@ -1,19 +1,11 @@
 import { BoksArsip } from '../types.ts';
+import {
+  DEFAULT_APPS_SCRIPT_URL,
+  getStoredAppsScriptUrl,
+  setStoredAppsScriptUrl
+} from '../config.ts';
 
-// Web App URL resmi Version 6 yang terhubung ke Google Sheets LSP
-export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycby5-El1hSqVLgpYTLtfG9ICIWqLf_QW-67UKguYLUq8RglBJtFq3-hm3aIxcG6KIwCt/exec';
-
-/**
- * Selalu mengembalikan DEFAULT_APPS_SCRIPT_URL agar sistem bebas dari bug cache Local Storage
- */
-export function getStoredAppsScriptUrl(): string {
-  return DEFAULT_APPS_SCRIPT_URL;
-}
-
-export function setStoredAppsScriptUrl(url: string): void {
-  // Kosongkan agar tidak menyimpan URL usang ke Local Storage
-}
+export { DEFAULT_APPS_SCRIPT_URL, getStoredAppsScriptUrl, setStoredAppsScriptUrl };
 
 export interface AppsScriptSyncResult {
   success: boolean;
@@ -74,7 +66,7 @@ export async function sendBoxToGoogleSheets(
   box: BoksArsip,
   action: 'add' | 'update' | 'move' = 'add'
 ): Promise<AppsScriptSyncResult> {
-  const effectiveUrl = DEFAULT_APPS_SCRIPT_URL;
+  const effectiveUrl = getStoredAppsScriptUrl();
   const rowValues = formatBoxToSheetRow(box);
 
   const lemariVal = box.lokasi?.lemari !== undefined

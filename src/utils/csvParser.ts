@@ -1,11 +1,8 @@
 import Papa from 'papaparse';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
+import { GOOGLE_SHEETS_SPREADSHEET_URL, GOOGLE_SHEETS_CSV_URL } from '../config.ts';
 
-export const GOOGLE_SHEETS_SPREADSHEET_URL =
-  'https://docs.google.com/spreadsheets/d/1Cq3QzccIPDSVyXY2dq4S61wHVRJFh0LaP2xT6OViK-M/edit?usp=sharing';
-
-export const GOOGLE_SHEETS_CSV_URL =
-  'https://docs.google.com/spreadsheets/d/1Cq3QzccIPDSVyXY2dq4S61wHVRJFh0LaP2xT6OViK-M/export?format=csv&gid=0';
+export { GOOGLE_SHEETS_SPREADSHEET_URL, GOOGLE_SHEETS_CSV_URL };
 
 /**
  * Converts any Google Sheets URL (e.g. /edit?usp=sharing, /view) to its direct CSV export link

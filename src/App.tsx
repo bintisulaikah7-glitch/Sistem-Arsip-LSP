@@ -1075,6 +1075,7 @@ export default function App() {
         onClose={() => setIsAppsScriptModalOpen(false)}
         onSuccessSave={(url) => {
           showToast(`URL Google Apps Script Web App tersimpan: ${url.slice(0, 30)}...`);
+          fetchGoogleSheetsData(sheetUrl, false);
         }}
       />
 

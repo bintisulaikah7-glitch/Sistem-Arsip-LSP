@@ -2,13 +2,13 @@ import Papa from 'papaparse';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
 import { INITIAL_BOXES } from './initialBoxes.ts';
 import { deduplicateBoxes } from '../utils/csvParser.ts';
-import { DEFAULT_APPS_SCRIPT_URL } from '../utils/appsScriptService.ts';
+import {
+  DEFAULT_APPS_SCRIPT_URL,
+  GOOGLE_SHEETS_CSV_URL,
+  getStoredAppsScriptUrl
+} from '../config.ts';
 
-/**
- * URL CSV Export Google Sheets (Boks Berkas Arsip LSP)
- */
-export const GOOGLE_SHEETS_CSV_URL =
-  'https://docs.google.com/spreadsheets/d/1Cq3QzccIPDSVyXY2dq4S61wHVRJFh0LaP2xT6OViK-M/export?format=csv';
+export { GOOGLE_SHEETS_CSV_URL };
 
 /**
  * Web App URL Resmi Google Apps Script untuk Sistem Berkas Arsip LSP (AKTIF & TERHUBUNG)
@@ -213,7 +213,7 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
  * Tarik data boks dari Apps Script (Mendukung Proxy Backend & Direct Fetch)
  */
 export async function fetchBoxesFromAppsScript(
-  webAppUrl: string = GOOGLE_APPS_SCRIPT_WEB_APP_URL
+  webAppUrl: string = getStoredAppsScriptUrl()
 ): Promise<BoksArsip[]> {
   try {
     let rawData: any = null;
