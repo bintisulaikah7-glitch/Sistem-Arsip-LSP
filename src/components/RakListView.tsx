@@ -22,24 +22,27 @@ export const RakListView: React.FC<RakListViewProps> = ({
   onViewJsonLemari
 }) => {
   // Normalize Lemari string
-  const lemariDisplay = typeof lemariNama === 'number' || !lemariNama.toString().toLowerCase().startsWith('lemari')
-    ? `Lemari ${lemariNama}`
-    : lemariNama.toString();
+  const lemariDisplay =
+    typeof lemariNama === 'number' || (lemariNama !== undefined && lemariNama !== null && !lemariNama.toString().toLowerCase().startsWith('lemari'))
+      ? `Lemari ${lemariNama ?? 1}`
+      : String(lemariNama ?? '1');
 
   // 1. Ambil data HANYA dari Lemari yang diklik
   const matchesLemari = (item: any) => {
     if (!item) return false;
     const l1 = item.lokasi?.lemari;
     const l2 = item.Kode_Lemari || item['Kode Lemari'] || item['Lemari'];
+
+    const lemariStr = String(lemariNama ?? '');
     
     // Check direct equality
-    if (l1 !== undefined && l1 !== null && l1.toString() === lemariNama.toString()) return true;
-    if (l2 && l2.toString() === lemariNama.toString()) return true;
+    if (l1 !== undefined && l1 !== null && String(l1) === lemariStr) return true;
+    if (l2 !== undefined && l2 !== null && String(l2) === lemariStr) return true;
 
     // Check stripped normalized number/id
-    const targetStr = lemariNama.toString().replace(/lemari[-_\s]*/i, '').trim();
-    if (l1 !== undefined && l1 !== null && l1.toString().replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
-    if (l2 && l2.toString().replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
+    const targetStr = lemariStr.replace(/lemari[-_\s]*/i, '').trim();
+    if (l1 !== undefined && l1 !== null && String(l1).replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
+    if (l2 !== undefined && l2 !== null && String(l2).replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
 
     return false;
   };

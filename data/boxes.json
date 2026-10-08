@@ -54,17 +54,17 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1lqV57zPz_DrKA4fxIuiyOzoFpiZtbwwT?usp=drive_link"
   },
   {
-    "id_box": "BOX-2023-004",
+    "id_box": "Kosong - kosong - kosong",
     "nama_pelatihan": "Operator Jahit Komponen 3",
     "tahun_pelaksanaan": 2023,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
       "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "rak": "Rak A",
+      "baris": "Box 1"
     },
-    "status_arsip": "Tidak Tersedia",
+    "status_arsip": "Tersedia",
     "status_barang": "Tidak Ada",
     "hasilUjiKompetensi": "Tidak Ada",
     "hasil_uji_kompetensi": "Tidak Ada",
@@ -1026,17 +1026,17 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1xD6eAEIIj0cH-ckvsRt-jDOrWrpUZplF?usp=drive_link"
   },
   {
-    "id_box": "BOX-2024-058",
+    "id_box": "Kosong - kosong - kosong-2",
     "nama_pelatihan": "Operator Jahit Komponen 16",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 1,
     "lokasi": {
       "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "rak": "Rak A",
+      "baris": "Box 1"
     },
-    "status_arsip": "Tidak Tersedia",
+    "status_arsip": "Tersedia",
     "status_barang": "Tidak Ada",
     "hasilUjiKompetensi": "Tidak Ada",
     "hasil_uji_kompetensi": "Tidak Ada",
@@ -1494,15 +1494,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1P87DTCeVBKGpq43VW8Xb2hAeRg9gM8lMelI_r-LF-UA/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-084",
+    "id_box": "Lemari 5 - Rak A  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 16",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1512,15 +1512,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1y-80MjWNYFbcqWuX_Xgsr-pNDYD-YQUTUyyghLs1qqM/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-085",
+    "id_box": "Lemari 5 - Rak A  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 17",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1530,15 +1530,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1eQ3b8bq781ycwNd9gMREyAnrrJDkNXeIpKPmvQ7qmAM/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-086",
+    "id_box": "Lemari 5 - Rak A  - Box 3",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Pembatik Tulis Angkatan 18",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 49,
     "jumlah_peserta_bk": 14,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 3"
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Tidak Lengkap",
@@ -1548,17 +1548,17 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1nEFDMenxKp1-QuhwP2P8n-sr4_-t78W_Jxk-AIKB1Q0/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2024-087",
+    "id_box": "Kosong - kosong - kosong-3",
     "nama_pelatihan": "SMBC",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 0,
     "lokasi": {
       "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "rak": "Rak A",
+      "baris": "Box 1"
     },
-    "status_arsip": "Tidak Tersedia",
+    "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
     "hasilUjiKompetensi": "-",
     "hasil_uji_kompetensi": "-",
@@ -1566,15 +1566,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/19xR1w0vwp4nRxqQCG2Y4QsKlfevLT8dJ?usp=drive_link"
   },
   {
-    "id_box": "BOX-2024-088",
+    "id_box": "Lemari 5 - Rak A  - Box 4",
     "nama_pelatihan": "SMAW 9",
     "tahun_pelaksanaan": 2024,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 1,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 4"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Tidak Ada",
@@ -1584,15 +1584,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1fciO6fsoksGPAg76fa-xjxl6PERzPUj0yXSFY3avuN8/edit?usp=drive_link"
   },
   {
-    "id_box": "BOX-2025-089",
+    "id_box": "Lemari 5 - Rak A  - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (Skilling) Fiber Optik Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1602,15 +1602,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1j7azEV7O1Ejh9m1Fx5bYnexFuKNjmDi0?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-090",
+    "id_box": "Lemari 5 - Rak B  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 25,
     "jumlah_peserta_bk": 2,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak B",
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1620,15 +1620,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1pjcipg2EUYbcgXFp3PfMrA9M2BELHZFE?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-091",
+    "id_box": "Lemari 5 - Rak B  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (ReSkilling) Fiber Optik Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 16,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak B",
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1638,15 +1638,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1_EXSPeU8R7T537BHID4f6sMARbjmLuzZ?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-092",
+    "id_box": "Lemari 5 - Rak B  - Box 3",
     "nama_pelatihan": "Jahit Busana Custom Made Angkatan 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 40,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak B",
+      "baris": "Box 3"
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Tidak Lengkap",
@@ -1656,15 +1656,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1IaRdqoovEWbKfrEUpn-1CuN-T3gXki6j8BNRRskso7Q/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2025-093",
+    "id_box": "Lemari 5 - Rak B  - Box 4",
     "nama_pelatihan": "Operator Jahit Komponen 1",
     "tahun_pelaksanaan": 2025,
     "jumlah_peserta": 50,
     "jumlah_peserta_bk": 9,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak B",
+      "baris": "Box 4"
     },
     "status_arsip": "Tidak Lengkap",
     "status_barang": "Tidak Lengkap",
@@ -1674,15 +1674,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1shcxDUfcL4fd_hiUik47nYr7SJJW-EaC?usp=sharing"
   },
   {
-    "id_box": "BOX-2026-094",
+    "id_box": "Lemari 5 - Rak B  - Box 5",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential JIIPE",
     "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 20,
     "jumlah_peserta_bk": 1,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak B",
+      "baris": "Box 5"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Tidak Ada",
@@ -1692,15 +1692,15 @@
     "link_dokumentasi": "https://docs.google.com/spreadsheets/d/1j747SrsNMr6RifrO271Z2mpEqkpAekSm9Jo-4mDGCc0/edit?usp=sharing"
   },
   {
-    "id_box": "BOX-2026-095",
+    "id_box": "Lemari 5 - Rak C  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Teknisi AC Residential PNBP Batch 1",
     "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 7,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak C",
+      "baris": "Box 1"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1710,15 +1710,15 @@
     "link_dokumentasi": "https://drive.google.com/drive/folders/1PHVfGrmTMv5I1NxURCfWCx0VbOUb5gjL?usp=sharing"
   },
   {
-    "id_box": "BOX-2026-096",
+    "id_box": "Lemari 5 - Rak C  - Box 2",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Jointer PNBP Batch 1",
     "tahun_pelaksanaan": 2026,
     "jumlah_peserta": 5,
     "jumlah_peserta_bk": 0,
     "lokasi": {
-      "lemari": 1,
-      "rak": "-",
-      "baris": "-"
+      "lemari": 5,
+      "rak": "Rak C",
+      "baris": "Box 2"
     },
     "status_arsip": "Tersedia",
     "status_barang": "Lengkap",
@@ -1726,5 +1726,113 @@
     "hasil_uji_kompetensi": "Fiber Optik (Jointer)",
     "Hasil Uji Kompetensi": "Fiber Optik (Jointer)",
     "link_dokumentasi": "https://drive.google.com/drive/folders/1pmzfGpO7_xQ3DdaXzc6-LnlBlktqLf0_?usp=drive_link"
+  },
+  {
+    "id_box": "TEST-MANUAL-01",
+    "nama_pelatihan": "Uji Coba Manual Console",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 10,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 5,
+      "rak": "Rak A",
+      "baris": "Box 1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "10 Kompeten",
+    "hasil_uji_kompetensi": "10 Kompeten",
+    "Hasil Uji Kompetensi": "10 Kompeten",
+    "link_dokumentasi": "https://drive.google.com"
+  },
+  {
+    "id_box": "BOX-L5-RAKD-01",
+    "nama_pelatihan": "batik tulis",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 5,
+      "rak": "Rak D",
+      "baris": "B1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "lembar batik",
+    "hasil_uji_kompetensi": "lembar batik",
+    "Hasil Uji Kompetensi": "lembar batik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
+  },
+  {
+    "id_box": "BOX-L5-RAKD-01-2",
+    "nama_pelatihan": "batik tulis",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 5,
+      "rak": "Rak D",
+      "baris": "1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "lembar batik",
+    "hasil_uji_kompetensi": "lembar batik",
+    "Hasil Uji Kompetensi": "lembar batik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
+  },
+  {
+    "id_box": "BOX-L6-RAKA-01",
+    "nama_pelatihan": "Pakaian Dewasa",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 6,
+      "rak": "Rak A",
+      "baris": "B1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "rompi biru",
+    "hasil_uji_kompetensi": "rompi biru",
+    "Hasil Uji Kompetensi": "rompi biru",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
+  },
+  {
+    "id_box": "BOX-L6-RAKA-01-2",
+    "nama_pelatihan": "Pakaian Dewasa",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 0,
+    "lokasi": {
+      "lemari": 6,
+      "rak": "Rak A",
+      "baris": "1"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "rompi biru",
+    "hasil_uji_kompetensi": "rompi biru",
+    "Hasil Uji Kompetensi": "rompi biru",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
+  },
+  {
+    "id_box": "BOX-L6-RAKB-05",
+    "nama_pelatihan": "batik angkatan 5",
+    "tahun_pelaksanaan": 2026,
+    "jumlah_peserta": 20,
+    "jumlah_peserta_bk": 3,
+    "lokasi": {
+      "lemari": 6,
+      "rak": "Rak B",
+      "baris": "5"
+    },
+    "status_arsip": "Tersedia",
+    "status_barang": "Lengkap",
+    "hasilUjiKompetensi": "rompi batik",
+    "hasil_uji_kompetensi": "rompi batik",
+    "Hasil Uji Kompetensi": "rompi batik",
+    "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
   }
 ]

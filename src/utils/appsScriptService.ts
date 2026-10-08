@@ -114,7 +114,31 @@ export async function sendBoxToGoogleSheets(
     'link_dokumentasi': box.link_dokumentasi
   };
 
-  // Langsung kirim via POST ke Google Apps Script
+  // 1. Prioritas Utama: Kirim melalui Backend Proxy (Mencegah CORS TypeError: Failed to fetch di browser)
+  try {
+    const proxyRes = await fetch('/api/apps-script/post', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        webAppUrl: effectiveUrl,
+        ...payload
+      })
+    });
+
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      return {
+        success: true,
+        message: data.message || `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets.`
+      };
+    }
+  } catch (proxyErr) {
+    console.warn('[AppsScript] Proxy backend tidak merespons, mencoba fallback direct:', proxyErr);
+  }
+
+  // 2. Fallback: Langsung kirim via POST ke Google Apps Script (Untuk lingkungan tanpa backend Node.js)
   try {
     await fetch(effectiveUrl, {
       method: 'POST',
@@ -141,7 +165,7 @@ export async function sendBoxToGoogleSheets(
 
       return {
         success: true,
-        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets (no-cors).`
+        message: `Data boks arsip ${box.id_box} berhasil dikirim ke Google Sheets (mode no-cors).`
       };
     } catch (noCorsErr: any) {
       return {

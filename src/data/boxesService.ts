@@ -210,9 +210,9 @@ export async function fetchBoxesFromAppsScript(
   try {
     let rawData: any = null;
 
-    // Timeout terukur 8 detik agar responsif
+    // Timeout terukur 25 detik agar responsif terhadap cold start Google Apps Script
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
     let response: Response | null = null;
 
@@ -226,11 +226,11 @@ export async function fetchBoxesFromAppsScript(
         response = proxyRes;
       }
     } catch {
-      // Proxy backend tidak tersedia atau gagal, lanjutkan direct fetch
+      // Proxy backend tidak tersedia atau gagal
     }
 
-    // 2. Fallback: Direct Fetch ke Google Apps Script
-    if (!response) {
+    // 2. Fallback: Direct Fetch ke Google Apps Script (hanya jika di lingkungan server/Node, di browser direct fetch selalu gagal CORS)
+    if (!response && typeof window === 'undefined') {
       try {
         response = await fetch(webAppUrl, {
           method: 'GET',
@@ -239,7 +239,7 @@ export async function fetchBoxesFromAppsScript(
           signal: controller.signal
         });
       } catch {
-        // Direct fetch gagal (misal CORS atau offline)
+        // Direct fetch gagal
       }
     }
 
@@ -514,7 +514,7 @@ export async function fetchBoxesData(
     // 3. Upaya Ketiga: Fetch via Proxy Google Sheets / Direct URL CSV
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
 
       let response: Response | null = null;
       try {
@@ -527,7 +527,7 @@ export async function fetchBoxesData(
         }
       } catch {}
 
-      if (!response) {
+      if (!response && typeof window === 'undefined') {
         try {
           response = await fetch(sheetCsvUrl, {
             headers: { Accept: 'text/csv,text/plain,*/*' },

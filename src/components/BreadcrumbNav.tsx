@@ -19,9 +19,9 @@ export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({
   onClearSearch
 }) => {
   const lemariDisplay = selectedCabinet !== null && selectedCabinet !== undefined
-    ? typeof selectedCabinet === 'number' || !selectedCabinet.toString().toLowerCase().startsWith('lemari')
+    ? typeof selectedCabinet === 'number' || !String(selectedCabinet).toLowerCase().startsWith('lemari')
       ? `Lemari ${selectedCabinet}`
-      : selectedCabinet.toString()
+      : String(selectedCabinet)
     : null;
 
   return (

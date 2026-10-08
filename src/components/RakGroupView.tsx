@@ -47,9 +47,9 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
     const l1 = item.lokasi?.lemari;
     const l2 = item.Kode_Lemari || item['Kode Lemari'] || item['Lemari'];
 
-    const targetStr = target.toString().replace(/lemari[-_\s]*/i, '').trim();
-    if (l1 !== undefined && l1 !== null && l1.toString() === targetStr) return true;
-    if (l2 && l2.toString().replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
+    const targetStr = String(target ?? '').replace(/lemari[-_\s]*/i, '').trim();
+    if (l1 !== undefined && l1 !== null && String(l1).replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
+    if (l2 !== undefined && l2 !== null && String(l2).replace(/lemari[-_\s]*/i, '').trim() === targetStr) return true;
     return false;
   };
 
@@ -60,8 +60,9 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
   const daftarRak = Array.from(
     new Set(
       dataLemari.map(item => {
+        if (!item) return 'Tanpa Rak';
         const r = item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Tanpa Rak';
-        return r ? r.toString().trim() : 'Tanpa Rak';
+        return r ? String(r).trim() : 'Tanpa Rak';
       })
     )
   ).sort((a, b) => {
@@ -91,7 +92,8 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
       {daftarRak.map((namaRak, index) => {
         // Ambil boks pelatihan yang HANYA ada di Rak ini
         const boksDiRakIni = dataLemari.filter(item => {
-          const r = (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Tanpa Rak').toString().trim();
+          if (!item) return false;
+          const r = String(item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Tanpa Rak').trim();
           return r === namaRak;
         });
 

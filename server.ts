@@ -87,10 +87,12 @@ async function startServer() {
     next();
   });
 
-  // Support API calls with or without the /Sistem-Arsip-LSP base path prefix
+  // Support API & page requests with or without the /Sistem-Arsip-LSP base path prefix
   app.use((req, _res, next) => {
     if (req.url.startsWith("/Sistem-Arsip-LSP/api/")) {
       req.url = req.url.replace("/Sistem-Arsip-LSP/api/", "/api/");
+    } else if (req.url.startsWith("/Sistem-Arsip-LSP")) {
+      req.url = req.url.replace(/^\/Sistem-Arsip-LSP/, "") || "/";
     }
     next();
   });
@@ -543,7 +545,7 @@ async function startServer() {
     const targetUrl = (req.query.url as string) || OFFICIAL_WEB_APP_URL;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
       const response = await fetch(targetUrl, {
         headers: {
@@ -643,11 +645,6 @@ async function startServer() {
   // Vite middleware setup
   let vite: any = null;
   if (process.env.NODE_ENV !== "production") {
-    // Redirect root / to /Sistem-Arsip-LSP/ in development so Vite SPA middleware resolves properly
-    app.get("/", (_req, res) => {
-      res.redirect("/Sistem-Arsip-LSP/");
-    });
-
     vite = await createViteServer({
       server: {
         middlewareMode: true,

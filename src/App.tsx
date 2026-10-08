@@ -416,18 +416,18 @@ export default function App() {
           return false;
         }
       } else {
-        if (selectedCabinet !== null) {
-          const targetStr = selectedCabinet.toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
-          const bLemariStr = (b.lokasi?.lemari || '').toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+        if (selectedCabinet !== null && selectedCabinet !== undefined) {
+          const targetStr = String(selectedCabinet).replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+          const bLemariStr = String(b.lokasi?.lemari || '').replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
           if (bLemariStr !== targetStr) {
             return false;
           }
         }
       }
 
-      if (selectedLemari !== null) {
-        const targetStr = selectedLemari.toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
-        const bLemariStr = (b.lokasi?.lemari || '').toString().replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+      if (selectedLemari !== null && selectedLemari !== undefined && selectedLemari !== 'Semua') {
+        const targetStr = String(selectedLemari).replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+        const bLemariStr = String(b.lokasi?.lemari || '').replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
         if (bLemariStr !== targetStr) {
           return false;
         }
@@ -728,7 +728,7 @@ export default function App() {
         {/* Statistics Bar */}
         <StatsBar
           boxes={boxes}
-          activeLemariFilter={selectedCabinet !== null ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(selectedCabinet.toString().replace(/\D/g, '') || '1', 10)) : (typeof selectedLemari === 'number' ? selectedLemari : null)}
+          activeLemariFilter={selectedCabinet !== null && selectedCabinet !== undefined ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(String(selectedCabinet).replace(/\D/g, '') || '1', 10)) : (typeof selectedLemari === 'number' ? selectedLemari : null)}
           onSelectLemari={(lemari) => {
             setSelectedCabinet(lemari);
             setSelectedLemari(lemari);
@@ -766,7 +766,7 @@ export default function App() {
         <div id="app-container" className="space-y-4">
           {/* Bar Navigasi (Breadcrumb) untuk kembali */}
           <BreadcrumbNav
-            selectedCabinet={selectedCabinet !== null ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(selectedCabinet.toString().replace(/\D/g, '') || '1', 10)) : null}
+            selectedCabinet={selectedCabinet !== null && selectedCabinet !== undefined ? (typeof selectedCabinet === 'number' ? selectedCabinet : parseInt(String(selectedCabinet).replace(/\D/g, '') || '1', 10)) : null}
             selectedRak={selectedRak}
             searchQuery={searchQuery}
             onGoToLemari={() => {

@@ -43,9 +43,9 @@ function githubPagesBuildPlugin(): Plugin {
   };
 }
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
   return {
-    base: '/Sistem-Arsip-LSP/',
+    base: mode === 'production' ? './' : '/',
     plugins: [react(), tailwindcss(), githubPagesBuildPlugin()],
     resolve: {
       alias: {

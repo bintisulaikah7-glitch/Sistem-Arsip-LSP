@@ -30,24 +30,26 @@ export const PelatihanRakView: React.FC<PelatihanRakViewProps> = ({
   onViewDetail,
   onOpenInputLokasi
 }) => {
-  const lemariDisplay = typeof lemariNama === 'number' || !lemariNama.toString().toLowerCase().startsWith('lemari')
-    ? `Lemari ${lemariNama}`
-    : lemariNama.toString();
+  const lemariDisplay =
+    typeof lemariNama === 'number' || (lemariNama !== undefined && lemariNama !== null && !lemariNama.toString().toLowerCase().startsWith('lemari'))
+      ? `Lemari ${lemariNama ?? 1}`
+      : String(lemariNama ?? '1');
 
   // Helper matching Lemari & Rak
   const matchesLemariAndRak = (item: any) => {
     if (!item) return false;
     const l1 = item.lokasi?.lemari;
     const l2 = item.Kode_Lemari || item['Kode Lemari'] || item['Lemari'];
-    const targetLemariStr = lemariNama.toString().replace(/lemari[-_\s]*/i, '').trim();
+    const targetLemariStr = String(lemariNama ?? '').replace(/lemari[-_\s]*/i, '').trim();
 
-    const lemariMatch = (l1 !== undefined && l1 !== null && l1.toString() === targetLemariStr) ||
-      (l2 && l2.toString().replace(/lemari[-_\s]*/i, '').trim() === targetLemariStr);
+    const lemariMatch =
+      (l1 !== undefined && l1 !== null && String(l1).replace(/lemari[-_\s]*/i, '').trim() === targetLemariStr) ||
+      (l2 !== undefined && l2 !== null && String(l2).replace(/lemari[-_\s]*/i, '').trim() === targetLemariStr);
 
     if (!lemariMatch) return false;
 
     const r = (item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || item.Rak || '').toString().trim().toLowerCase();
-    const targetRak = namaRak.trim().toLowerCase();
+    const targetRak = String(namaRak ?? '').trim().toLowerCase();
 
     return r === targetRak || r.replace(/[-_\s]/g, '') === targetRak.replace(/[-_\s]/g, '');
   };
