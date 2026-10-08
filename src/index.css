@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-slate-850: #151f32;
+  --color-slate-950: #020617;
+}
+
 /* ==========================================================================
    CLEAN ENTERPRISE LIGHT THEME (RESMI PERKANTORAN LSP)
    Palet: 
@@ -320,7 +325,7 @@ body {
 
 .grid-container {
   display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 20px !important;
   width: 100% !important;
   max-width: 1100px !important;
@@ -329,9 +334,10 @@ body {
   box-sizing: border-box !important;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .grid-container {
     grid-template-columns: 1fr !important;
+    gap: 14px !important;
   }
 }
 
@@ -347,6 +353,28 @@ body {
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
   cursor: pointer !important;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  word-break: break-word !important;
+}
+
+@media (max-width: 640px) {
+  .card-lemari {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+}
+
+.grid-boks {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  .grid-boks {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
 }
 
 .card-lemari:hover {
