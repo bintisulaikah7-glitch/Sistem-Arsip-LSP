@@ -659,19 +659,19 @@ export async function fetchBoxesData(
       }
     }
 
-    // Fallback: Gunakan cache LocalStorage jika tersedia
+    // Fallback: Gunakan cache LocalStorage jika data lengkap (>= 187 boks)
     const cachedBoxes = loadBoxesFromLocalStorage();
-    if (cachedBoxes && cachedBoxes.length > 0) {
+    if (cachedBoxes && cachedBoxes.length >= INITIAL_BOXES.length) {
       console.log(`[fetchBoxesData] Menggunakan cache LocalStorage (${cachedBoxes.length} boks).`);
       return cachedBoxes;
     }
 
-    // Fallback jika jaringan dan storage kosong
+    // Fallback data bawaan lengkap 187 boks arsip
     return verifyAndSanitizeBoxes(INITIAL_BOXES);
   } catch (error: any) {
     console.warn('[fetchBoxesData] Network sync notice, using storage/initial boxes:', error?.message || error);
     const cachedBoxes = loadBoxesFromLocalStorage();
-    if (cachedBoxes && cachedBoxes.length > 0) {
+    if (cachedBoxes && cachedBoxes.length >= INITIAL_BOXES.length) {
       return cachedBoxes;
     }
     return verifyAndSanitizeBoxes(INITIAL_BOXES);

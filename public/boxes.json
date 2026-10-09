@@ -1,9 +1,4 @@
-import { BoksArsip } from "../types.ts";
-
-/**
- * Dataset Boks Arsip LSP (187 Boks Arsip Resmi)
- */
-export const INITIAL_BOXES: BoksArsip[] = [
+[
   {
     "id_box": "Lemari 1 - Rak A  - Box 1",
     "nama_pelatihan": "Sistem 3-in-1 (UpSkilling) Assembly Solder (1)",
@@ -3370,6 +3365,4 @@ export const INITIAL_BOXES: BoksArsip[] = [
     "Hasil Uji Kompetensi": "switer blue",
     "link_dokumentasi": "https://drive.google.com/drive/folders/lsp-arsip-dokumen"
   }
-];
-
-export { fetchBoxesData, GOOGLE_SHEETS_CSV_URL } from "./boxesService.ts";
+]
