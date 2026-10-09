@@ -10,10 +10,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome Icons CDN -->
+  <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- CDN Tailwind CSS -->
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -40,12 +43,26 @@
     body {
       font-family: 'Inter', sans-serif;
     }
+    /* Mencegah penumpukan ikon polos */
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
   <div id="root"></div>
 
-  <!-- Script pemanggil bundel utama untuk GitHub Pages -->
+  <!-- Script pemanggil bundel utama -->
   <script type="module" src="./assets/app-bundle.js"></script>
+
+  <script>
+    // Inisialisasi ikon Lucide secara otomatis setelah halaman dimuat
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+  </script>
 </body>
 </html>
