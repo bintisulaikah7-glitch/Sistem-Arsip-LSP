@@ -2,10 +2,11 @@ import { BoksArsip } from '../types.ts';
 import {
   DEFAULT_APPS_SCRIPT_URL,
   getStoredAppsScriptUrl,
-  setStoredAppsScriptUrl
+  setStoredAppsScriptUrl,
+  appendCacheBuster
 } from '../config.ts';
 
-export { DEFAULT_APPS_SCRIPT_URL, getStoredAppsScriptUrl, setStoredAppsScriptUrl };
+export { DEFAULT_APPS_SCRIPT_URL, getStoredAppsScriptUrl, setStoredAppsScriptUrl, appendCacheBuster };
 
 export interface AppsScriptSyncResult {
   success: boolean;
@@ -66,7 +67,7 @@ export async function sendBoxToGoogleSheets(
   box: BoksArsip,
   action: 'add' | 'update' | 'move' = 'add'
 ): Promise<AppsScriptSyncResult> {
-  const effectiveUrl = getStoredAppsScriptUrl();
+  const effectiveUrl = appendCacheBuster(getStoredAppsScriptUrl());
   const rowValues = formatBoxToSheetRow(box);
 
   const lemariVal = box.lokasi?.lemari !== undefined

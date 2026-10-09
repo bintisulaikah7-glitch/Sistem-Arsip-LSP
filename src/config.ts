@@ -57,3 +57,19 @@ export function setStoredAppsScriptUrl(url: string): void {
     }
   }
 }
+
+/**
+ * Menambahkan cache buster query parameter ?t= (atau &t=) ke URL Apps Script / Sheets
+ * untuk memastikan data selalu segar dan tidak tertahan di cache browser, proxy, atau CDN.
+ */
+export function appendCacheBuster(url: string): string {
+  if (!url) return url;
+  const clean = url.trim();
+  // Hindari penambahan ganda jika sudah ada t=
+  if (/[?&]t=\d+/.test(clean)) {
+    return clean.replace(/([?&]t=)\d+/, `$1${Date.now()}`);
+  }
+  const separator = clean.includes('?') ? '&' : '?';
+  return `${clean}${separator}t=${Date.now()}`;
+}
+

@@ -544,7 +544,11 @@ async function startServer() {
 
   // 11b. Google Apps Script Web App GET Proxy (Bypasses Browser CORS)
   app.get("/api/apps-script/get", async (req: Request, res: Response) => {
-    const targetUrl = (req.query.url as string) || OFFICIAL_WEB_APP_URL;
+    let targetUrl = (req.query.url as string) || OFFICIAL_WEB_APP_URL;
+    if (!targetUrl.includes("t=")) {
+      const sep = targetUrl.includes("?") ? "&" : "?";
+      targetUrl = `${targetUrl}${sep}t=${Date.now()}`;
+    }
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 25000);
@@ -575,9 +579,13 @@ async function startServer() {
   // POST /api/apps-script/post
   app.post("/api/apps-script/post", async (req: Request, res: Response) => {
     const { webAppUrl, box, action, rowValues } = req.body;
-    const targetUrl = (webAppUrl && typeof webAppUrl === "string" && webAppUrl.trim().startsWith("http"))
+    let targetUrl = (webAppUrl && typeof webAppUrl === "string" && webAppUrl.trim().startsWith("http"))
       ? webAppUrl.trim()
       : OFFICIAL_WEB_APP_URL;
+    if (!targetUrl.includes("t=")) {
+      const sep = targetUrl.includes("?") ? "&" : "?";
+      targetUrl = `${targetUrl}${sep}t=${Date.now()}`;
+    }
 
     // Update state in memory & disk
     if (box && box.id_box) {

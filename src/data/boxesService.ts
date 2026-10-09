@@ -5,7 +5,8 @@ import { deduplicateBoxes, standardizeRakName } from '../utils/csvParser.ts';
 import {
   DEFAULT_APPS_SCRIPT_URL,
   GOOGLE_SHEETS_CSV_URL,
-  getStoredAppsScriptUrl
+  getStoredAppsScriptUrl,
+  appendCacheBuster
 } from '../config.ts';
 
 export { GOOGLE_SHEETS_CSV_URL };
@@ -238,6 +239,7 @@ export async function fetchBoxesFromAppsScript(
 ): Promise<BoksArsip[]> {
   try {
     let rawData: any = null;
+    const urlWithCacheBuster = appendCacheBuster(webAppUrl);
 
     // Timeout terukur 25 detik agar responsif terhadap cold start Google Apps Script
     const controller = new AbortController();
@@ -247,7 +249,7 @@ export async function fetchBoxesFromAppsScript(
 
     // 1. Coba via Proxy Backend terlebih dahulu untuk mencegah error CORS di browser
     try {
-      const proxyRes = await fetch(`/api/apps-script/get?url=${encodeURIComponent(webAppUrl)}`, {
+      const proxyRes = await fetch(`/api/apps-script/get?url=${encodeURIComponent(urlWithCacheBuster)}`, {
         headers: { Accept: 'application/json, text/plain, */*' },
         signal: controller.signal
       });
@@ -261,7 +263,7 @@ export async function fetchBoxesFromAppsScript(
     // 2. Fallback: Direct Fetch ke Google Apps Script (hanya jika di lingkungan server/Node, di browser direct fetch selalu gagal CORS)
     if (!response && typeof window === 'undefined') {
       try {
-        response = await fetch(webAppUrl, {
+        response = await fetch(urlWithCacheBuster, {
           method: 'GET',
           headers: { Accept: 'application/json, text/plain, */*' },
           redirect: 'follow',
@@ -609,10 +611,11 @@ export async function fetchBoxesData(
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const csvUrlWithBuster = appendCacheBuster(sheetCsvUrl);
 
       let response: Response | null = null;
       try {
-        const proxyRes = await fetch(`/api/sheets-proxy?url=${encodeURIComponent(sheetCsvUrl)}`, {
+        const proxyRes = await fetch(`/api/sheets-proxy?url=${encodeURIComponent(csvUrlWithBuster)}`, {
           headers: { Accept: 'text/csv,text/plain,*/*' },
           signal: controller.signal
         });
@@ -623,7 +626,7 @@ export async function fetchBoxesData(
 
       if (!response && typeof window === 'undefined') {
         try {
-          response = await fetch(sheetCsvUrl, {
+          response = await fetch(csvUrlWithBuster, {
             headers: { Accept: 'text/csv,text/plain,*/*' },
             signal: controller.signal
           });

@@ -1,10 +1,11 @@
-import { getStoredAppsScriptUrl } from '../config.ts';
+import { getStoredAppsScriptUrl, appendCacheBuster } from '../config.ts';
 
 /**
  * Tes koneksi ke Web App URL Google Apps Script langsung (tanpa backend proxy lokal)
  */
 export async function testAppsScriptConnection(urlToTest?: string): Promise<{ success: boolean; message: string }> {
-  const targetUrl = urlToTest || getStoredAppsScriptUrl();
+  const rawUrl = urlToTest || getStoredAppsScriptUrl();
+  const targetUrl = appendCacheBuster(rawUrl);
   try {
     const res = await fetch(targetUrl, {
       method: 'POST',
