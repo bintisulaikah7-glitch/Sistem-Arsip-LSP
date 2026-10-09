@@ -43,10 +43,13 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-    /* Mencegah penumpukan ikon polos */
+    /* Memperbaiki tata letak ikon & teks pada bagian lemari */
     svg {
       display: inline-block;
       vertical-align: middle;
+    }
+    #root > div {
+      width: 100%;
     }
   </style>
 </head>
@@ -57,12 +60,13 @@
   <script type="module" src="./assets/app-bundle.js"></script>
 
   <script>
-    // Inisialisasi ikon Lucide secara otomatis setelah halaman dimuat
-    window.addEventListener('DOMContentLoaded', () => {
+    // Memaksa penataan ulang tampilan setelah React selesai render
+    const observer = new MutationObserver(() => {
       if (window.lucide) {
         lucide.createIcons();
       }
     });
+    observer.observe(document.getElementById('root'), { childList: true, subtree: true });
   </script>
 </body>
 </html>
