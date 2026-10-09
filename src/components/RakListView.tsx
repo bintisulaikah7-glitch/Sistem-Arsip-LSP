@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Layers, QrCode, Database, ArrowRight, Folder, Archive } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
+import { STANDARD_RAKS, standardizeRakName, MAX_BOXES_PER_RAK, MAX_BOXES_PER_LEMARI } from '../utils/csvParser.ts';
 
 interface RakListViewProps {
   lemariNama: string | number;
@@ -49,16 +50,15 @@ export const RakListView: React.FC<RakListViewProps> = ({
 
   const dataLemariIni = boxes.filter(matchesLemari);
 
-  // 2. Ambil daftar Rak UNIK yang benar-benar ADA di Spreadsheet (tanpa membuat angka 1-4 manual)
-  // Catatan: Sesuaikan 'Nomor_Rak' jika nama header di sheet kamu sedikit berbeda
-  const daftarRakUnik = Array.from(new Set(
-    dataLemariIni
-      .map(item => {
-        const anyItem = item as any;
-        return (item.lokasi?.rak || anyItem.Nomor_Rak || anyItem['Nomor_Rak'] || anyItem['Nomor Rak'] || anyItem.Rak || '').toString().trim();
-      })
-      .filter(rak => rak !== '') // Abaikan data rak yang kosong
-  )).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  // 2. Daftar Rak terstandarisasi Rak A, Rak B, Rak C, Rak D (Maks 11 Boks per Rak)
+  const standardSet = new Set<string>(STANDARD_RAKS);
+  dataLemariIni.forEach(item => {
+    const rawR = (item.lokasi?.rak || (item as any).Nomor_Rak || (item as any)['Nomor_Rak'] || (item as any)['Nomor Rak'] || (item as any).Rak || '').toString().trim();
+    if (rawR && rawR !== '-' && rawR.toLowerCase() !== 'kosong') {
+      standardSet.add(standardizeRakName(rawR));
+    }
+  });
+  const daftarRakUnik = Array.from(standardSet).sort();
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -80,8 +80,12 @@ export const RakListView: React.FC<RakListViewProps> = ({
               <h2 className="text-base font-bold text-slate-900 tracking-tight">
                 {lemariDisplay}
               </h2>
-              <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                {dataLemariIni.length} Boks Arsip
+              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
+                dataLemariIni.length >= MAX_BOXES_PER_LEMARI
+                  ? 'bg-amber-100 text-amber-800 border-amber-300'
+                  : 'text-blue-700 bg-blue-50 border-blue-200'
+              }`}>
+                {dataLemariIni.length}/{MAX_BOXES_PER_LEMARI} Boks Arsip
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -141,24 +145,32 @@ export const RakListView: React.FC<RakListViewProps> = ({
             const boksDiRakIni = dataLemariIni.filter(item => {
               const anyItem = item as any;
               const r = (item.lokasi?.rak || anyItem.Nomor_Rak || anyItem['Nomor_Rak'] || anyItem['Nomor Rak'] || anyItem.Rak || '').toString().trim();
-              return r === rak;
+              return standardizeRakName(r) === rak;
             });
             const jumlahBoks = boksDiRakIni.length;
             const rakTitle = rak.includes('Rak') ? rak : 'Rak ' + rak;
+            const isPenuh = jumlahBoks >= MAX_BOXES_PER_RAK;
 
             return (
               <div
                 key={`rak-card-${rak}-${idx}`}
                 onClick={() => onSelectRak(rak)}
-                className="card-folder"
+                className={`card-folder ${isPenuh ? 'border-amber-300 ring-1 ring-amber-200' : ''}`}
               >
                 <div className="flex justify-center mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-xs">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs border ${
+                    isPenuh
+                      ? 'bg-amber-50 text-amber-600 border-amber-200'
+                      : 'bg-blue-50 text-blue-600 border-blue-200'
+                  }`}>
                     <Folder className="w-6 h-6" />
                   </div>
                 </div>
                 <h3>{rakTitle}</h3>
-                <p>{jumlahBoks} Pelatihan / Boks Arsip</p>
+                <p className="font-semibold">
+                  {jumlahBoks}/{MAX_BOXES_PER_RAK} Boks Arsip
+                  {isPenuh && <span className="ml-1 text-amber-600 text-xs">(Penuh)</span>}
+                </p>
                 <span className="inline-flex items-center gap-1">
                   <span>Klik untuk membuka</span>
                   <ArrowRight className="w-3.5 h-3.5" />

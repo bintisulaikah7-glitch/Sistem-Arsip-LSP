@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, Save, AlertCircle, Archive, Plus, Sparkles, Send, CheckCircle2 } from 'lucide-react';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
 import { sendBoxToGoogleSheets, getStoredAppsScriptUrl } from '../utils/appsScriptService.ts';
+import { STANDARD_RAKS, standardizeRakName, getNextRak, MAX_BOXES_PER_RAK, MAX_BOXES_PER_LEMARI } from '../utils/csvParser.ts';
 
 interface BoxFormModalProps {
   isOpen: boolean;
@@ -32,10 +33,8 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
   const [isCustomLemari, setIsCustomLemari] = useState(false);
   const [customLemariName, setCustomLemariName] = useState('');
 
-  // Dynamic Rak states
-  const [selectedRak, setSelectedRak] = useState<string>('R1');
-  const [isCustomRak, setIsCustomRak] = useState(false);
-  const [customRakName, setCustomRakName] = useState('');
+  // Dynamic Rak states (Standar hanya Rak A, Rak B, Rak C, Rak D)
+  const [selectedRak, setSelectedRak] = useState<string>('Rak A');
 
   const [baris, setBaris] = useState('B1');
   const [statusArsip, setStatusArsip] = useState<StatusArsip>('Aktif');
@@ -56,7 +55,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
     existingBoxes.forEach(b => {
       if (b.lokasi?.lemari !== undefined && b.lokasi?.lemari !== null) {
         const str = b.lokasi.lemari.toString().replace(/lemari[-_\s]*/i, '').trim();
-        if (str) set.add(str);
+        if (str && str !== '0' && str.toLowerCase() !== 'kosong') set.add(str);
       }
     });
 
@@ -68,19 +67,50 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
     });
   }, [existingBoxes]);
 
-  // Derived available dynamic Rak from existing data (Tanpa Limit)
-  const availableRakList = useMemo(() => {
-    const set = new Set<string>();
-    ['R1', 'R2', 'R3', 'R4', 'Rak A', 'Rak B', 'Rak C', 'Rak D'].forEach(r => set.add(r));
+  // Efektif lemari yang dipilih
+  const effectiveLemariStr = isCustomLemari ? (customLemariName.trim() || '1') : selectedLemari;
 
-    existingBoxes.forEach(b => {
-      if (b.lokasi?.rak) {
-        set.add(b.lokasi.rak.toString().trim());
+  // Hitung jumlah boks per lemari (Max 44 Boks)
+  const lemariBoxCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    existingBoxes.forEach((b) => {
+      if (editingBox && b.id_box === editingBox.id_box) return;
+      const bLemari = String(b.lokasi?.lemari ?? '').replace(/lemari[-_\s]*/i, '').trim();
+      if (bLemari && bLemari !== '0' && bLemari.toLowerCase() !== 'kosong') {
+        counts[bLemari] = (counts[bLemari] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [existingBoxes, editingBox]);
+
+  // Hitung kapasitas terisi per rak di lemari aktif (Max 11 Boks per Rak)
+  const rakBoxCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      'Rak A': 0,
+      'Rak B': 0,
+      'Rak C': 0,
+      'Rak D': 0,
+    };
+    const targetLemariStr = String(effectiveLemariStr).replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+
+    existingBoxes.forEach((b) => {
+      if (editingBox && b.id_box === editingBox.id_box) return;
+      const bLemari = String(b.lokasi?.lemari ?? '').replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+      if (bLemari === targetLemariStr) {
+        const bRak = standardizeRakName(b.lokasi?.rak);
+        if (counts[bRak] !== undefined) {
+          counts[bRak]++;
+        }
       }
     });
 
-    return Array.from(set).sort();
-  }, [existingBoxes]);
+    return counts;
+  }, [existingBoxes, effectiveLemariStr, editingBox]);
+
+  const currentRakNorm = standardizeRakName(selectedRak);
+  const currentRakCount = rakBoxCounts[currentRakNorm] || 0;
+  const isRakFull = currentRakCount >= MAX_BOXES_PER_RAK;
+  const nextRecommendedRak = getNextRak(currentRakNorm);
 
   useEffect(() => {
     if (editingBox) {
@@ -101,15 +131,8 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
         setCustomLemariName(lemariVal);
       }
 
-      const rakVal = editingBox.lokasi?.rak?.toString().trim() || 'R1';
-      if (availableRakList.includes(rakVal)) {
-        setSelectedRak(rakVal);
-        setIsCustomRak(false);
-      } else {
-        setSelectedRak('__custom__');
-        setIsCustomRak(true);
-        setCustomRakName(rakVal);
-      }
+      const rakVal = editingBox.lokasi?.rak ? standardizeRakName(editingBox.lokasi.rak) : 'Rak A';
+      setSelectedRak(rakVal);
 
       setBaris(editingBox.lokasi?.baris?.toString() || 'B1');
       setStatusArsip(editingBox.status_arsip);
@@ -120,7 +143,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
     } else {
       // Defaults for new box
       const randomSuffix = Math.floor(100 + Math.random() * 900);
-      setIdBox(`BOX-L1-R1-${randomSuffix}`);
+      setIdBox(`BOX-L1-RA-${randomSuffix}`);
       setNomorBox('1');
       setNamaPelatihan('');
       setTahunPelaksanaan(new Date().getFullYear());
@@ -129,9 +152,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
       setSelectedLemari('1');
       setIsCustomLemari(false);
       setCustomLemariName('');
-      setSelectedRak('R1');
-      setIsCustomRak(false);
-      setCustomRakName('');
+      setSelectedRak('Rak A');
       setBaris('B1');
       setStatusArsip('Aktif');
       setStatusBarang('Lengkap');
@@ -139,13 +160,13 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
       setLinkDokumentasi('https://drive.google.com/drive/folders/lsp-arsip-dokumen');
       setErrorMsg('');
     }
-  }, [editingBox, isOpen, availableLemariList, availableRakList]);
+  }, [editingBox, isOpen, availableLemariList]);
 
   // Auto update Box ID suggestion when Lemari or Rak changes
   const handleUpdateBoxIdSuggestion = (lemari: string, rak: string, num: string) => {
     if (!editingBox) {
-      const cleanL = lemari.replace(/[^a-zA-Z0-9]/g, '');
-      const cleanR = rak.replace(/[^a-zA-Z0-9]/g, '');
+      const cleanL = lemari.replace(/[^a-zA-Z0-9]/g, '') || '1';
+      const cleanR = standardizeRakName(rak).replace(/\s+/g, '');
       const cleanN = num.padStart(2, '0');
       setIdBox(`BOX-L${cleanL}-${cleanR}-${cleanN}`);
     }
@@ -192,8 +213,8 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
     const parsedLemariNum = parseInt(effectiveLemariStr.replace(/\D/g, ''), 10);
     const finalLemari = !isNaN(parsedLemariNum) && parsedLemariNum > 0 ? parsedLemariNum : effectiveLemariStr;
 
-    // Resolve dynamic Rak
-    const effectiveRak = isCustomRak ? customRakName.trim() : selectedRak;
+    // Resolve dynamic Rak (Standar hanya Rak A - Rak D)
+    const effectiveRak = standardizeRakName(selectedRak);
     if (!effectiveRak) {
       setErrorMsg('6. Nomor Rak wajib diisi / dipilih');
       return;
@@ -341,7 +362,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                 value={nomorBox}
                 onChange={(e) => {
                   setNomorBox(e.target.value);
-                  handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, isCustomRak ? customRakName : selectedRak, e.target.value);
+                  handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, selectedRak, e.target.value);
                 }}
                 placeholder="1 atau 01"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
@@ -358,7 +379,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                     onClick={() => {
                       const rand = Math.floor(100 + Math.random() * 900);
                       const l = (isCustomLemari ? customLemariName : selectedLemari).replace(/\D/g, '') || '1';
-                      const r = (isCustomRak ? customRakName : selectedRak).replace(/\s/g, '');
+                      const r = selectedRak.replace(/\s/g, '');
                       setIdBox(`BOX-L${l}-${r}-${rand}`);
                     }}
                     className="text-[10px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
@@ -372,7 +393,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                 value={idBox}
                 onChange={(e) => setIdBox(e.target.value.toUpperCase())}
                 disabled={!!editingBox}
-                placeholder="BOX-L1-R1-001"
+                placeholder="BOX-L1-RA-001"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono text-blue-700 font-bold uppercase focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 transition shadow-2xs"
                 required
               />
@@ -404,16 +425,19 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                       setIsCustomLemari(true);
                     } else {
                       setIsCustomLemari(false);
-                      handleUpdateBoxIdSuggestion(val, isCustomRak ? customRakName : selectedRak, nomorBox);
+                      handleUpdateBoxIdSuggestion(val, selectedRak, nomorBox);
                     }
                   }}
                   className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
                 >
-                  {availableLemariList.map((lemariItem) => (
-                    <option key={`lemari-opt-${lemariItem}`} value={lemariItem}>
-                      Lemari {lemariItem}
-                    </option>
-                  ))}
+                  {availableLemariList.map((lemariItem) => {
+                    const count = lemariBoxCounts[lemariItem] || 0;
+                    return (
+                      <option key={`lemari-opt-${lemariItem}`} value={lemariItem}>
+                        Lemari {lemariItem} ({count}/{MAX_BOXES_PER_LEMARI} Boks){count >= MAX_BOXES_PER_LEMARI ? ' - PENUH' : ''}
+                      </option>
+                    );
+                  })}
                   <option value="__custom__">+ Tambah Lemari Baru...</option>
                 </select>
 
@@ -424,7 +448,7 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                       value={customLemariName}
                       onChange={(e) => {
                         setCustomLemariName(e.target.value);
-                        handleUpdateBoxIdSuggestion(e.target.value, isCustomRak ? customRakName : selectedRak, nomorBox);
+                        handleUpdateBoxIdSuggestion(e.target.value, selectedRak, nomorBox);
                       }}
                       placeholder="Nama Lemari Baru (misal: 5, 6, Arsip A)"
                       className="w-full bg-white border border-blue-400 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-2xs"
@@ -434,48 +458,38 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                 )}
               </div>
 
-              {/* RAK DINAMIS */}
+              {/* RAK (STANDAR RAK A - RAK D, MAKS 11 BOKS) */}
               <div>
-                <label className="block text-[11px] text-slate-600 font-semibold mb-1">
-                  Pilih Rak:
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[11px] text-slate-600 font-semibold">
+                    Pilih Rak:
+                  </label>
+                  <span className={`text-[10px] font-bold ${isRakFull ? 'text-amber-600' : 'text-slate-500'}`}>
+                    {currentRakCount}/{MAX_BOXES_PER_RAK} Boks
+                  </span>
+                </div>
                 <select
-                  value={selectedRak}
+                  value={currentRakNorm}
                   onChange={(e) => {
                     const val = e.target.value;
                     setSelectedRak(val);
-                    if (val === '__custom__') {
-                      setIsCustomRak(true);
-                    } else {
-                      setIsCustomRak(false);
-                      handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, val, nomorBox);
-                    }
+                    handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, val, nomorBox);
                   }}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-2xs"
+                  className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 shadow-2xs ${
+                    isRakFull
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-100 bg-amber-50/30'
+                      : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                  }`}
                 >
-                  {availableRakList.map((rakItem) => (
-                    <option key={`rak-opt-${rakItem}`} value={rakItem}>
-                      {rakItem}
-                    </option>
-                  ))}
-                  <option value="__custom__">+ Tambah Rak Baru...</option>
+                  {STANDARD_RAKS.map((rakItem) => {
+                    const count = rakBoxCounts[rakItem] || 0;
+                    return (
+                      <option key={`rak-opt-${rakItem}`} value={rakItem}>
+                        {rakItem} ({count}/{MAX_BOXES_PER_RAK} Boks){count >= MAX_BOXES_PER_RAK ? ' - PENUH' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
-
-                {isCustomRak && (
-                  <div className="mt-1.5 animate-in fade-in duration-150">
-                    <input
-                      type="text"
-                      value={customRakName}
-                      onChange={(e) => {
-                        setCustomRakName(e.target.value);
-                        handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, e.target.value, nomorBox);
-                      }}
-                      placeholder="Nama Rak Baru (misal: R5, Rak E)"
-                      className="w-full bg-white border border-blue-400 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-2xs"
-                      required
-                    />
-                  </div>
-                )}
               </div>
 
               {/* BARIS / POSISI */}
@@ -491,6 +505,30 @@ export const BoxFormModal: React.FC<BoxFormModalProps> = ({
                 />
               </div>
             </div>
+
+            {/* Peringatan Kapasitas Fisik Rak Penuh (11/11 Boks) */}
+            {isRakFull && (
+              <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in duration-200">
+                <div className="space-y-0.5">
+                  <p className="font-bold flex items-center gap-1.5">
+                    <span>⚠️ Peringatan: {currentRakNorm} Sudah Penuh ({currentRakCount}/{MAX_BOXES_PER_RAK} Boks)</span>
+                  </p>
+                  <p className="text-amber-800 text-[11px]">
+                    Kapasitas fisik maksimal 1 rak adalah 11 boks file. Jika suatu pelatihan memiliki 2 boks file, boks ke-2 dapat dialokasikan ke rak berikutnya ({nextRecommendedRak}).
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedRak(nextRecommendedRak);
+                    handleUpdateBoxIdSuggestion(isCustomLemari ? customLemariName : selectedLemari, nextRecommendedRak, nomorBox);
+                  }}
+                  className="self-start sm:self-auto shrink-0 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs shadow-xs transition active:scale-95"
+                >
+                  Pindahkan ke {nextRecommendedRak} &rarr;
+                </button>
+              </div>
+            )}
           </div>
 
           {/* 4. Tahun & Peserta Asesmen */}

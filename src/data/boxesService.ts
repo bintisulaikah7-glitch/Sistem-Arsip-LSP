@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 import { BoksArsip, StatusArsip, StatusBarang } from '../types.ts';
 import { INITIAL_BOXES } from './initialBoxes.ts';
-import { deduplicateBoxes } from '../utils/csvParser.ts';
+import { deduplicateBoxes, standardizeRakName } from '../utils/csvParser.ts';
 import {
   DEFAULT_APPS_SCRIPT_URL,
   GOOGLE_SHEETS_CSV_URL,
@@ -45,22 +45,28 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     return null;
   }
 
-  // Parse Lemari secara dinamis tanpa batasan jumlah
-  let lemariVal: number | string = 1;
+  // Parse Lemari secara dinamis; jika 'kosong'/'keluar'/- jangan dimasukkan paksa ke Lemari 1
   const lemariStr = String(rawLemari || '').trim();
-  const lemariDigits = lemariStr.match(/\d+/);
-  if (lemariDigits) {
-    lemariVal = parseInt(lemariDigits[0], 10);
-  } else if (lemariStr && lemariStr.toLowerCase() !== 'kosong') {
-    const cleanLemari = lemariStr.replace(/lemari[-_\s]*/i, '').trim();
-    lemariVal = cleanLemari || lemariStr;
+  const isLemariKosong =
+    !lemariStr ||
+    lemariStr.toLowerCase() === 'kosong' ||
+    lemariStr.toLowerCase() === 'keluar' ||
+    lemariStr === '-' ||
+    lemariStr === '0';
+
+  let lemariVal: number | string = 0;
+  if (!isLemariKosong) {
+    const lemariDigits = lemariStr.match(/\d+/);
+    if (lemariDigits) {
+      lemariVal = parseInt(lemariDigits[0], 10);
+    } else {
+      const cleanLemari = lemariStr.replace(/lemari[-_\s]*/i, '').trim();
+      lemariVal = cleanLemari || lemariStr;
+    }
   }
 
-  // Parse Rak
-  let rakClean = String(rawRak || '').trim();
-  if (rakClean.toLowerCase() === 'kosong' || rakClean === '-') {
-    rakClean = '';
-  }
+  // Standarisasi Rak hanya Rak A, Rak B, Rak C, Rak D
+  const rakClean = isLemariKosong ? '-' : standardizeRakName(rawRak);
 
   // Parse Nomor Box
   let boxClean = String(rawBox || '').trim();
@@ -71,24 +77,24 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
   // ID Box
   let idBoxClean = String(rawIdBox || '').trim();
   if (!idBoxClean || idBoxClean === '1' || idBoxClean.toLowerCase() === 'kosong') {
-    if (lemariVal && rakClean) {
+    if (lemariVal && rakClean && rakClean !== '-') {
       idBoxClean = `L${lemariVal}-${rakClean.replace(/\s+/g, '')}-BOX${boxClean.replace(/\D/g, '') || String(index + 1).padStart(2, '0')}-${tahunNum}`;
     } else {
       idBoxClean = `BOX-${tahunNum}-${String(index + 1).padStart(3, '0')}`;
     }
   }
 
-  // Normalisasi status arsip
-  let status_arsip: StatusArsip = 'Tersedia';
+  // Normalisasi status arsip (jika lemari kosong/keluar, otomatis Tidak Tersedia)
+  let status_arsip: StatusArsip = isLemariKosong ? 'Tidak Tersedia' : 'Tersedia';
   const sArsipLower = String(rawStatusArsip).toLowerCase().trim();
-  if (sArsipLower.includes('aktif') || sArsipLower.includes('tersedia')) {
-    status_arsip = 'Tersedia';
-  } else if (sArsipLower.includes('tidak lengkap')) {
+  if (sArsipLower.includes('tidak lengkap')) {
     status_arsip = 'Tidak Lengkap';
-  } else if (sArsipLower.includes('tidak') || sArsipLower.includes('inaktif')) {
+  } else if (sArsipLower.includes('tidak') || sArsipLower.includes('inaktif') || sArsipLower.includes('kosong') || sArsipLower.includes('keluar')) {
     status_arsip = 'Tidak Tersedia';
   } else if (sArsipLower.includes('musnah')) {
     status_arsip = 'Dimusnahkan';
+  } else if (sArsipLower.includes('aktif') || sArsipLower.includes('tersedia')) {
+    status_arsip = isLemariKosong ? 'Tidak Tersedia' : 'Tersedia';
   }
 
   // Normalisasi status barang
@@ -98,7 +104,7 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     status_barang = 'Lengkap';
   } else if (sBarangLower.includes('tidak lengkap')) {
     status_barang = 'Tidak Lengkap';
-  } else if (sBarangLower.includes('tidak ada') || sBarangLower.includes('tidak')) {
+  } else if (sBarangLower.includes('tidak ada') || sBarangLower.includes('tidak') || sBarangLower.includes('kosong')) {
     status_barang = 'Tidak Ada';
   } else if (sBarangLower.includes('pinjam')) {
     status_barang = 'Dipinjam';
@@ -113,8 +119,8 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
     jumlah_peserta: Number(rawPeserta) || 0,
     jumlah_peserta_bk: Number(rawPesertaBk) || 0,
     lokasi: {
-      lemari: lemariVal || 1,
-      rak: rakClean || 'Rak A',
+      lemari: lemariVal,
+      rak: rakClean,
       baris: boxClean || 'Box 1'
     },
     status_arsip,
@@ -146,7 +152,20 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
 
     const rawLokasi = b.lokasi || {};
     let lemariVal = rawLokasi.lemari !== undefined && rawLokasi.lemari !== null ? rawLokasi.lemari : (b['Kode Lemari'] || b.kode_lemari || 1);
-    if (typeof lemariVal === 'string') {
+    
+    // Cek apakah lemari adalah kosong/keluar
+    const isLemariKosong =
+      lemariVal === undefined ||
+      lemariVal === null ||
+      lemariVal === 0 ||
+      lemariVal === '0' ||
+      String(lemariVal).toLowerCase().trim() === 'kosong' ||
+      String(lemariVal).toLowerCase().trim() === 'keluar' ||
+      String(lemariVal).trim() === '-';
+
+    if (isLemariKosong) {
+      lemariVal = 'Kosong';
+    } else if (typeof lemariVal === 'string') {
       const matchDigits = lemariVal.match(/\d+/);
       if (matchDigits) {
         lemariVal = parseInt(matchDigits[0], 10);
@@ -157,11 +176,10 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
         }
       }
     }
-    if (lemariVal === undefined || lemariVal === null || lemariVal === 0 || String(lemariVal).toLowerCase() === 'kosong') {
-      lemariVal = 1;
-    }
 
-    const rakVal = String(rawLokasi.rak || b['Nomor Rak'] || b['Nomor Rak '] || b.nomor_rak || 'Rak A').trim();
+    const rakVal = isLemariKosong
+      ? '-'
+      : standardizeRakName(rawLokasi.rak || b['Nomor Rak'] || b['Nomor Rak '] || b.nomor_rak || 'Rak A');
     const barisVal = String(rawLokasi.baris || b['Nomor Box'] || b.nomor_box || 'Box 1').trim();
 
     let idVal = String(b.id_box || b['ID_Box'] || b.id || '').trim();
@@ -181,7 +199,10 @@ export function verifyAndSanitizeBoxes(rawBoxes: any[]): BoksArsip[] {
     const pesertaVal = Number(b.jumlah_peserta || b['Jumlah Peserta'] || b['Jumlah Peserta ']) || 0;
     const pesertaBkVal = Number(b.jumlah_peserta_bk || b['Jumlah Peserta BK']) || 0;
 
-    const sArsipRaw = String(b.status_arsip || b['Status Arsip'] || b['Status Arsip '] || 'Tersedia').trim();
+    let sArsipRaw = String(b.status_arsip || b['Status Arsip'] || b['Status Arsip '] || (isLemariKosong ? 'Tidak Tersedia' : 'Tersedia')).trim();
+    if (isLemariKosong) {
+      sArsipRaw = 'Tidak Tersedia';
+    }
     const sBarangRaw = String(b.status_barang || b['Status Barang'] || b['Status Barang '] || 'Lengkap').trim();
     const hasilUjiRaw = String(b.hasilUjiKompetensi || b.hasil_uji_kompetensi || b['Hasil Uji Kompetensi'] || '-').trim();
     const linkDriveRaw = String(b.link_dokumentasi || b['Link Google Drive'] || b['Link Google Drive '] || 'https://drive.google.com').trim();

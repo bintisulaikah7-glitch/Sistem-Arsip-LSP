@@ -1,3 +1,5 @@
+import { getStoredAppsScriptUrl } from '../config.ts';
+
 /**
  * Tes koneksi ke Web App URL Google Apps Script langsung (tanpa backend proxy lokal)
  */

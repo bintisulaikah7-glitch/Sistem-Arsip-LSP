@@ -1,14 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Manajemen Boks Arsip LSP - Pencarian & Tata Letak Fisik</title>
-    <meta name="description" content="Sistem manajemen boks arsip LSP, penelusuran berkas pelatihan, tata letak rak fisik drag & drop, dan sinkronisasi Google Sheets." />
-    <meta property="og:title" content="Sistem Manajemen Boks Arsip LSP - Pencarian & Tata Letak Fisik" />
-    <meta property="og:description" content="Sistem manajemen boks arsip LSP, penelusuran berkas pelatihan, tata letak rak fisik drag & drop, dan sinkronisasi Google Sheets." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <title>Sistem Manajemen Boks Arsip LSP</title>
+    
+    <!-- Script Tailwind CSS CDN Full Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#eff6ff',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+              }
+            }
+          }
+        }
+      }
+    </script>
     <script>
       // Single Page App redirect handler for GitHub Pages
       (function(l) {
@@ -25,10 +40,10 @@
     <script type="module" crossorigin src="./assets/app-bundle.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index.css">
   </head>
-  <body>
+  <body class="bg-slate-50 text-slate-800 antialiased">
     <div id="root"></div>
     <script>
-      // Fallback otomatis untuk deployment statis GitHub Pages langsung dari root branch main
+      // Fallback otomatis untuk deployment statis GitHub Pages
       window.addEventListener('error', function(e) {
         if (e && e.target && (e.target.src || '').includes('main.tsx')) {
           console.warn('[LSP Archive] Mengaktifkan bundel JavaScript statis ./assets/app-bundle.js...');

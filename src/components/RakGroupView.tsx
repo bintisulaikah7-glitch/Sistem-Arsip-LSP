@@ -2,6 +2,7 @@ import React from 'react';
 import { BoksArsip } from '../types.ts';
 import { BoxCard } from './BoxCard.tsx';
 import { Folder, Layers, QrCode, Sparkles, Plus, ExternalLink, Calendar, Users } from 'lucide-react';
+import { STANDARD_RAKS, standardizeRakName, MAX_BOXES_PER_RAK } from '../utils/csvParser.ts';
 
 interface RakGroupViewProps {
   boxes: BoksArsip[];
@@ -56,21 +57,15 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
   // 1. Filter data berdasarkan Lemari
   const dataLemari = boxes.filter(item => matchesLemari(item, lemariYangDipilih));
 
-  // 2. Ambil daftar Rak unik yang ada di lemari tersebut
-  const daftarRak = Array.from(
-    new Set(
-      dataLemari.map(item => {
-        if (!item) return 'Tanpa Rak';
-        const r = item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Tanpa Rak';
-        return r ? String(r).trim() : 'Tanpa Rak';
-      })
-    )
-  ).sort((a, b) => {
-    // Put "Tanpa Rak" at the end, sort others naturally
-    if (a === 'Tanpa Rak') return 1;
-    if (b === 'Tanpa Rak') return -1;
-    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+  // 2. Ambil daftar Rak terstandarisasi (Rak A - Rak D)
+  const setRak = new Set<string>(STANDARD_RAKS);
+  dataLemari.forEach(item => {
+    const r = item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || '';
+    if (r && r !== '-' && String(r).toLowerCase() !== 'kosong') {
+      setRak.add(standardizeRakName(r));
+    }
   });
+  const daftarRak = Array.from(setRak).sort();
 
   if (dataLemari.length === 0) {
     return (
@@ -88,33 +83,44 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
 
   return (
     <div id="container-arsip" className="space-y-6">
-      {/* Sekat / Pengelompokan Berdasarkan RAK */}
+      {/* Sekat / Pengelompokan Berdasarkan RAK (Standar Rak A - Rak D, Maks 11 Boks) */}
       {daftarRak.map((namaRak, index) => {
         // Ambil boks pelatihan yang HANYA ada di Rak ini
         const boksDiRakIni = dataLemari.filter(item => {
           if (!item) return false;
-          const r = String(item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || 'Tanpa Rak').trim();
-          return r === namaRak;
+          const r = item.lokasi?.rak || item.Nomor_Rak || item['Nomor_Rak'] || item['Nomor Rak'] || '';
+          return standardizeRakName(r) === namaRak;
         });
 
         const totalPesertaRak = boksDiRakIni.reduce((acc, curr) => acc + (curr.jumlah_peserta || curr['Jumlah Peserta'] || 0), 0);
+        const isRakPenuh = boksDiRakIni.length >= MAX_BOXES_PER_RAK;
 
         return (
           <div
             key={`rak-${namaRak}-${index}`}
-            className="rak-group rounded-xl border border-slate-200 bg-white p-5 shadow-xs relative overflow-hidden transition hover:border-blue-300"
+            className={`rak-group rounded-xl border bg-white p-5 shadow-xs relative overflow-hidden transition ${
+              isRakPenuh ? 'border-amber-300 ring-1 ring-amber-100' : 'border-slate-200 hover:border-blue-300'
+            }`}
           >
             {/* Folder Tab / Sekat Rak Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
-                  <Folder className="w-5 h-5 text-blue-600" />
+                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center shadow-2xs ${
+                  isRakPenuh
+                    ? 'bg-amber-50 border-amber-200 text-amber-600'
+                    : 'bg-blue-50 border-blue-200 text-blue-600'
+                }`}>
+                  <Folder className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 tracking-tight">
                     <span>{lemariYangDipilih ? `Lemari ${lemariYangDipilih} - ` : ''}{namaRak}</span>
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                      {boksDiRakIni.length} Boks Arsip
+                    <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
+                      isRakPenuh
+                        ? 'bg-amber-50 text-amber-800 border-amber-300'
+                        : 'bg-blue-50 text-blue-700 border-blue-200'
+                    }`}>
+                      {boksDiRakIni.length}/{MAX_BOXES_PER_RAK} Boks Arsip{isRakPenuh ? ' (Penuh)' : ''}
                     </span>
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-0.5 flex items-center space-x-2">

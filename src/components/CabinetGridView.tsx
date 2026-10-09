@@ -149,8 +149,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
                       <span className="text-xs text-slate-500">Gedung Arsip LSP</span>
                     </div>
                   </div>
-                  <span className="badge-boks">
-                    {cabinetBoxes.length} Boks Arsip
+                  <span className={`badge-boks ${cabinetBoxes.length >= 44 ? 'bg-amber-100 text-amber-800 border-amber-300 font-bold' : ''}`}>
+                    {cabinetBoxes.length}/44 Boks {cabinetBoxes.length >= 44 ? '(Penuh)' : 'Arsip'}
                   </span>
                 </div>
 

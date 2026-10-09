@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { X, QrCode, Copy, Check, Printer, Download, ExternalLink, MapPin, Sparkles, Filter, Archive } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
 import { getLocationPublicUrl, getLocationQrImageUrl } from '../utils/url.ts';
+import { STANDARD_RAKS, standardizeRakName, getNextRak, MAX_BOXES_PER_RAK, MAX_BOXES_PER_LEMARI } from '../utils/csvParser.ts';
 
 interface InputLokasiModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
   const [lemari, setLemari] = useState(initialLemari || '1');
   const [isCustomLemari, setIsCustomLemari] = useState(false);
   const [customLemariName, setCustomLemariName] = useState('');
-  const [rak, setRak] = useState(initialRak || 'Rak 1');
+  const [rak, setRak] = useState(initialRak ? standardizeRakName(initialRak) : 'Rak A');
   const [isGenerated, setIsGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [saveToArchiveList, setSaveToArchiveList] = useState(false);
@@ -60,6 +61,49 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
     });
   }, [availableLemari, existingBoxes]);
 
+  // Efektif lemari yang dipilih
+  const effectiveLemari = isCustomLemari ? (customLemariName.trim() || '1') : lemari;
+
+  // Hitung jumlah boks per lemari (Max 44 Boks)
+  const lemariBoxCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    (existingBoxes || []).forEach((b) => {
+      const bLemari = String(b.lokasi?.lemari ?? '').replace(/lemari[-_\s]*/i, '').trim();
+      if (bLemari && bLemari !== '0' && bLemari.toLowerCase() !== 'kosong') {
+        counts[bLemari] = (counts[bLemari] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [existingBoxes]);
+
+  // Hitung kapasitas terisi per rak di lemari aktif (Max 11 Boks per Rak)
+  const rakBoxCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      'Rak A': 0,
+      'Rak B': 0,
+      'Rak C': 0,
+      'Rak D': 0,
+    };
+    const targetLemariStr = String(effectiveLemari).replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+
+    (existingBoxes || []).forEach((b) => {
+      const bLemari = String(b.lokasi?.lemari ?? '').replace(/lemari[-_\s]*/i, '').trim().toLowerCase();
+      if (bLemari === targetLemariStr) {
+        const bRak = standardizeRakName(b.lokasi?.rak);
+        if (counts[bRak] !== undefined) {
+          counts[bRak]++;
+        }
+      }
+    });
+
+    return counts;
+  }, [existingBoxes, effectiveLemari]);
+
+  const currentRakNorm = standardizeRakName(rak);
+  const currentRakCount = rakBoxCounts[currentRakNorm] || 0;
+  const isRakFull = currentRakCount >= MAX_BOXES_PER_RAK;
+  const nextRecommendedRak = getNextRak(currentRakNorm);
+
   // Update lemari/rak if initial values change when opened
   React.useEffect(() => {
     if (initialLemari) {
@@ -67,7 +111,7 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
       setLemari(clean || initialLemari);
       setIsCustomLemari(false);
     }
-    if (initialRak) setRak(initialRak);
+    if (initialRak) setRak(standardizeRakName(initialRak));
   }, [initialLemari, initialRak, isOpen]);
 
   // Extract unique training names from dataset for smart autocomplete
@@ -238,11 +282,14 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                   }}
                   className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
                 >
-                  {lemariOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      Lemari {opt}
-                    </option>
-                  ))}
+                  {lemariOptions.map((opt) => {
+                    const count = lemariBoxCounts[opt] || 0;
+                    return (
+                      <option key={opt} value={opt}>
+                        Lemari {opt} ({count}/{MAX_BOXES_PER_LEMARI} Boks){count >= MAX_BOXES_PER_LEMARI ? ' - PENUH' : ''}
+                      </option>
+                    );
+                  })}
                   <option value="__custom__">+ Input Lemari Baru...</option>
                 </select>
 
@@ -260,27 +307,58 @@ export const InputLokasiModal: React.FC<InputLokasiModalProps> = ({
                 )}
               </div>
 
-              {/* Pilih Rak */}
+              {/* Pilih Rak (Standar Rak A - Rak D, Maks 11 Boks) */}
               <div className="space-y-1.5">
-                <label htmlFor="rak" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Pilih Rak:
-                </label>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="rak" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Pilih Rak:
+                  </label>
+                  <span className={`text-[11px] font-semibold ${isRakFull ? 'text-amber-600' : 'text-slate-500'}`}>
+                    {currentRakCount}/{MAX_BOXES_PER_RAK} Boks
+                  </span>
+                </div>
                 <select
                   id="rak"
-                  value={rak}
-                  onChange={(e) => setRak(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition shadow-2xs"
+                  value={currentRakNorm}
+                  onChange={(e) => setRak(standardizeRakName(e.target.value))}
+                  className={`w-full bg-white border rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 transition shadow-2xs ${
+                    isRakFull
+                      ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-100 bg-amber-50/30'
+                      : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                  }`}
                 >
-                  <option value="Rak-1">Rak 1 (Atas)</option>
-                  <option value="Rak-2">Rak 2 (Tengah-Atas)</option>
-                  <option value="Rak-3">Rak 3 (Tengah-Bawah)</option>
-                  <option value="Rak-4">Rak 4 (Bawah)</option>
-                  <option value="Rak-A">Rak A (Tingkat 1)</option>
-                  <option value="Rak-B">Rak B (Tingkat 2)</option>
-                  <option value="Rak-C">Rak C (Tingkat 3)</option>
+                  {STANDARD_RAKS.map((r) => {
+                    const count = rakBoxCounts[r] || 0;
+                    return (
+                      <option key={r} value={r}>
+                        {r} ({count}/{MAX_BOXES_PER_RAK} Boks){count >= MAX_BOXES_PER_RAK ? ' - PENUH' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
+
+            {/* Peringatan Kapasitas Fisik Rak Penuh (11/11 Boks) */}
+            {isRakFull && (
+              <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in duration-200">
+                <div className="space-y-0.5">
+                  <p className="font-bold flex items-center gap-1.5">
+                    <span>⚠️ Peringatan: {currentRakNorm} Sudah Penuh ({currentRakCount}/{MAX_BOXES_PER_RAK} Boks)</span>
+                  </p>
+                  <p className="text-amber-800 text-[11px]">
+                    Kapasitas fisik maksimal tercapai. Jika suatu pelatihan memiliki 2 boks file, boks ke-2 dapat dialokasikan ke rak berikutnya ({nextRecommendedRak}).
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setRak(nextRecommendedRak)}
+                  className="self-start sm:self-auto shrink-0 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs shadow-xs transition active:scale-95"
+                >
+                  Pindahkan ke {nextRecommendedRak} &rarr;
+                </button>
+              </div>
+            )}
 
             {/* Opsi Tambahkan ke Database Boks */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">

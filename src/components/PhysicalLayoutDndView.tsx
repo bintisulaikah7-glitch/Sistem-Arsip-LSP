@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { BoksArsip } from '../types.ts';
+import { STANDARD_RAKS, standardizeRakName, MAX_BOXES_PER_RAK, MAX_BOXES_PER_LEMARI } from '../utils/csvParser.ts';
 import { 
   GripVertical, 
   MapPin, 
@@ -38,35 +39,39 @@ export const PhysicalLayoutDndView: React.FC<PhysicalLayoutDndViewProps> = ({
   const [selectedLemariFilter, setSelectedLemariFilter] = useState<string>('all');
   const [quickMoveBox, setQuickMoveBox] = useState<BoksArsip | null>(null);
   const [quickTargetLemari, setQuickTargetLemari] = useState<string>('1');
-  const [quickTargetRak, setQuickTargetRak] = useState<string>('R1');
+  const [quickTargetRak, setQuickTargetRak] = useState<string>('Rak A');
   const [isMoving, setIsMoving] = useState(false);
 
-  // Filter Lemari list based on selector
+  // Filter Lemari list based on selector (Abaikan lemari kosong/0)
   const activeLemariList = useMemo(() => {
+    const valid = availableLemari.filter(l => {
+      const s = String(l).replace(/lemari[-_\s]*/i, '').trim();
+      return s && s !== '0' && s.toLowerCase() !== 'kosong';
+    });
     if (selectedLemariFilter === 'all') {
-      return availableLemari.length > 0 ? availableLemari : [1, 2, 3, 4];
+      return valid.length > 0 ? valid : [1, 2, 3, 4];
     }
     return [selectedLemariFilter];
   }, [availableLemari, selectedLemariFilter]);
 
   // Extract all existing unique raks across boxes for quick move & shelf layout
   const allKnownRaks = useMemo(() => {
-    const set = new Set<string>();
-    ['R1', 'R2', 'R3', 'R4'].forEach(r => set.add(r));
+    const set = new Set<string>(STANDARD_RAKS);
     boxes.forEach(b => {
-      if (b.lokasi?.rak) {
-        set.add(b.lokasi.rak.toString().trim());
+      if (b.lokasi?.rak && b.lokasi.rak !== '-') {
+        set.add(standardizeRakName(b.lokasi.rak));
       }
     });
     return Array.from(set).sort();
   }, [boxes]);
 
-  // Generate shelf structure per Lemari
+  // Generate shelf structure per Lemari (Standar Rak A - Rak D, Maks 11 Boks per Rak)
   const shelvesPerLemari = useMemo(() => {
     const map = new Map<string, { rakName: string; boxes: BoksArsip[] }[]>();
 
     activeLemariList.forEach(lemari => {
       const lemariStr = lemari.toString().replace(/lemari[-_\s]*/i, '').trim();
+      if (!lemariStr || lemariStr === '0' || lemariStr.toLowerCase() === 'kosong') return;
 
       // Find all boxes in this cabinet
       const cabinetBoxes = boxes.filter(b => {
@@ -75,27 +80,16 @@ export const PhysicalLayoutDndView: React.FC<PhysicalLayoutDndViewProps> = ({
         return bLemari.toLowerCase() === lemariStr.toLowerCase();
       });
 
-      // Find all shelves that have boxes or default R1-R4
-      const shelfSet = new Set<string>();
-      ['R1', 'R2', 'R3', 'R4'].forEach(r => shelfSet.add(r));
-      cabinetBoxes.forEach(b => {
-        if (b.lokasi?.rak) {
-          shelfSet.add(b.lokasi.rak.toString().trim());
-        }
-      });
-
-      const shelfList = Array.from(shelfSet)
-        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-        .map(rakName => {
-          const matchingBoxes = cabinetBoxes.filter(b => {
-            const r = (b.lokasi?.rak || '').toString().trim().toLowerCase();
-            return r === rakName.toLowerCase();
-          });
-          return {
-            rakName,
-            boxes: matchingBoxes
-          };
+      // Setiap lemari memiliki 4 sekat rak standar: Rak A, Rak B, Rak C, Rak D
+      const shelfList = STANDARD_RAKS.map(rakName => {
+        const matchingBoxes = cabinetBoxes.filter(b => {
+          return standardizeRakName(b.lokasi?.rak) === rakName;
         });
+        return {
+          rakName,
+          boxes: matchingBoxes
+        };
+      });
 
       map.set(lemariStr, shelfList);
     });
@@ -219,8 +213,12 @@ export const PhysicalLayoutDndView: React.FC<PhysicalLayoutDndViewProps> = ({
                     <div>
                       <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
                         <span>LEMARI ARSIP {lemariKey}</span>
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-slate-700">
-                          {totalInLemari} Boks Arsip
+                        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
+                          totalInLemari >= MAX_BOXES_PER_LEMARI
+                            ? 'bg-amber-950/60 text-amber-400 border-amber-700'
+                            : 'bg-slate-800 text-emerald-400 border-slate-700'
+                        }`}>
+                          {totalInLemari}/{MAX_BOXES_PER_LEMARI} Boks Arsip{totalInLemari >= MAX_BOXES_PER_LEMARI ? ' (Penuh)' : ''}
                         </span>
                       </h3>
                       <p className="text-[11px] text-slate-400">
@@ -230,7 +228,7 @@ export const PhysicalLayoutDndView: React.FC<PhysicalLayoutDndViewProps> = ({
                   </div>
 
                   <span className="text-[11px] text-slate-500 font-mono self-start sm:self-auto">
-                    {shelfList.length} Sekat Rak Tersedia
+                    4 Sekat Rak (Rak A - Rak D)
                   </span>
                 </div>
 
@@ -238,21 +236,30 @@ export const PhysicalLayoutDndView: React.FC<PhysicalLayoutDndViewProps> = ({
                 <div className="space-y-5">
                   {shelfList.map(({ rakName, boxes: shelfBoxes }) => {
                     const droppableId = `lemari__${lemariKey}__rak__${rakName}`;
+                    const isShelfFull = shelfBoxes.length >= MAX_BOXES_PER_RAK;
 
                     return (
                       <div
                         key={`shelf-${lemariKey}-${rakName}`}
-                        className="rounded-xl border border-slate-800/90 bg-slate-900/80 p-3.5 shadow-sm"
+                        className={`rounded-xl border p-3.5 shadow-sm ${
+                          isShelfFull
+                            ? 'border-amber-700/80 bg-slate-900/90'
+                            : 'border-slate-800/90 bg-slate-900/80'
+                        }`}
                       >
                         {/* Shelf Header Bar */}
                         <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-800 text-xs">
                           <div className="flex items-center space-x-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs" />
+                            <span className={`w-2.5 h-2.5 rounded-full shadow-xs ${
+                              isShelfFull ? 'bg-amber-500 ring-2 ring-amber-500/30' : 'bg-emerald-500'
+                            }`} />
                             <h4 className="font-bold text-slate-200 tracking-wide uppercase">
                               {rakName.startsWith('Rak') ? rakName : `Rak ${rakName}`}
                             </h4>
-                            <span className="text-[11px] text-slate-400 font-mono">
-                              ({shelfBoxes.length} Boks Arsip)
+                            <span className={`text-[11px] font-mono ${
+                              isShelfFull ? 'text-amber-400 font-bold' : 'text-slate-400'
+                            }`}>
+                              ({shelfBoxes.length}/{MAX_BOXES_PER_RAK} Boks Arsip){isShelfFull ? ' - PENUH' : ''}
                             </span>
                           </div>
                           <span className="text-[11px] text-slate-500 font-mono">

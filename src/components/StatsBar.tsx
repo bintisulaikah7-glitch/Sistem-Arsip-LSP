@@ -32,23 +32,29 @@ export const StatsBar: React.FC<StatsBarProps> = ({
       b.status_barang || b['Status Barang'] || ''
     ).toLowerCase().trim();
 
-    // 1. Cek Apakah Fisik Tidak Lengkap / Kurang
+    const lemariRaw = String(
+      b.lokasi?.lemari ?? b['Kode Lemari'] ?? b.kode_lemari ?? ''
+    ).toLowerCase().trim();
+    const isLemariKosong = !lemariRaw || lemariRaw === '0' || lemariRaw === 'kosong' || lemariRaw === 'keluar' || lemariRaw === '-';
+
+    // 1. Cek Apakah Arsip Tidak Tersedia / Dimusnahkan / Kosong / Keluar
     if (
-      statusBarang === 'tidak lengkap' ||
-      statusBarang === 'kurang' ||
-      statusArsip === 'tidak lengkap' ||
-      statusArsip === 'inaktif'
-    ) {
-      tidakLengkapCount++;
-    }
-    // 2. Cek Apakah Arsip Tidak Tersedia / Dimusnahkan / Kosong
-    else if (
+      isLemariKosong ||
       statusArsip === 'tidak tersedia' ||
       statusArsip === 'dimusnahkan' ||
       statusArsip === 'kosong' ||
       statusArsip === 'keluar'
     ) {
       tidakTersediaCount++;
+    }
+    // 2. Cek Apakah Fisik Tidak Lengkap / Kurang
+    else if (
+      statusBarang === 'tidak lengkap' ||
+      statusBarang === 'kurang' ||
+      statusArsip === 'tidak lengkap' ||
+      statusArsip === 'inaktif'
+    ) {
+      tidakLengkapCount++;
     }
     // 3. Sisanya Masuk Ke Arsip Tersedia / Aktif
     else {

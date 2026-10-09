@@ -203,8 +203,8 @@ export default function App() {
    * Fetch and parse CSV from Google Sheets URL secara dinamis (real-time).
    */
   const fetchGoogleSheetsData = useCallback(
-    async (targetUrl = sheetUrl, isSilent = false) => {
-      if (isAddModalOpenRef.current || editingBoxRef.current) {
+    async (targetUrl = sheetUrl, isSilent = false, force = false) => {
+      if (!force && (isAddModalOpenRef.current || editingBoxRef.current)) {
         return null;
       }
 
@@ -420,25 +420,8 @@ export default function App() {
   }, [boxes]);
 
   const availableRaks = useMemo(() => {
-    if (!boxes || !Array.isArray(boxes) || boxes.length === 0) {
-      return ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
-    }
-
-    const rawRakList = boxes
-      .map((b) => {
-        const val = b?.lokasi?.rak ?? (b as any)?.['Nomor Rak'] ?? (b as any)?.['Nomor Rak '] ?? (b as any)?.nomor_rak;
-        if (!val) return '';
-        const str = String(val).trim();
-        if (!str || str === '-' || str.toLowerCase() === 'kosong') return '';
-        return str;
-      })
-      .filter(Boolean);
-
-    const uniqueRaks = Array.from(new Set(rawRakList));
-    uniqueRaks.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
-
-    return uniqueRaks.length > 0 ? uniqueRaks : ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
-  }, [boxes]);
+    return ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
+  }, []);
 
   const filteredBoxes = useMemo(() => {
     if (!boxes || !Array.isArray(boxes)) return [];
@@ -576,11 +559,8 @@ export default function App() {
       setBoxes((prev) => [sanitized, ...prev.filter((b) => b.id_box !== sanitized.id_box)]);
       showToast(`Boks Arsip ${sanitized.id_box} berhasil ditambahkan dan disinkronkan ke Google Sheets!`);
 
-      setTimeout(() => {
-        if (!isAddModalOpenRef.current && !editingBoxRef.current) {
-          fetchGoogleSheetsData(sheetUrl, true);
-        }
-      }, 1500);
+      // Sinkronisasi instan setelah input data boks langsung re-fetch tanpa refresh manual
+      fetchGoogleSheetsData(sheetUrl, true, true);
 
       return true;
     } catch (err: any) {
@@ -592,21 +572,29 @@ export default function App() {
 
   const handleUpdateBox = async (updatedBox: BoksArsip): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/boxes/${encodeURIComponent(updatedBox.id_box)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedBox)
-      });
+      const sanitized = verifyAndSanitizeBoxes([updatedBox])[0] || updatedBox;
 
-      const data = await res.json();
-      if (res.ok) {
-        setBoxes((prev) => prev.map((b) => (b.id_box === data.id_box ? data : b)));
-        showToast(`Boks Arsip ${data.id_box} berhasil diperbarui.`);
-        return true;
-      } else {
-        showToast(data.message || 'Gagal memperbarui boks arsip.', 'error');
-        return false;
+      try {
+        await sendBoxToGoogleSheets(sanitized, 'update');
+      } catch (syncErr) {
+        console.warn('[handleUpdateBox] Google Sheets sync error:', syncErr);
       }
+
+      try {
+        await fetch(`/api/boxes/${encodeURIComponent(sanitized.id_box)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sanitized)
+        });
+      } catch {}
+
+      setBoxes((prev) => prev.map((b) => (b.id_box === sanitized.id_box ? sanitized : b)));
+      showToast(`Boks Arsip ${sanitized.id_box} berhasil diperbarui.`);
+
+      // Sinkronisasi instan setelah ubah data boks langsung re-fetch tanpa refresh manual
+      fetchGoogleSheetsData(sheetUrl, true, true);
+
+      return true;
     } catch (err: any) {
       setBoxes((prev) => prev.map((b) => (b.id_box === updatedBox.id_box ? updatedBox : b)));
       showToast(`Boks Arsip ${updatedBox.id_box} diperbarui.`);
@@ -672,7 +660,7 @@ export default function App() {
       tahun_pelaksanaan: newBoxData.tahun_pelaksanaan || new Date().getFullYear(),
       jumlah_peserta: newBoxData.jumlah_peserta || 0,
       jumlah_peserta_bk: newBoxData.jumlah_peserta_bk || 0,
-      lokasi: newBoxData.lokasi || { lemari: 1, rak: 'Rak 1', baris: 'Baris 1' },
+      lokasi: newBoxData.lokasi || { lemari: 1, rak: 'Rak A', baris: 'Box 1' },
       status_arsip: (newBoxData.status_arsip as StatusArsip) || 'Tersedia',
       status_barang: (newBoxData.status_barang as StatusBarang) || 'Lengkap',
       link_dokumentasi: newBoxData.link_dokumentasi || 'https://drive.google.com'

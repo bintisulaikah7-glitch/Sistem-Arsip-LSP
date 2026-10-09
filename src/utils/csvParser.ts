@@ -5,6 +5,50 @@ import { GOOGLE_SHEETS_SPREADSHEET_URL, GOOGLE_SHEETS_CSV_URL } from '../config.
 export { GOOGLE_SHEETS_SPREADSHEET_URL, GOOGLE_SHEETS_CSV_URL };
 
 /**
+ * Batasan kapasitas fisik rak & lemari sesuai spesifikasi LSP
+ */
+export const MAX_BOXES_PER_RAK = 11;
+export const MAX_BOXES_PER_LEMARI = 44;
+export const STANDARD_RAKS: ('Rak A' | 'Rak B' | 'Rak C' | 'Rak D')[] = ['Rak A', 'Rak B', 'Rak C', 'Rak D'];
+
+/**
+ * Standarisasi penamaan rak hanya ke 'Rak A', 'Rak B', 'Rak C', dan 'Rak D'
+ * Menghapus/mengonversi pemetaan angka lama (1 -> A, 2 -> B, dst)
+ */
+export function standardizeRakName(rawRak: any): 'Rak A' | 'Rak B' | 'Rak C' | 'Rak D' {
+  if (!rawRak) return 'Rak A';
+  const clean = String(rawRak).trim();
+
+  // Cek huruf eksplisit A, B, C, D (case-insensitive)
+  if (/\b[aA]\b|rak\s*[-_]?\s*[aA]|r[aA]\b|[aA]$/i.test(clean)) return 'Rak A';
+  if (/\b[bB]\b|rak\s*[-_]?\s*[bB]|r[bB]\b|[bB]$/i.test(clean)) return 'Rak B';
+  if (/\b[cC]\b|rak\s*[-_]?\s*[cC]|r[cC]\b|[cC]$/i.test(clean)) return 'Rak C';
+  if (/\b[dD]\b|rak\s*[-_]?\s*[dD]|r[dD]\b|[dD]$/i.test(clean)) return 'Rak D';
+
+  // Pemetaan angka lama (1 -> A, 2 -> B, 3 -> C, 4 -> D)
+  if (/\b1\b|rak\s*[-_]?\s*1|r1\b/i.test(clean)) return 'Rak A';
+  if (/\b2\b|rak\s*[-_]?\s*2|r2\b/i.test(clean)) return 'Rak B';
+  if (/\b3\b|rak\s*[-_]?\s*3|r3\b/i.test(clean)) return 'Rak C';
+  if (/\b4\b|rak\s*[-_]?\s*4|r4\b/i.test(clean)) return 'Rak D';
+
+  return 'Rak A';
+}
+
+/**
+ * Dapatkan rekomendasi rak berikutnya jika kapasitas rak saat ini sudah penuh 11 boks
+ */
+export function getNextRak(currentRak: string): 'Rak A' | 'Rak B' | 'Rak C' | 'Rak D' {
+  const norm = standardizeRakName(currentRak);
+  switch (norm) {
+    case 'Rak A': return 'Rak B';
+    case 'Rak B': return 'Rak C';
+    case 'Rak C': return 'Rak D';
+    case 'Rak D': return 'Rak A';
+    default: return 'Rak B';
+  }
+}
+
+/**
  * Converts any Google Sheets URL (e.g. /edit?usp=sharing, /view) to its direct CSV export link
  */
 export function convertGoogleSheetsUrlToCsv(inputUrl: string): string {
@@ -177,7 +221,7 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
     ).trim();
     const jumlah_peserta_bk = parseInt(rawPesertaBk.replace(/\D/g, ''), 10) || 0;
 
-    // 6. Kode Lemari -> lokasi.lemari (mendukung seluruh lemari dinamis tanpa batas jumlah)
+    // 6. Kode Lemari -> lokasi.lemari (dinamis; jika 'kosong'/'keluar'/- jangan dimasukkan ke Lemari 1)
     const rawLemari = getRecordValue(
       rec,
       'Kode Lemari',
@@ -186,16 +230,26 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
       'lemari',
       'lemari nomor'
     ).trim();
-    const lemariDigits = rawLemari.match(/\d+/);
+
+    const isLemariKosong =
+      !rawLemari ||
+      rawLemari.toLowerCase() === 'kosong' ||
+      rawLemari.toLowerCase() === 'keluar' ||
+      rawLemari === '-' ||
+      rawLemari === '0';
+
     let lemari: number | string = 0;
-    if (lemariDigits) {
-      lemari = parseInt(lemariDigits[0], 10);
-    } else if (rawLemari && rawLemari.toLowerCase() !== 'kosong') {
-      const cleanLemari = rawLemari.replace(/lemari[-_\s]*/i, '').trim();
-      lemari = cleanLemari || rawLemari;
+    if (!isLemariKosong) {
+      const lemariDigits = rawLemari.match(/\d+/);
+      if (lemariDigits) {
+        lemari = parseInt(lemariDigits[0], 10);
+      } else {
+        const cleanLemari = rawLemari.replace(/lemari[-_\s]*/i, '').trim();
+        lemari = cleanLemari || rawLemari;
+      }
     }
 
-    // 7. Nomor Rak -> lokasi.rak
+    // 7. Nomor Rak -> lokasi.rak (standar Rak A, Rak B, Rak C, Rak D)
     const rawRak = getRecordValue(
       rec,
       'Nomor Rak',
@@ -204,7 +258,7 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
       'rak',
       'no rak'
     ).trim();
-    const rak = rawRak || '-';
+    const rak = isLemariKosong ? '-' : standardizeRakName(rawRak);
 
     // 8. Nomor Baris -> lokasi.baris
     const rawBaris = getRecordValue(
@@ -217,7 +271,7 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
     ).trim();
     const baris = rawBaris || '-';
 
-    // 9. Status Arsip -> status_arsip
+    // 9. Status Arsip -> status_arsip (jika lemari kosong/keluar, kategorikan Tidak Tersedia)
     const rawStatusArsip = getRecordValue(
       rec,
       'Status Arsip',
@@ -226,9 +280,13 @@ export function mapCsvRecordsToBoxes(records: Record<string, string>[]): BoksArs
       'arsip'
     ).trim();
 
-    let status_arsip: StatusArsip = 'Tersedia';
+    let status_arsip: StatusArsip = isLemariKosong ? 'Tidak Tersedia' : 'Tersedia';
     if (rawStatusArsip) {
-      status_arsip = rawStatusArsip;
+      if (rawStatusArsip.toLowerCase() === 'kosong' || rawStatusArsip.toLowerCase() === 'keluar') {
+        status_arsip = 'Tidak Tersedia';
+      } else {
+        status_arsip = rawStatusArsip;
+      }
     }
 
     // 10. Status Barang -> status_barang
@@ -332,93 +390,48 @@ export function deduplicateBoxes(boxes: BoksArsip[]): BoksArsip[] {
 }
 
 /**
- * Robust search matcher for a single box based on keyword query.
- * Matches:
- * - Nama Pelatihan
- * - ID Box (e.g. 'BOX01', 'L1-R1-BOX01-2022')
- * - Lemari (e.g. 'Lemari 1', 'L1', 'L-1', 'Antrian')
- * - Nomor Rak (e.g. 'Rak A', 'Rak D')
- * - Nomor Baris (e.g. 'Baris 1', 'Baris 2')
- * - Tahun Pelaksanaan (e.g. '2024', '2023')
- * - Status Arsip & Status Barang (e.g. 'Tersedia', 'Lengkap')
+ * Pencarian fleksibel (case-insensitive & partial match):
+ * Mencari sebagian kata pada Nama Pelatihan, ID Boks, Tahun Pelaksanaan,
+ * Nama Lemari, Nomor Rak, Nomor Baris/Box, Status Arsip/Barang, maupun Hasil Uji.
  */
 export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
   if (!box) return false;
   const q = String(searchQuery || '').toLowerCase().trim();
   if (!q) return true;
 
+  // Pisahkan query menjadi token kata untuk pencarian parsial fleksibel
+  const tokens = q.split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return true;
+
   const nama = String(box.nama_pelatihan || '').toLowerCase();
-  const idBox = String(box.id_box || '').toLowerCase();
-  const tahun = String(box.tahun_pelaksanaan ?? '');
+  const idBox = String(box.id_box || box['Kode Boks'] || box.id || '').toLowerCase();
+  const tahun = String(box.tahun_pelaksanaan ?? '').toLowerCase();
   const sArsip = String(box.status_arsip || '').toLowerCase();
   const sBarang = String(box.status_barang || '').toLowerCase();
-  const lemariVal = box.lokasi?.lemari ?? '';
-  const isPositiveLemari = typeof lemariVal === 'number' ? lemariVal > 0 : Boolean(lemariVal && lemariVal !== '0');
+  const lemariVal = String(box.lokasi?.lemari ?? '').toLowerCase().trim();
+  const isLemari0 = lemariVal === '0' || lemariVal === 'kosong' || lemariVal === 'keluar';
+  const lemariPhrase = isLemari0 ? 'antrian tanpa lemari keluar kosong' : `lemari ${lemariVal} l${lemariVal}`;
   const rak = String(box.lokasi?.rak ?? '').toLowerCase().trim();
-  const baris = String(box.lokasi?.baris ?? '').toLowerCase().trim();
+  const rakPhrase = `rak ${rak.replace(/^rak\s*/i, '')}`;
+  const baris = String((box.lokasi?.baris || box.nomor_box) ?? '').toLowerCase().trim();
+  const barisPhrase = `box ${baris.replace(/^box\s*/i, '')} baris ${baris}`;
   const hasilUji = String(box.hasilUjiKompetensi || box.hasil_uji_kompetensi || box['Hasil Uji Kompetensi'] || '').toLowerCase().trim();
 
-  // 1. Nama Pelatihan
-  if (nama.includes(q)) return true;
-
-  // 2. ID Box
-  if (idBox.includes(q)) return true;
-
-  // 3. Tahun Pelaksanaan
-  if (tahun.includes(q)) return true;
-
-  // 4. Lemari
-  if (isPositiveLemari) {
-    if (
-      q === `lemari ${lemariVal}` ||
-      q === `lemari${lemariVal}` ||
-      q === `l${lemariVal}` ||
-      q === `l-${lemariVal}` ||
-      `lemari ${lemariVal}`.toLowerCase().includes(q)
-    ) {
-      return true;
-    }
-  } else {
-    if (q === 'antrian' || q === 'tanpa lemari' || q === 'lemari 0' || q === 'l0') {
-      return true;
-    }
-  }
-
-  // 5. Rak
-  if (rak.includes(q) || `rak ${rak}`.includes(q)) return true;
-
-  // 6. Baris
-  if (baris.includes(q) || `baris ${baris}`.includes(q)) return true;
-
-  // 7. Status Arsip & Barang
-  if (sArsip.includes(q)) return true;
-  if (sBarang.includes(q)) return true;
-
-  // 8. Hasil Uji Kompetensi
-  if (hasilUji && hasilUji.includes(q)) return true;
-
-  // 9. Multi-word search for general combinations like 'Pembatik 2024' or 'Assembly 2022'
-  const isSpecificPhrase = q.startsWith('lemari ') || q.startsWith('rak ') || q.startsWith('baris ');
-  if (!isSpecificPhrase) {
-    const words = q.split(/\s+/).filter(Boolean);
-    if (words.length > 1) {
-      const allWordsMatch = words.every((word) => {
-        const wName = nama.includes(word);
-        const wId = idBox.includes(word);
-        const wYear = tahun.includes(word);
-        const wRak = rak.includes(word);
-        const wBaris = baris.includes(word);
-        const wStatus = sArsip.includes(word) || sBarang.includes(word);
-        const wLemari =
-          isPositiveLemari
-            ? (word.startsWith('l') && `l${lemariVal}`.toLowerCase().includes(word)) || word === 'lemari'
-            : word === 'antrian';
-
-        return wName || wId || wYear || wRak || wBaris || wStatus || wLemari;
-      });
-      if (allWordsMatch) return true;
-    }
-  }
-
-  return false;
+  // Seluruh token pencarian harus ditemukan sebagian (partial match) pada salah satu atribut boks
+  return tokens.every((token) => {
+    return (
+      nama.includes(token) ||
+      idBox.includes(token) ||
+      tahun.includes(token) ||
+      lemariVal.includes(token) ||
+      lemariPhrase.includes(token) ||
+      rak.includes(token) ||
+      rakPhrase.includes(token) ||
+      baris.includes(token) ||
+      barisPhrase.includes(token) ||
+      sArsip.includes(token) ||
+      sBarang.includes(token) ||
+      hasilUji.includes(token)
+    );
+  });
 }
