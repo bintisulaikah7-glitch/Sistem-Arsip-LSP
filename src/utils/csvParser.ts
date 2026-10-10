@@ -446,8 +446,12 @@ export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
 export function cleanTrainingName(rawName: string): string {
   if (!rawName) return '';
   return rawName
-    .replace(/\s*\(\s*\d+\s*(?:\/\s*\d+)?\s*\)/gi, '')
-    .replace(/\s*\[\s*\d+\s*\]/gi, '')
+    // Hapus imbuhan kurung seperti (1), (2), (01), (1/2), (Part 1), (Bagian 1), (Boks 1), (Box 1)
+    .replace(/\s*\(\s*(?:part|bagian|boks|box|pecahan)?\s*\d+\s*(?:[\/of-]\s*\d+)?\s*\)/gi, '')
+    // Hapus imbuhan kurung siku seperti [1], [2], [01], [Part 1]
+    .replace(/\s*\[\s*(?:part|bagian|boks|box|pecahan)?\s*\d+\s*(?:[\/of-]\s*\d+)?\s*\]/gi, '')
+    // Hapus suffix pemisah seperti - Part 1, - Bagian 1, - Boks 1
+    .replace(/\s*[-–—]\s*(?:part|bagian|boks|box|pecahan)\s*\d+$/gi, '')
     .trim();
 }
 

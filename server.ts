@@ -540,7 +540,7 @@ async function startServer() {
   });
 
   const OFFICIAL_WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycby5-El1hSqVLgpYTLtfG9ICIWqLf_QW-67UKguYLUq8RglBJtFq3-hm3aIxcG6KIwCt/exec";
+    "https://script.google.com/macros/s/AKfycbx4btq9oWF0JBn1PZ5Ew3jRJUKlvu8YH7F55lXsZmPupaHwcIcgvf6_G2SfnmEMOCYa/exec";
 
   // 11b. Google Apps Script Web App GET Proxy (Bypasses Browser CORS)
   app.get("/api/apps-script/get", async (req: Request, res: Response) => {

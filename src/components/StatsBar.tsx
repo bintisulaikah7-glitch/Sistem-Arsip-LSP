@@ -84,7 +84,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
       {/* 1. KARTU UTAMA PESERTA ASESMEN & BK */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* KARTU PESERTA ASESMEN */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs hover:border-blue-200 transition-all flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-blue-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -94,22 +94,22 @@ export const StatsBar: React.FC<StatsBarProps> = ({
                 Deduplikasi dari {totalPelatihanUnik} Pelatihan Dasar (Tanpa Double Count)
               </p>
             </div>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
-              <Users className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs">
+              <Users className="w-4.5 h-4.5" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
+          <div className="mt-4 flex items-baseline justify-between">
             <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight tabular-nums" id="stat-peserta-total">
               {totalPeserta.toLocaleString('id-ID')}
             </span>
-            <span id="badge-peserta-k" className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span id="badge-peserta-k" className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
               {persenK}% Kompeten (K)
             </span>
           </div>
         </div>
 
         {/* KARTU PESERTA BK */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs hover:border-violet-200 transition-all flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-violet-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -119,15 +119,15 @@ export const StatsBar: React.FC<StatsBarProps> = ({
                 Total Akumulasi Peserta BK Resmi
               </p>
             </div>
-            <div className="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shrink-0 shadow-2xs">
+              <ShieldCheck className="w-4.5 h-4.5" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
+          <div className="mt-4 flex items-baseline justify-between">
             <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight tabular-nums" id="stat-peserta-bk">
               {totalBK.toLocaleString('id-ID')}
             </span>
-            <span id="badge-peserta-bk" className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
+            <span id="badge-peserta-bk" className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
               {persenBK}% BK
             </span>
           </div>
@@ -137,14 +137,14 @@ export const StatsBar: React.FC<StatsBarProps> = ({
       {/* 2. RINGKASAN STATUS FISIK BOKS ARSIP */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Total Boks Arsip */}
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-slate-300 transition-all">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-slate-300 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-600">Total Boks Arsip</span>
-            <div className="w-7 h-7 rounded-md bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shadow-2xs">
               <Boxes className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline justify-between">
+          <div className="mt-3 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight tabular-nums">
               {totalBoks}
             </span>
@@ -153,52 +153,52 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         </div>
 
         {/* Arsip Tersedia / Aktif */}
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-emerald-200 transition-all">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-emerald-200 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-600">Arsip Tersedia</span>
-            <div className="w-7 h-7 rounded-md bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shadow-2xs">
               <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline justify-between">
+          <div className="mt-3 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-emerald-600 tracking-tight tabular-nums">
               {tersediaCount}
             </span>
-            <span className="text-[11px] text-emerald-700 font-medium bg-emerald-50 px-1.5 py-0.5 rounded">
+            <span className="text-[11px] text-emerald-700 font-medium bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
               Siap Akses
             </span>
           </div>
         </div>
 
         {/* Arsip Tidak Lengkap / Inaktif */}
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-amber-200 transition-all">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-amber-200 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-600">Tidak Lengkap</span>
-            <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shadow-2xs">
               <Clock className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline justify-between">
+          <div className="mt-3 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-amber-600 tracking-tight tabular-nums">
               {tidakLengkapCount}
             </span>
-            <span className="text-[11px] text-amber-700 font-medium bg-amber-50 px-1.5 py-0.5 rounded">
+            <span className="text-[11px] text-amber-700 font-medium bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
               Cek Fisik
             </span>
           </div>
         </div>
 
         {/* Berada di Luar / Berkas Keluar */}
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-rose-200 transition-all">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-rose-200 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-600 truncate" title="Berada di Luar / Berkas Keluar">
               Berkas Keluar
             </span>
-            <div className="w-7 h-7 rounded-md bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0 shadow-2xs">
               <Trash2 className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline justify-between">
+          <div className="mt-3 flex items-baseline justify-between">
             <span className="text-xl sm:text-2xl font-bold text-rose-600 tracking-tight tabular-nums">
               {tidakTersediaCount}
             </span>

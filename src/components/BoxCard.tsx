@@ -97,7 +97,7 @@ export const BoxCard: React.FC<BoxCardProps> = ({
     : 'Antrian / Tanpa Lemari';
 
   return (
-    <div className={`bg-white border rounded-xl p-5 flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md ${
+    <div className={`bg-white border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md ${
       isBerkasKeluar ? 'border-rose-200 hover:border-rose-400' : 'border-slate-200 hover:border-blue-400'
     }`}>
       <div>

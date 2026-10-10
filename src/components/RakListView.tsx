@@ -154,7 +154,7 @@ export const RakListView: React.FC<RakListViewProps> = ({
               <div
                 key={`rak-card-${rak}-${idx}`}
                 onClick={() => onSelectRak(rak)}
-                className={`group bg-white p-5 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center text-center justify-between ${
+                className={`group bg-white p-5 rounded-2xl border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center text-center justify-between ${
                   isPenuh ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200 hover:border-blue-400'
                 }`}
               >

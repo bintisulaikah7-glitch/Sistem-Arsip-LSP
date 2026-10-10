@@ -31,9 +31,9 @@ export function mapAppsScriptItemToBox(rawItem: any, index: number): BoksArsip |
   const rawLemari = cleanItem['kode lemari'] || cleanItem['kode_lemari'] || cleanItem['lemari'] || '';
   const rawRak = cleanItem['nomor rak'] || cleanItem['nomor_rak'] || cleanItem['rak'] || '';
   const rawBox = cleanItem['nomor box'] || cleanItem['nomor_box'] || cleanItem['box'] || '';
-  const rawIdBox = cleanItem['id_box'] || cleanItem['id box'] || cleanItem['id'] || '';
+  const rawIdBox = cleanItem['id_box'] || cleanItem['id box'] || cleanItem['id boks'] || cleanItem['id_boks'] || cleanItem['idboks'] || cleanItem['id'] || '';
   const rawNama = cleanItem['nama pelatihan'] || cleanItem['nama_pelatihan'] || cleanItem['nama'] || '';
-  const rawTahun = cleanItem['tahun pelaksanaan'] || cleanItem['tahun_pelaksanaan'] || cleanItem['tahun'] || '';
+  const rawTahun = cleanItem['tahun pelaksanaan'] || cleanItem['tahun pelaksanaa'] || cleanItem['tahun_pelaksanaan'] || cleanItem['tahun'] || '';
   const rawPeserta = cleanItem['jumlah peserta'] || cleanItem['jumlah_peserta'] || cleanItem['peserta'] || 0;
   const rawPesertaBk = cleanItem['jumlah peserta bk'] || cleanItem['jumlah_peserta_bk'] || cleanItem['bk'] || 0;
   const rawStatusArsip = cleanItem['status arsip'] || cleanItem['status_arsip'] || 'Tersedia';
@@ -247,30 +247,32 @@ export async function fetchBoxesFromAppsScript(
 
     let response: Response | null = null;
 
-    // 1. Coba via Proxy Backend terlebih dahulu untuk mencegah error CORS di browser
+    // 1. Prioritas Utama: Direct Fetch ke Google Apps Script Web App
+    // Menggunakan opsi { method: 'GET', redirect: 'follow' } agar data JSON dari Google Sheets
+    // bisa ditarik langsung secara live oleh GitHub Pages tanpa terhalang CORS.
     try {
-      const proxyRes = await fetch(`/api/apps-script/get?url=${encodeURIComponent(urlWithCacheBuster)}`, {
+      response = await fetch(urlWithCacheBuster, {
+        method: 'GET',
+        redirect: 'follow',
         headers: { Accept: 'application/json, text/plain, */*' },
         signal: controller.signal
       });
-      if (proxyRes.ok) {
-        response = proxyRes;
-      }
-    } catch {
-      // Proxy backend tidak tersedia atau gagal
+    } catch (directErr) {
+      console.warn('[fetchBoxesFromAppsScript] Direct fetch attempt note:', directErr);
     }
 
-    // 2. Fallback: Direct Fetch ke Google Apps Script (hanya jika di lingkungan server/Node, di browser direct fetch selalu gagal CORS)
-    if (!response && typeof window === 'undefined') {
+    // 2. Fallback: Proxy Backend jika direct fetch terkendala di lingkungan server development
+    if (!response || !response.ok) {
       try {
-        response = await fetch(urlWithCacheBuster, {
-          method: 'GET',
+        const proxyRes = await fetch(`/api/apps-script/get?url=${encodeURIComponent(urlWithCacheBuster)}`, {
           headers: { Accept: 'application/json, text/plain, */*' },
-          redirect: 'follow',
           signal: controller.signal
         });
+        if (proxyRes.ok) {
+          response = proxyRes;
+        }
       } catch {
-        // Direct fetch gagal
+        // Proxy backend tidak tersedia atau gagal
       }
     }
 

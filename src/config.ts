@@ -5,7 +5,7 @@
 
 // Web App URL resmi Google Apps Script milik LSP BDI Surabaya
 export const DEFAULT_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycby5-El1hSqVLgpYTLtfG9ICIWqLf_QW-67UKguYLUq8RglBJtFq3-hm3aIxcG6KIwCt/exec';
+  'https://script.google.com/macros/s/AKfycbx4btq9oWF0JBn1PZ5Ew3jRJUKlvu8YH7F55lXsZmPupaHwcIcgvf6_G2SfnmEMOCYa/exec';
 
 // Google Sheets Spreadsheet URL resmi LSP
 export const GOOGLE_SHEETS_SPREADSHEET_URL =
@@ -24,7 +24,11 @@ export function getStoredAppsScriptUrl(): string {
   if (typeof window !== 'undefined') {
     try {
       const customUrl = localStorage.getItem('lsp_apps_script_url');
-      if (customUrl && customUrl.trim().startsWith('https://script.google.com/macros/s/')) {
+      if (
+        customUrl &&
+        customUrl.trim().startsWith('https://script.google.com/macros/s/') &&
+        !customUrl.includes('AKfycby5-El1hSqVLgpYTLtfG9ICIWqLf_QW-67UKguYLUq8RglBJtFq3-hm3aIxcG6KIwCt')
+      ) {
         return customUrl.trim();
       }
     } catch {

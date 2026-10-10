@@ -137,7 +137,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             return (
               <div
                 key={`lemari-card-${lemariKey}`}
-                className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                className="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between"
                 onClick={() => onSelectCabinet(selectValue)}
               >
                 {/* Header Kartu Lemari */}
