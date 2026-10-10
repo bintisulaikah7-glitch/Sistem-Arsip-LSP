@@ -154,14 +154,19 @@ export default function App() {
       const foundBox = data?.find?.((b: any) => {
         if (!b) return false;
         const boxCode = (b.id_box || b['Kode Boks'] || b['kode_box'] || b['id'] || b.code || '').toString().trim().toLowerCase();
-        return boxCode === cleanTarget;
+        return boxCode === cleanTarget || boxCode.replace(/[-_\s]/g, '') === cleanTarget.replace(/[-_\s]/g, '');
       });
 
       if (foundBox) {
         hasHandledUrlQueryRef.current = true;
         setSelectedBox(foundBox);
         setIsModalOpen(true);
-        showToast(`Membuka rincian boks arsip: ${foundBox.id_box || targetBoxId}`);
+        // Otomatis filter pencarian dan sorot boks arsip yang discan
+        setSearchQuery(foundBox.id_box);
+        showToast(`Membuka rincian boks arsip: ${foundBox.id_box}`);
+      } else {
+        // Jika belum ditemukan di data aktif, terapkan sebagai filter pencarian langsung
+        setSearchQuery(targetBoxId.trim());
       }
     }
 

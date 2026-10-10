@@ -7,38 +7,28 @@
 /**
  * Menghasilkan base URL dinamis menggunakan window.location.origin + window.location.pathname
  */
+export const OFFICIAL_GITHUB_PAGES_BASE_URL = 'https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/';
+
+/**
+ * Menghasilkan base URL portal menggunakan URL GitHub Pages resmi
+ */
 export function getBasePortalUrl(): string {
-  if (typeof window !== 'undefined' && window.location) {
-    const origin = window.location.origin;
-    let pathname = window.location.pathname || '/';
-    // Hapus file spesifik seperti index.html jika ada
-    if (pathname.endsWith('index.html')) {
-      pathname = pathname.substring(0, pathname.length - 'index.html'.length);
-    }
-    if (!pathname.endsWith('/')) {
-      pathname = `${pathname}/`;
-    }
-    return `${origin}${pathname}`;
-  }
-  return 'https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/';
+  return OFFICIAL_GITHUB_PAGES_BASE_URL;
 }
 
 /**
  * Menghasilkan link lengkap portal publik untuk boks arsip tertentu:
- * Format: ${window.location.origin}${window.location.pathname}?box=${encodeURIComponent(idBoks)}
- * Menjamin tautan selalu dinamis mengikuti domain dan path aktif saat ini.
+ * Domain utamanya selalu menggunakan URL GitHub Pages resmi:
+ * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?boxId=${encodeURIComponent(box.id_box)}
  */
 export function getBoxPublicUrl(idBoks: string): string {
   const cleanId = (idBoks || '').trim();
-  if (typeof window !== 'undefined' && window.location) {
-    return `${window.location.origin}${window.location.pathname}?box=${encodeURIComponent(cleanId)}`;
-  }
-  return `https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?box=${encodeURIComponent(cleanId)}`;
+  return `${OFFICIAL_GITHUB_PAGES_BASE_URL}?boxId=${encodeURIComponent(cleanId)}`;
 }
 
 /**
  * Menghasilkan URL gambar QR code SVG/PNG beresolusi tajam
- * yang meng-encode tautan dinamis berbasis window.location.origin + window.location.pathname
+ * yang meng-encode tautan dinamis berbasis GitHub Pages
  */
 export function getBoxQrImageUrl(idBoks: string, size = 240): string {
   const targetUrl = getBoxPublicUrl(idBoks);
@@ -113,13 +103,13 @@ export function getUrlLocationParams(): { pelatihan: string | null; lemari: stri
 export function getUrlBoxParam(): string | null {
   if (typeof window === 'undefined') return null;
 
-  // 1. Membaca standard search params (?box=...)
+  // 1. Membaca standard search params (?boxId=...)
   try {
     const searchParams = new URLSearchParams(window.location.search);
     const boxParam =
-      searchParams.get('box') ||
       searchParams.get('boxId') ||
       searchParams.get('box_id') ||
+      searchParams.get('box') ||
       searchParams.get('id');
     if (boxParam && boxParam.trim()) {
       return decodeURIComponent(boxParam).trim();
@@ -128,7 +118,7 @@ export function getUrlBoxParam(): string | null {
     // abaikan jika parsing error
   }
 
-  // 2. Fallback membaca hash params (#/?box=... atau #box=...)
+  // 2. Fallback membaca hash params (#/?boxId=... atau #boxId=...)
   try {
     if (window.location.hash) {
       const hashStr = window.location.hash;
@@ -136,9 +126,9 @@ export function getUrlBoxParam(): string | null {
       if (qIndex !== -1) {
         const hashParams = new URLSearchParams(hashStr.substring(qIndex));
         const boxParam =
-          hashParams.get('box') ||
           hashParams.get('boxId') ||
           hashParams.get('box_id') ||
+          hashParams.get('box') ||
           hashParams.get('id');
         if (boxParam && boxParam.trim()) {
           return decodeURIComponent(boxParam).trim();
@@ -146,9 +136,9 @@ export function getUrlBoxParam(): string | null {
       } else if (hashStr.includes('=')) {
         const hashParams = new URLSearchParams(hashStr.replace(/^#\/?/, ''));
         const boxParam =
-          hashParams.get('box') ||
           hashParams.get('boxId') ||
           hashParams.get('box_id') ||
+          hashParams.get('box') ||
           hashParams.get('id');
         if (boxParam && boxParam.trim()) {
           return decodeURIComponent(boxParam).trim();
