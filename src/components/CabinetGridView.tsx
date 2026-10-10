@@ -1,7 +1,7 @@
 import React from 'react';
 import { Archive, MapPin, Folder, Users, CheckCircle2, ClipboardCheck, Layers, Calendar, ArrowRight } from 'lucide-react';
-import { BoksArsip } from '../types.ts';
-import { calculateDeduplicatedStats } from '../utils/csvParser.ts';
+import { BoksArsip } from '../types';
+import { calculateDeduplicatedStats } from '../utils/csvParser';
 
 interface CabinetGridViewProps {
   boxes: BoksArsip[];
@@ -16,11 +16,10 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   onSelectCabinet,
   onOpenInputLokasi
 }) => {
-  // Daftarkan seluruh lemari arsip secara dinamis (tanpa batasan jumlah lemari)
+  // Daftarkan seluruh lemari arsip secara dinamis
   const activeCabinetList = React.useMemo(() => {
     const lemariMap = new Map<string, BoksArsip[]>();
 
-    // 1. Masukkan seluruh lemari dari availableLemari agar lemari baru yang ditambahkan langsung memiliki kartu di grid
     (availableLemari || []).forEach((item) => {
       const raw = String(item).replace(/lemari[-_\s]*/i, '').trim();
       if (
@@ -36,7 +35,6 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
       }
     });
 
-    // 2. Masukkan seluruh boks arsip ke lemari masing-masing
     (boxes || []).forEach((b) => {
       if (!b || !b.lokasi?.lemari) return;
 
@@ -74,11 +72,11 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
   }, [boxes, availableLemari]);
 
   return (
-    <div className="space-y-4 mb-8">
-      {/* Section Header (Light Enterprise) */}
+    <div className="space-y-4 mb-8 w-full">
+      {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-2xs">
+          <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-xs">
             <Archive className="w-4 h-4" />
           </div>
           <div>
@@ -97,8 +95,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         {onOpenInputLokasi && (
           <button
             onClick={onOpenInputLokasi}
-            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition shadow-2xs"
-            title="Input Lokasi Berkas LSP &amp; Generate QR Code"
+            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition shadow-xs"
+            title="Input Lokasi Berkas LSP & Generate QR Code"
           >
             <MapPin className="w-3.5 h-3.5 text-blue-600" />
             <span>+ Input Lokasi &amp; QR</span>
@@ -106,8 +104,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         )}
       </div>
 
-      {/* Grid of Dynamic Cabinet Cards (2 Kolom pada Layar Sedang/Besar) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Grid 2 Kolom untuk Kartu Lemari */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         {activeCabinetList.length > 0 ? (
           activeCabinetList.map(([lemariKey, cabinetBoxes]) => {
             const lemariNum = parseInt(lemariKey, 10);
@@ -137,13 +135,13 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             return (
               <div
                 key={`lemari-card-${lemariKey}`}
-                className="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                className="group bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between w-full h-full"
                 onClick={() => onSelectCabinet(selectValue)}
               >
                 {/* Header Kartu Lemari */}
                 <div className="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
                   <div className="flex items-center space-x-3">
-                    <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200 shadow-2xs">
+                    <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200 shadow-xs">
                       <Folder className="w-5 h-5" />
                     </div>
                     <div>
@@ -219,7 +217,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
                   </div>
                 </div>
 
-                {/* Footer Kartu & Tombol Aksi */}
+                {/* Footer Kartu */}
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
                   <span className="text-[11px] text-slate-400 font-medium">
                     Buka sekat rak lemari
