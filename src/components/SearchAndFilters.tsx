@@ -85,11 +85,11 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
   return (
     <div className="space-y-3 mb-6">
-      {/* 1. KOTAK PENCARIAN TERPADU (LIGHT ENTERPRISE) */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-        {/* Input Teks Pencarian */}
-        <div className="flex-1 flex items-center space-x-2.5 px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-          <Search className="w-4 h-4 text-slate-400 shrink-0" />
+      {/* 1. KOTAK PENCARIAN TERPADU: Satu baris kartu putih bersih */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-2 sm:p-2.5 shadow-sm flex items-center gap-2 sm:gap-2.5">
+        {/* Bilah Pencarian Nama Pelatihan & Boks */}
+        <div className="flex-1 flex items-center px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all min-w-0">
+          <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2" />
           <input
             type="text"
             id="inputPencarian"
@@ -100,14 +100,14 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 eksekusiPencarian();
               }
             }}
-            className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none font-medium"
+            className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none font-medium truncate"
             placeholder="Cari nama pelatihan, ID Boks Arsip, Lemari, Rak, Tahun..."
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => onSearchChange('')}
-              className="text-slate-400 hover:text-slate-600 p-1 text-sm cursor-pointer transition-colors"
+              className="text-slate-400 hover:text-slate-600 p-1 text-sm cursor-pointer transition-colors ml-1 shrink-0"
               title="Hapus teks"
             >
               <X className="w-4 h-4" />
@@ -115,25 +115,28 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           )}
         </div>
 
-        {/* Aksi Tombol (Scan QR & Tombol Cari Utama Biru Modern) */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-colors shadow-2xs cursor-pointer"
-            onClick={bukaScannerQR}
-          >
-            <QrCode className="w-4 h-4 text-slate-600" />
-            <span>Scan QR</span>
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-xl transition-all shadow-xs cursor-pointer"
-            onClick={eksekusiPencarian}
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span>Cari</span>
-          </button>
-        </div>
+        {/* Tombol Scan QR */}
+        <button
+          type="button"
+          className="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-blue-700 bg-slate-50 hover:bg-blue-50 rounded-xl border border-slate-200 hover:border-blue-300 transition-colors shadow-2xs cursor-pointer whitespace-nowrap shrink-0"
+          onClick={bukaScannerQR}
+          title="Buka Pemindai QR Code"
+        >
+          <QrCode className="w-4 h-4 text-blue-600 shrink-0" />
+          <span className="hidden xs:inline sm:inline">Scan QR</span>
+          <span className="xs:hidden sm:hidden">QR</span>
+        </button>
+
+        {/* Tombol Cari */}
+        <button
+          type="button"
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-xl transition-all shadow-xs cursor-pointer whitespace-nowrap shrink-0"
+          onClick={eksekusiPencarian}
+          title="Eksekusi Pencarian"
+        >
+          <Search className="w-3.5 h-3.5 shrink-0" />
+          <span>Cari</span>
+        </button>
       </div>
 
       {/* 2. BARIS FILTER PENDUKUNG & TAMPILAN (BACKGROUND PUTIH, BORDER SLATE-200) */}

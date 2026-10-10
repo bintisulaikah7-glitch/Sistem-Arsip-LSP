@@ -144,8 +144,8 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
               )}
             </div>
 
-            {/* Grid Boks di dalam Rak Ini */}
-            <div className="grid-boks grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Grid Boks di dalam Rak Ini (2 Kolom pada Layar Sedang/Besar) */}
+            <div className="grid-boks grid grid-cols-1 md:grid-cols-2 gap-6">
               {boksDiRakIni.map((boks, boksIdx) => (
                 <BoxCard
                   key={`${boks.id_box || boks.Kode_boks || boksIdx}-${boksIdx}`}

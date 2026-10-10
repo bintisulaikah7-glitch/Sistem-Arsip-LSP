@@ -1,29 +1,27 @@
 /**
  * Konfigurasi URL Dinamis Portal LSP & Generator QR Code
- * Menggunakan window.location.origin + window.location.pathname
- * agar tautan QR Code selalu dinamis mengikuti URL domain tempat aplikasi berjalan.
+ * Menggunakan URL GitHub Pages yang di-hardcode langsung:
+ * https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/
  */
 
-/**
- * Menghasilkan base URL dinamis menggunakan window.location.origin + window.location.pathname
- */
-export const OFFICIAL_GITHUB_PAGES_BASE_URL = 'https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/';
+// Hardcoded base URL resmi GitHub Pages
+export const baseUrl = "https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/";
+export const OFFICIAL_GITHUB_PAGES_BASE_URL = baseUrl;
 
 /**
  * Menghasilkan base URL portal menggunakan URL GitHub Pages resmi
  */
 export function getBasePortalUrl(): string {
-  return OFFICIAL_GITHUB_PAGES_BASE_URL;
+  return baseUrl;
 }
 
 /**
  * Menghasilkan link lengkap portal publik untuk boks arsip tertentu:
- * Domain utamanya selalu menggunakan URL GitHub Pages resmi:
  * Format: https://bintisulaikah7-glitch.github.io/Sistem-Arsip-LSP/?boxId=${encodeURIComponent(box.id_box)}
  */
 export function getBoxPublicUrl(idBoks: string): string {
   const cleanId = (idBoks || '').trim();
-  return `${OFFICIAL_GITHUB_PAGES_BASE_URL}?boxId=${encodeURIComponent(cleanId)}`;
+  return `${baseUrl}?boxId=${encodeURIComponent(cleanId)}`;
 }
 
 /**

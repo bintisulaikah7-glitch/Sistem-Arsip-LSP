@@ -138,7 +138,7 @@ export const RakListView: React.FC<RakListViewProps> = ({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {daftarRakUnik.map((rak, idx) => {
             // Hitung jumlah boks aktual di rak tersebut
             const boksDiRakIni = dataLemariIni.filter(item => {
@@ -154,12 +154,12 @@ export const RakListView: React.FC<RakListViewProps> = ({
               <div
                 key={`rak-card-${rak}-${idx}`}
                 onClick={() => onSelectRak(rak)}
-                className={`group bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center text-center justify-between ${
+                className={`group bg-white p-5 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center text-center justify-between ${
                   isPenuh ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200 hover:border-blue-400'
                 }`}
               >
                 <div className="flex justify-center mb-3">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs border transition-colors ${
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-2xs border transition-colors ${
                     isPenuh
                       ? 'bg-amber-50 text-amber-600 border-amber-200 group-hover:bg-amber-100'
                       : 'bg-blue-50 text-blue-600 border-blue-200 group-hover:bg-blue-600 group-hover:text-white'

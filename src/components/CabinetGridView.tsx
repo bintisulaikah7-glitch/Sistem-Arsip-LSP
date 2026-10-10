@@ -82,7 +82,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
           </div>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Tampilan Lemari Arsip Fisik</span>
+              <span>Daftar Lemari Arsip</span>
               <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                 {activeCabinetList.length} Lemari Aktif
               </span>
@@ -105,8 +105,8 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
         )}
       </div>
 
-      {/* Grid of Dynamic Cabinet Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Grid of Dynamic Cabinet Cards (2 Kolom pada Layar Sedang/Besar) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {activeCabinetList.length > 0 ? (
           activeCabinetList.map(([lemariKey, cabinetBoxes]) => {
             const lemariNum = parseInt(lemariKey, 10);
@@ -136,7 +136,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
             return (
               <div
                 key={`lemari-card-${lemariKey}`}
-                className="group relative bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-blue-400 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between"
                 onClick={() => onSelectCabinet(selectValue)}
               >
                 {/* Header Kartu Lemari */}

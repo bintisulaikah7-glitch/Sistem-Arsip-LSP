@@ -134,8 +134,8 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
   const isSuccessBox = apiResponse?.status === 200 && apiResponse?.data && 'id_box' in apiResponse.data;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-xl overflow-hidden text-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden text-slate-800">
         {/* 1. HEADER POPUP */}
         <div className="px-5 py-4 border-b border-slate-200 bg-white flex items-center justify-between">
           <div className="flex items-center space-x-3">
