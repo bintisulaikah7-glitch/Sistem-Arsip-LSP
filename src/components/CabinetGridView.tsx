@@ -1,6 +1,7 @@
 import React from 'react';
 import { Archive, MapPin, Folder, Users, CheckCircle2, ClipboardCheck, Layers, Calendar, ArrowRight } from 'lucide-react';
 import { BoksArsip } from '../types.ts';
+import { calculateDeduplicatedStats } from '../utils/csvParser.ts';
 
 interface CabinetGridViewProps {
   boxes: BoksArsip[];
@@ -111,7 +112,7 @@ export const CabinetGridView: React.FC<CabinetGridViewProps> = ({
           activeCabinetList.map(([lemariKey, cabinetBoxes]) => {
             const lemariNum = parseInt(lemariKey, 10);
 
-            const totalPeserta = cabinetBoxes.reduce((acc, curr) => acc + (curr.jumlah_peserta || 0), 0);
+            const { totalPeserta } = calculateDeduplicatedStats(cabinetBoxes);
             const tersediaCount = cabinetBoxes.filter(
               (b) => b.status_arsip === 'Tersedia' || b.status_arsip === 'Aktif'
             ).length;

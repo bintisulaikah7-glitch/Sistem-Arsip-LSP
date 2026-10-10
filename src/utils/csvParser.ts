@@ -437,11 +437,34 @@ export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
 }
 
 /**
+ * Membersihkan nama pelatihan dari imbuhan angka dalam kurung seperti (1), (2), (3), dsb.
+ * Contoh:
+ * - "Operator Jahit Komponen 1 (1)" -> "Operator Jahit Komponen 1"
+ * - "Operator Jahit Komponen 1 (2)" -> "Operator Jahit Komponen 1"
+ * - "Pelatihan Barista (01)" -> "Pelatihan Barista"
+ */
+export function cleanTrainingName(rawName: string): string {
+  if (!rawName) return '';
+  return rawName
+    .replace(/\s*\(\s*\d+\s*(?:\/\s*\d+)?\s*\)/gi, '')
+    .replace(/\s*\[\s*\d+\s*\]/gi, '')
+    .trim();
+}
+
+/**
  * Menghitung statistik peserta asesmen dan peserta BK dengan deduplikasi
- * berdasarkan Nama Pelatihan Dasar (mengabaikan akhiran pecahan seperti (1), (2), (01), dll)
- * sehingga dokumen pelatihan yang terbagi ke 2 boks fisik TIDAK dihitung dua kali.
+ * berdasarkan Nama Pelatihan Dasar (mengabaikan imbuhan angka seperti (1), (2), (3))
+ * sehingga dokumen 1 pelatihan yang terbagi ke 2 atau lebih boks fisik TIDAK dihitung dua kali.
+ * 
+ * Ketentuan:
+ * 1. Bersihkan nama pelatihan dari imbuhan angka dalam kurung seperti (1), (2), (3).
+ * 2. Kelompokkan (grouping) data berdasarkan Nama Pelatihan Dasar yang sudah dibersihkan.
+ * 3. Untuk pelatihan yang sama, ambil data jumlah peserta dari 1 boks saja (misal boks pertama)
+ *    agar total peserta di dashboard akurat dan tidak ganda.
+ * 4. Untuk Total Boks Arsip, tetap hitung seluruh baris data boks fisik tanpa deduplikasi.
  */
 export function calculateDeduplicatedStats(boxes: BoksArsip[]) {
+  const safeList = Array.isArray(boxes) ? boxes : [];
   const trainingMap = new Map<string, {
     baseName: string;
     peserta: number;
@@ -449,20 +472,24 @@ export function calculateDeduplicatedStats(boxes: BoksArsip[]) {
     boxCount: number;
   }>();
 
-  (boxes || []).forEach((b) => {
+  safeList.forEach((b) => {
     if (!b) return;
     const rawNama = String(b.nama_pelatihan || (b as any)['Nama Pelatihan'] || '').trim();
     if (!rawNama || rawNama.toLowerCase() === 'kosong') return;
 
-    // Normalisasi base nama pelatihan: hilangkan akhiran spasi dan (1), (2), dll di akhir
-    const baseKey = rawNama.replace(/\s*\(\d+\)\s*$/i, '').trim().toLowerCase();
+    // Bersihkan nama pelatihan dari imbuhan angka dalam kurung (1), (2), (3), dsb
+    const cleanBaseName = cleanTrainingName(rawNama);
+    if (!cleanBaseName) return;
+
+    const baseKey = cleanBaseName.toLowerCase();
 
     const peserta = Number(b.jumlah_peserta ?? (b as any)['Jumlah Peserta'] ?? 0) || 0;
     const pesertaBk = Number(b.jumlah_peserta_bk ?? (b as any)['Jumlah Peserta BK'] ?? 0) || 0;
 
     if (!trainingMap.has(baseKey)) {
+      // Ambil data jumlah peserta dari 1 boks saja (boks pertama)
       trainingMap.set(baseKey, {
-        baseName: rawNama.replace(/\s*\(\d+\)\s*$/i, '').trim(),
+        baseName: cleanBaseName,
         peserta,
         pesertaBk,
         boxCount: 1
@@ -470,9 +497,14 @@ export function calculateDeduplicatedStats(boxes: BoksArsip[]) {
     } else {
       const existing = trainingMap.get(baseKey)!;
       existing.boxCount++;
-      // Ambil nilai representatif maksimal agar tidak terlipatgandakan
-      existing.peserta = Math.max(existing.peserta, peserta);
-      existing.pesertaBk = Math.max(existing.pesertaBk, pesertaBk);
+      // Jika boks pertama belum terisi (0) namun boks pecahan ini memiliki data peserta, gunakan datanya
+      if (existing.peserta === 0 && peserta > 0) {
+        existing.peserta = peserta;
+      }
+      if (existing.pesertaBk === 0 && pesertaBk > 0) {
+        existing.pesertaBk = pesertaBk;
+      }
+      // Pelatihan yang sama TIDAK menambahkan peserta lagi (mencegah double count)
     }
   });
 
@@ -488,7 +520,7 @@ export function calculateDeduplicatedStats(boxes: BoksArsip[]) {
     totalPeserta,
     totalBK,
     totalPelatihanUnik: trainingMap.size,
-    totalBoksFisik: (boxes || []).length
+    totalBoksFisik: safeList.length
   };
 }
 

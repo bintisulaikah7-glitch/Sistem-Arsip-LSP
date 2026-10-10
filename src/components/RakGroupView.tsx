@@ -2,7 +2,7 @@ import React from 'react';
 import { BoksArsip } from '../types.ts';
 import { BoxCard } from './BoxCard.tsx';
 import { Folder, Layers, QrCode, Sparkles, Plus, ExternalLink, Calendar, Users } from 'lucide-react';
-import { STANDARD_RAKS, standardizeRakName, MAX_BOXES_PER_RAK } from '../utils/csvParser.ts';
+import { STANDARD_RAKS, standardizeRakName, MAX_BOXES_PER_RAK, calculateDeduplicatedStats } from '../utils/csvParser.ts';
 
 interface RakGroupViewProps {
   boxes: BoksArsip[];
@@ -92,7 +92,7 @@ export const RakGroupView: React.FC<RakGroupViewProps> = ({
           return standardizeRakName(r) === namaRak;
         });
 
-        const totalPesertaRak = boksDiRakIni.reduce((acc, curr) => acc + (curr.jumlah_peserta || curr['Jumlah Peserta'] || 0), 0);
+        const { totalPeserta: totalPesertaRak } = calculateDeduplicatedStats(boksDiRakIni);
         const isRakPenuh = boksDiRakIni.length >= MAX_BOXES_PER_RAK;
 
         return (
