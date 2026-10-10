@@ -43,7 +43,7 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-    /* Memperbaiki tata letak ikon & teks pada bagian lemari */
+    /* Tata letak kartu lemari & ikon agar selalu rapi dengan border, shadow, dan padding */
     svg {
       display: inline-block;
       vertical-align: middle;
@@ -51,12 +51,44 @@
     #root > div {
       width: 100%;
     }
+    .card-lemari {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .card-lemari:hover {
+      border-color: #60a5fa;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 0.5rem;
+    }
+    .info-item:last-child {
+      border-bottom: none;
+    }
+    .badge-boks {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-width: 1px;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
   <div id="root"></div>
 
-  <!-- Script pemanggil bundel utama (SUDAH DIPERBAIKI TANPA SPASI) -->
   <script type="module" src="./assets/app-bundle.js"></script>
 
   <script>

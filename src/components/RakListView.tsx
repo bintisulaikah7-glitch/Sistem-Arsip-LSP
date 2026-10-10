@@ -138,8 +138,7 @@ export const RakListView: React.FC<RakListViewProps> = ({
           </p>
         </div>
       ) : (
-        /* 4. Looping HANYA rak yang benar-benar ada di spreadsheet */
-        <div className="grid-container">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {daftarRakUnik.map((rak, idx) => {
             // Hitung jumlah boks aktual di rak tersebut
             const boksDiRakIni = dataLemariIni.filter(item => {
@@ -155,24 +154,28 @@ export const RakListView: React.FC<RakListViewProps> = ({
               <div
                 key={`rak-card-${rak}-${idx}`}
                 onClick={() => onSelectRak(rak)}
-                className={`card-folder ${isPenuh ? 'border-amber-300 ring-1 ring-amber-200' : ''}`}
+                className={`group bg-white border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center text-center justify-between ${
+                  isPenuh ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200 hover:border-blue-400'
+                }`}
               >
                 <div className="flex justify-center mb-3">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs border ${
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs border transition-colors ${
                     isPenuh
-                      ? 'bg-amber-50 text-amber-600 border-amber-200'
-                      : 'bg-blue-50 text-blue-600 border-blue-200'
+                      ? 'bg-amber-50 text-amber-600 border-amber-200 group-hover:bg-amber-100'
+                      : 'bg-blue-50 text-blue-600 border-blue-200 group-hover:bg-blue-600 group-hover:text-white'
                   }`}>
                     <Folder className="w-6 h-6" />
                   </div>
                 </div>
-                <h3>{rakTitle}</h3>
-                <p className="font-semibold">
-                  {jumlahBoks}/{MAX_BOXES_PER_RAK} Boks Arsip
-                  {isPenuh && <span className="ml-1 text-amber-600 text-xs">(Penuh)</span>}
+                <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700 transition-colors mb-1">
+                  {rakTitle}
+                </h3>
+                <p className="text-xs font-semibold text-slate-600 mb-3">
+                  <span className="tabular-nums font-bold text-slate-900">{jumlahBoks}</span>/{MAX_BOXES_PER_RAK} Boks Arsip
+                  {isPenuh && <span className="ml-1 text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">(Penuh)</span>}
                 </p>
-                <span className="inline-flex items-center gap-1">
-                  <span>Klik untuk membuka</span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 group-hover:text-blue-700 group-hover:translate-x-0.5 transition-all mt-auto pt-2 border-t border-slate-100 w-full justify-center">
+                  <span>Buka Berkas Rak</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
