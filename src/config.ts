@@ -3,9 +3,11 @@
  * Sistem Manajemen Berkas Boks Arsip LSP
  */
 
-// Web App URL resmi Google Apps Script milik LSP BDI Surabaya
+// Web App URL resmi Google Apps Script milik LSP BDI Surabaya (Direct Connection tanpa proxy/mock)
 export const DEFAULT_APPS_SCRIPT_URL =
   'https://script.google.com/macros/s/AKfycbx4btq9oWF0JBn1PZ5Ew3jRJUKlvu8YH7F55lXsZmPupaHwcIcgvf6_G2SfnmEMOCYa/exec';
+export const APPS_SCRIPT_DIRECT_URL = DEFAULT_APPS_SCRIPT_URL;
+export const APPS_SCRIPT_URL = DEFAULT_APPS_SCRIPT_URL;
 
 // Google Sheets Spreadsheet URL resmi LSP
 export const GOOGLE_SHEETS_SPREADSHEET_URL =
