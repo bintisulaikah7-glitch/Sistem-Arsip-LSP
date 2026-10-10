@@ -268,6 +268,21 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
 
+    // Periksa parameter ?box= secara instan saat komponen dimuat (DOMContentLoaded)
+    handleCheckUrlAndOpenBox(boxes);
+
+    const onDomLoaded = () => {
+      if (isMounted) {
+        handleCheckUrlAndOpenBox(boxes);
+      }
+    };
+
+    if (typeof document !== 'undefined') {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', onDomLoaded);
+      }
+    }
+
     fetchGoogleSheetsData(sheetUrl, true)
       .then((loadedBoxes) => {
         if (!isMounted) return;

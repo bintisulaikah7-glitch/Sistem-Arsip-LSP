@@ -1,6 +1,7 @@
 import React from 'react';
 import { BoksArsip } from '../types.ts';
-import { Boxes, CheckCircle2, Clock, Trash2, Users, ShieldCheck } from 'lucide-react';
+import { Boxes, CheckCircle2, Clock, Trash2, Users, ShieldCheck, Sparkles } from 'lucide-react';
+import { calculateDeduplicatedStats } from '../utils/csvParser.ts';
 
 interface StatsBarProps {
   boxes: BoksArsip[];
@@ -35,16 +36,21 @@ export const StatsBar: React.FC<StatsBarProps> = ({
     const lemariRaw = String(
       b.lokasi?.lemari ?? b['Kode Lemari'] ?? b.kode_lemari ?? ''
     ).toLowerCase().trim();
-    const isLemariKosong = !lemariRaw || lemariRaw === '0' || lemariRaw === 'kosong' || lemariRaw === 'keluar' || lemariRaw === '-';
-
-    // 1. Cek Apakah Arsip Tidak Tersedia / Dimusnahkan / Kosong / Keluar
-    if (
-      isLemariKosong ||
+    const idBoxLower = String(b.id_box || '').toLowerCase();
+    const isBerkasKeluar =
+      !lemariRaw ||
+      lemariRaw === '0' ||
+      lemariRaw === 'kosong' ||
+      lemariRaw === 'keluar' ||
+      lemariRaw === '-' ||
+      idBoxLower.includes('kosong') ||
       statusArsip === 'tidak tersedia' ||
       statusArsip === 'dimusnahkan' ||
       statusArsip === 'kosong' ||
-      statusArsip === 'keluar'
-    ) {
+      statusArsip === 'keluar';
+
+    // 1. Cek Apakah Arsip Berada di Luar / Berkas Keluar / Tidak Tersedia
+    if (isBerkasKeluar) {
       tidakTersediaCount++;
     }
     // 2. Cek Apakah Fisik Tidak Lengkap / Kurang
@@ -62,19 +68,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
     }
   });
 
-  // Hitung total peserta & BK secara murni dari data spreadsheet
-  const totalPesertaCalc = safeBoxes.reduce((acc, curr) => {
-    const val = Number(curr?.jumlah_peserta || curr?.['Jumlah Peserta'] || 0);
-    return acc + (isNaN(val) ? 0 : val);
-  }, 0);
-
-  const totalBKCalc = safeBoxes.reduce((acc, curr) => {
-    const val = Number(curr?.jumlah_peserta_bk || curr?.['Jumlah Peserta BK'] || 0);
-    return acc + (isNaN(val) ? 0 : val);
-  }, 0);
-
-  const totalPeserta = totalPesertaCalc;
-  const totalBK = totalBKCalc;
+  // Hitung total peserta & BK dengan DEDUPLIKASI nama pelatihan dasar (mencegah double count boks pecahan)
+  const { totalPeserta, totalBK, totalPelatihanUnik } = calculateDeduplicatedStats(safeBoxes);
 
   // Hitung persentase aman dari pembagian nol (div by zero)
   const persenK = totalPeserta > 0 
@@ -91,10 +86,15 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* KARTU PESERTA ASESMEN */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs hover:border-blue-200 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Total Peserta Asesmen
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+            <div>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Total Peserta Asesmen
+              </span>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                Deduplikasi dari {totalPelatihanUnik} Pelatihan Dasar (Tanpa Double Count)
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
               <Users className="w-4 h-4" />
             </div>
           </div>
@@ -111,10 +111,15 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* KARTU PESERTA BK */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs hover:border-violet-200 transition-all flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Peserta Belum Kompeten (BK)
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center">
+            <div>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Peserta Belum Kompeten (BK)
+              </span>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                Total Akumulasi Peserta BK Resmi
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-lg bg-violet-50 text-violet-600 border border-violet-100 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
@@ -183,11 +188,13 @@ export const StatsBar: React.FC<StatsBarProps> = ({
           </div>
         </div>
 
-        {/* Tidak Tersedia / Dimusnahkan */}
+        {/* Berada di Luar / Berkas Keluar */}
         <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs hover:border-rose-200 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-600">Tidak Tersedia</span>
-            <div className="w-7 h-7 rounded-md bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center">
+            <span className="text-xs font-medium text-slate-600 truncate" title="Berada di Luar / Berkas Keluar">
+              Berkas Keluar
+            </span>
+            <div className="w-7 h-7 rounded-md bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
               <Trash2 className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -195,8 +202,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
             <span className="text-xl sm:text-2xl font-bold text-rose-600 tracking-tight tabular-nums">
               {tidakTersediaCount}
             </span>
-            <span className="text-[11px] text-rose-700 font-medium bg-rose-50 px-1.5 py-0.5 rounded">
-              Kosong / Keluar
+            <span className="text-[11px] text-rose-700 font-bold bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded">
+              Di Luar
             </span>
           </div>
         </div>

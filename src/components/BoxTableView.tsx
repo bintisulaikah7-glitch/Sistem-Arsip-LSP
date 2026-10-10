@@ -41,6 +41,20 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
             {boxes.map((box, index) => {
               const pesertaK = Math.max(0, (Number(box.jumlah_peserta) || 0) - (Number(box.jumlah_peserta_bk) || 0));
 
+              const rawLemari = String(box.lokasi?.lemari ?? '').toLowerCase().trim();
+              const idBoxLower = String(box.id_box || '').toLowerCase();
+              const isBerkasKeluar =
+                !rawLemari ||
+                rawLemari === '0' ||
+                rawLemari === 'kosong' ||
+                rawLemari === 'keluar' ||
+                rawLemari === '-' ||
+                box.lokasi?.lemari === 0 ||
+                box.lokasi?.lemari === '0' ||
+                idBoxLower.includes('kosong') ||
+                String(box.status_arsip || '').toLowerCase().includes('keluar') ||
+                String(box.status_arsip || '').toLowerCase() === 'tidak tersedia';
+
               return (
                 <tr key={`${box.id_box}-${index}`} className="hover:bg-slate-50/80 transition-colors">
                   <td className="py-3 px-4 font-mono font-bold text-blue-700 whitespace-nowrap">
@@ -72,22 +86,30 @@ export const BoxTableView: React.FC<BoxTableViewProps> = ({
                     <span className="text-purple-700 font-semibold tabular-nums">{box.jumlah_peserta_bk}</span>
                   </td>
                   <td className="py-3 px-3 whitespace-nowrap font-medium text-[11px] text-slate-700">
-                    {(typeof box.lokasi.lemari === 'number' ? box.lokasi.lemari > 0 : Boolean(box.lokasi.lemari && box.lokasi.lemari !== '0'))
+                    {isBerkasKeluar ? (
+                      <span className="text-rose-600 font-semibold">Berada di Luar</span>
+                    ) : (typeof box.lokasi.lemari === 'number' ? box.lokasi.lemari > 0 : Boolean(box.lokasi.lemari && box.lokasi.lemari !== '0'))
                       ? `L${box.lokasi.lemari} (R:${box.lokasi.rak}, B:${box.lokasi.baris})`
                       : 'Antrian / Tanpa Lemari'}
                   </td>
                   <td className="py-3 px-3 whitespace-nowrap">
-                    <span
-                      className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
-                        box.status_arsip === 'Tersedia' || box.status_arsip === 'Aktif'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : box.status_arsip === 'Tidak Lengkap' || box.status_arsip === 'Inaktif'
-                          ? 'bg-amber-50 text-amber-700 border-amber-200'
-                          : 'bg-rose-50 text-rose-700 border-rose-200'
-                      }`}
-                    >
-                      {box.status_arsip}
-                    </span>
+                    {isBerkasKeluar ? (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border bg-rose-50 text-rose-700 border-rose-200">
+                        Berada di Luar / Berkas Keluar
+                      </span>
+                    ) : (
+                      <span
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
+                          box.status_arsip === 'Tersedia' || box.status_arsip === 'Aktif'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : box.status_arsip === 'Tidak Lengkap' || box.status_arsip === 'Inaktif'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-rose-50 text-rose-700 border-rose-200'
+                        }`}
+                      >
+                        {box.status_arsip}
+                      </span>
+                    )}
                   </td>
                   <td className="py-3 px-3 whitespace-nowrap">
                     <span

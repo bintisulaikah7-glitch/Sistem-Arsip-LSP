@@ -84,6 +84,20 @@ export const BoxDetailModal: React.FC<BoxDetailModalProps> = ({
     return 'bg-slate-100 text-slate-700 border-slate-200';
   };
 
+  const rawLemari = String(box.lokasi?.lemari ?? '').toLowerCase().trim();
+  const idBoxLower = String(box.id_box || '').toLowerCase();
+  const isBerkasKeluar =
+    !rawLemari ||
+    rawLemari === '0' ||
+    rawLemari === 'kosong' ||
+    rawLemari === 'keluar' ||
+    rawLemari === '-' ||
+    box.lokasi?.lemari === 0 ||
+    box.lokasi?.lemari === '0' ||
+    idBoxLower.includes('kosong') ||
+    String(box.status_arsip || '').toLowerCase().includes('keluar') ||
+    String(box.status_arsip || '').toLowerCase() === 'tidak tersedia';
+
   const lemariVal = box.lokasi?.lemari !== undefined && box.lokasi?.lemari !== null ? box.lokasi.lemari : '-';
   const rakVal = box.lokasi?.rak ? box.lokasi.rak : '-';
   const barisVal = box.lokasi?.baris ? box.lokasi.baris : '-';
@@ -227,18 +241,31 @@ export const BoxDetailModal: React.FC<BoxDetailModalProps> = ({
               {/* Lokasi Penyimpanan */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-1.5">
                 <span className="text-xs font-semibold text-slate-500">Lokasi Penyimpanan:</span>
-                <span className="font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200 w-fit">
-                  Lemari {lemariVal} • {rakVal} ({barisVal})
-                </span>
+                {isBerkasKeluar ? (
+                  <span className="font-bold text-rose-700 bg-rose-50 px-3 py-1 rounded-lg border border-rose-200 w-fit">
+                    Berada di Luar / Berkas Keluar
+                  </span>
+                ) : (
+                  <span className="font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200 w-fit">
+                    Lemari {lemariVal} • {rakVal} ({barisVal})
+                  </span>
+                )}
               </div>
 
               {/* Status Arsip */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-1.5">
                 <span className="text-xs font-semibold text-slate-500">Status Arsip:</span>
-                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border w-fit ${getStatusArsipBadge(box.status_arsip)}`}>
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
-                  {box.status_arsip}
-                </span>
+                {isBerkasKeluar ? (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border border-rose-200 bg-rose-50 text-rose-700 w-fit">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1 flex-shrink-0 text-rose-600" />
+                    Berada di Luar / Berkas Keluar
+                  </span>
+                ) : (
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border w-fit ${getStatusArsipBadge(box.status_arsip)}`}>
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
+                    {box.status_arsip}
+                  </span>
+                )}
               </div>
 
               {/* Kelengkapan Barang */}

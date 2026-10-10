@@ -1,59 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Manajemen Boks Arsip LSP</title>
-    
-    <!-- Script Tailwind CSS CDN Full Config -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                50: '#eff6ff',
-                500: '#3b82f6',
-                600: '#2563eb',
-                700: '#1d4ed8',
-              }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Manajemen Boks Arsip LSP</title>
+
+  <!-- Google Font (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeaff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
             }
           }
         }
       }
-    </script>
-    <script>
-      // Single Page App redirect handler for GitHub Pages
-      (function(l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&');
-          }).join('?');
-          window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
-      }(window.location));
-    </script>
-    <script type="module" crossorigin src="./assets/app-bundle.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index.css">
-  </head>
-  <body class="bg-slate-50 text-slate-800 antialiased">
-    <div id="root"></div>
-    <script>
-      // Fallback otomatis untuk deployment statis GitHub Pages
-      window.addEventListener('error', function(e) {
-        if (e && e.target && (e.target.src || '').includes('main.tsx')) {
-          console.warn('[LSP Archive] Mengaktifkan bundel JavaScript statis ./assets/app-bundle.js...');
-          var s = document.createElement('script');
-          s.type = 'module';
-          s.crossOrigin = 'anonymous';
-          s.src = './assets/app-bundle.js';
-          document.body.appendChild(s);
-        }
-      }, true);
-    </script>
-  </body>
+    }
+  </script>
+  <style>body{font-family:Inter,sans-serif}svg{vertical-align:middle;display:inline-block}#root>div{width:100%}</style>
+  <script type="module" crossorigin src="./assets/app-bundle.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+  <div id="root"></div>
+
+  <!-- Script pemanggil bundel utama -->
+
+  <script>
+    // Memaksa penataan ulang tampilan setelah React selesai render
+    const observer = new MutationObserver(() => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+    observer.observe(document.getElementById('root'), { childList: true, subtree: true });
+  </script>
+</body>
 </html>

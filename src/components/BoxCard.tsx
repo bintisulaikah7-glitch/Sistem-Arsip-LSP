@@ -73,17 +73,33 @@ export const BoxCard: React.FC<BoxCardProps> = ({
     }
   };
 
-  const hasLemari =
-    typeof box.lokasi.lemari === 'number'
-      ? box.lokasi.lemari > 0
-      : Boolean(box.lokasi.lemari && box.lokasi.lemari !== '0');
+  const rawLemari = String(box.lokasi?.lemari ?? '').toLowerCase().trim();
+  const idBoxLower = String(box.id_box || '').toLowerCase();
+  const isBerkasKeluar =
+    rawLemari === 'kosong' ||
+    box.lokasi?.lemari === 0 ||
+    box.lokasi?.lemari === '0' ||
+    rawLemari === 'keluar' ||
+    idBoxLower.includes('kosong') ||
+    String(box.status_arsip || '').toLowerCase().includes('keluar') ||
+    String(box.status_arsip || '').toLowerCase() === 'tidak tersedia';
 
-  const lokasiDisplay = hasLemari
+  const hasLemari =
+    !isBerkasKeluar &&
+    (typeof box.lokasi.lemari === 'number'
+      ? box.lokasi.lemari > 0
+      : Boolean(box.lokasi.lemari && box.lokasi.lemari !== '0'));
+
+  const lokasiDisplay = isBerkasKeluar
+    ? 'Berada di Luar'
+    : hasLemari
     ? `L${box.lokasi.lemari} • ${box.lokasi.rak} • ${box.lokasi.baris}`
     : 'Antrian / Tanpa Lemari';
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-400 rounded-xl p-5 flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md">
+    <div className={`bg-white border rounded-xl p-5 flex flex-col justify-between transition-all duration-200 shadow-xs hover:shadow-md ${
+      isBerkasKeluar ? 'border-rose-200 hover:border-rose-400' : 'border-slate-200 hover:border-blue-400'
+    }`}>
       <div>
         {/* Top Badges: ID Box & Lokasi */}
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -101,8 +117,12 @@ export const BoxCard: React.FC<BoxCardProps> = ({
           </div>
 
           {/* Lokasi Object: Lemari, Rak, Baris */}
-          <div className="flex items-center space-x-1.5 text-xs text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 font-medium">
-            <MapPin className="w-3 h-3 text-blue-600 shrink-0" />
+          <div className={`flex items-center space-x-1.5 text-xs px-2.5 py-1 rounded-md border font-medium ${
+            isBerkasKeluar
+              ? 'text-rose-700 bg-rose-50 border-rose-200 font-semibold'
+              : 'text-slate-700 bg-slate-50 border-slate-200'
+          }`}>
+            <MapPin className={`w-3 h-3 shrink-0 ${isBerkasKeluar ? 'text-rose-600' : 'text-blue-600'}`} />
             <span className="truncate max-w-[170px]">{lokasiDisplay}</span>
           </div>
         </div>
@@ -120,9 +140,15 @@ export const BoxCard: React.FC<BoxCardProps> = ({
 
         {/* Status Badges */}
         <div className="flex flex-wrap items-center gap-1.5 mb-4 text-[11px]">
-          <span className={`px-2.5 py-0.5 rounded-full border font-semibold ${getStatusArsipBadge(box.status_arsip)}`}>
-            Arsip: {box.status_arsip}
-          </span>
+          {isBerkasKeluar ? (
+            <span className="px-2.5 py-0.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 font-bold">
+              Berada di Luar / Berkas Keluar
+            </span>
+          ) : (
+            <span className={`px-2.5 py-0.5 rounded-full border font-semibold ${getStatusArsipBadge(box.status_arsip)}`}>
+              Arsip: {box.status_arsip}
+            </span>
+          )}
           <span className={`px-2.5 py-0.5 rounded-full border font-semibold ${getStatusBarangBadge(box.status_barang)}`}>
             Fisik: {box.status_barang}
           </span>

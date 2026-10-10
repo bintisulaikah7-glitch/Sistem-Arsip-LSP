@@ -435,3 +435,60 @@ export function matchBoxSearch(box: BoksArsip, searchQuery: string): boolean {
     );
   });
 }
+
+/**
+ * Menghitung statistik peserta asesmen dan peserta BK dengan deduplikasi
+ * berdasarkan Nama Pelatihan Dasar (mengabaikan akhiran pecahan seperti (1), (2), (01), dll)
+ * sehingga dokumen pelatihan yang terbagi ke 2 boks fisik TIDAK dihitung dua kali.
+ */
+export function calculateDeduplicatedStats(boxes: BoksArsip[]) {
+  const trainingMap = new Map<string, {
+    baseName: string;
+    peserta: number;
+    pesertaBk: number;
+    boxCount: number;
+  }>();
+
+  (boxes || []).forEach((b) => {
+    if (!b) return;
+    const rawNama = String(b.nama_pelatihan || (b as any)['Nama Pelatihan'] || '').trim();
+    if (!rawNama || rawNama.toLowerCase() === 'kosong') return;
+
+    // Normalisasi base nama pelatihan: hilangkan akhiran spasi dan (1), (2), dll di akhir
+    const baseKey = rawNama.replace(/\s*\(\d+\)\s*$/i, '').trim().toLowerCase();
+
+    const peserta = Number(b.jumlah_peserta ?? (b as any)['Jumlah Peserta'] ?? 0) || 0;
+    const pesertaBk = Number(b.jumlah_peserta_bk ?? (b as any)['Jumlah Peserta BK'] ?? 0) || 0;
+
+    if (!trainingMap.has(baseKey)) {
+      trainingMap.set(baseKey, {
+        baseName: rawNama.replace(/\s*\(\d+\)\s*$/i, '').trim(),
+        peserta,
+        pesertaBk,
+        boxCount: 1
+      });
+    } else {
+      const existing = trainingMap.get(baseKey)!;
+      existing.boxCount++;
+      // Ambil nilai representatif maksimal agar tidak terlipatgandakan
+      existing.peserta = Math.max(existing.peserta, peserta);
+      existing.pesertaBk = Math.max(existing.pesertaBk, pesertaBk);
+    }
+  });
+
+  let totalPeserta = 0;
+  let totalBK = 0;
+
+  for (const item of trainingMap.values()) {
+    totalPeserta += item.peserta;
+    totalBK += item.pesertaBk;
+  }
+
+  return {
+    totalPeserta,
+    totalBK,
+    totalPelatihanUnik: trainingMap.size,
+    totalBoksFisik: (boxes || []).length
+  };
+}
+
